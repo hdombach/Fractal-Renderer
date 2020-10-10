@@ -1,0 +1,614 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DE05617624EDD2520058925E /* oldSwiftVoxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617524EDD2520058925E /* oldSwiftVoxel.swift */; };
+		DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617724EDD2BB0058925E /* ComplexNumbers.swift */; };
+		DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */; };
+		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
+		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE491AE724F297A7002B8C67 /* JuliaSetCompute.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */; };
+		DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6435D024D8DF8300C97FB5 /* Settings.swift */; };
+		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
+		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
+		DE8237DB24AE217C000FA948 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DA24AE217C000FA948 /* Engine.swift */; };
+		DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DC24AE221B000FA948 /* Shaders.metal */; };
+		DE8237DF24AE8234000FA948 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DE24AE8234000FA948 /* Other.swift */; };
+		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
+		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
+		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
+		DEA8931924AFBDE9008F5D78 /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8931824AFBDE9008F5D78 /* sun.png */; };
+		DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEA8931A24B20EB3008F5D78 /* raytracing.metal */; };
+		DEAA8BC924FD12BE0080221B /* SwiftVoxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */; };
+		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
+		DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */; };
+		DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */; };
+		DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */; };
+		DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDE024ADFC9E00DB5701 /* Assets.xcassets */; };
+		DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDE324ADFC9E00DB5701 /* Preview Assets.xcassets */; };
+		DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDE524ADFC9E00DB5701 /* Main.storyboard */; };
+		DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */; };
+		DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */; };
+		DED103F224F4275700D6AD4E /* JuliaSetComputeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */; };
+		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DE05618424EDDB610058925E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEC8CDCE24ADFC9900DB5701 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DEC8CDD524ADFC9A00DB5701;
+			remoteInfo = "Julia Set Renderer";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DE05617524EDD2520058925E /* oldSwiftVoxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = oldSwiftVoxel.swift; sourceTree = "<group>"; };
+		DE05617724EDD2BB0058925E /* ComplexNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplexNumbers.swift; sourceTree = "<group>"; };
+		DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Julia Set RendererTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Julia_Set_RendererTests.swift; sourceTree = "<group>"; };
+		DE05618324EDDB610058925E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = JuliaSetCompute.metal; sourceTree = "<group>"; };
+		DE6435D024D8DF8300C97FB5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
+		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		DE8237DA24AE217C000FA948 /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
+		DE8237DC24AE221B000FA948 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		DE8237DE24AE8234000FA948 /* Other.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
+		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
+		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
+		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
+		DEA8931824AFBDE9008F5D78 /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
+		DEA8931A24B20EB3008F5D78 /* raytracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = raytracing.metal; sourceTree = "<group>"; };
+		DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftVoxel.swift; sourceTree = "<group>"; };
+		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
+		DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Julia Set Renderer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DEC8CDDE24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Julia_Set_Renderer.xcdatamodel; sourceTree = "<group>"; };
+		DEC8CDE024ADFC9E00DB5701 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DEC8CDE324ADFC9E00DB5701 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DEC8CDE624ADFC9E00DB5701 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DEC8CDE824ADFC9E00DB5701 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Julia_Set_Renderer.entitlements; sourceTree = "<group>"; };
+		DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindowController.swift; sourceTree = "<group>"; };
+		DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenderWindowController.xib; sourceTree = "<group>"; };
+		DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JuliaSetComputeTests.swift; sourceTree = "<group>"; };
+		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DE05617C24EDDB610058925E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC8CDD324ADFC9A00DB5701 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DE05618024EDDB610058925E /* Julia Set RendererTests */ = {
+			isa = PBXGroup;
+			children = (
+				DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */,
+				DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */,
+				DE05618324EDDB610058925E /* Info.plist */,
+			);
+			path = "Julia Set RendererTests";
+			sourceTree = "<group>";
+		};
+		DE05618924EDDD190058925E /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
+				DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */,
+				DE05617524EDD2520058925E /* oldSwiftVoxel.swift */,
+				DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */,
+				DE8237DE24AE8234000FA948 /* Other.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		DE304FC724DB567600125844 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */,
+				DE8F06E524DB65E1004D2687 /* RenderBox.swift */,
+				DE304FC924DB574700125844 /* ImageSettings.swift */,
+				DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */,
+				DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */,
+				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		DE304FC824DB56A600125844 /* Randering */ = {
+			isa = PBXGroup;
+			children = (
+				DE8237D824AE20BF000FA948 /* Renderer.swift */,
+				DE8237DA24AE217C000FA948 /* Engine.swift */,
+				DE6435D024D8DF8300C97FB5 /* Settings.swift */,
+				DE8237DC24AE221B000FA948 /* Shaders.metal */,
+				DEA8931A24B20EB3008F5D78 /* raytracing.metal */,
+				DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */,
+			);
+			path = Randering;
+			sourceTree = "<group>";
+		};
+		DEC8CDCD24ADFC9900DB5701 = {
+			isa = PBXGroup;
+			children = (
+				DEC8CDD824ADFC9A00DB5701 /* Julia Set Renderer */,
+				DE05618024EDDB610058925E /* Julia Set RendererTests */,
+				DEC8CDD724ADFC9A00DB5701 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DEC8CDD724ADFC9A00DB5701 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */,
+				DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DEC8CDD824ADFC9A00DB5701 /* Julia Set Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */,
+				DE8237D624AE2023000FA948 /* RenderView.swift */,
+				DE1E40A624CB7FC5003B198F /* Keys.swift */,
+				DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */,
+				DE05618924EDDD190058925E /* Types */,
+				DE304FC824DB56A600125844 /* Randering */,
+				DE304FC724DB567600125844 /* UI */,
+				DEC8CDE024ADFC9E00DB5701 /* Assets.xcassets */,
+				DEA8931824AFBDE9008F5D78 /* sun.png */,
+				DEC8CDE524ADFC9E00DB5701 /* Main.storyboard */,
+				DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */,
+				DEC8CDE824ADFC9E00DB5701 /* Info.plist */,
+				DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */,
+				DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */,
+				DEC8CDE224ADFC9E00DB5701 /* Preview Content */,
+			);
+			path = "Julia Set Renderer";
+			sourceTree = "<group>";
+		};
+		DEC8CDE224ADFC9E00DB5701 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				DEC8CDE324ADFC9E00DB5701 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DE05617E24EDDB610058925E /* Julia Set RendererTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE05618624EDDB610058925E /* Build configuration list for PBXNativeTarget "Julia Set RendererTests" */;
+			buildPhases = (
+				DE05617B24EDDB610058925E /* Sources */,
+				DE05617C24EDDB610058925E /* Frameworks */,
+				DE05617D24EDDB610058925E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DE05618524EDDB610058925E /* PBXTargetDependency */,
+			);
+			name = "Julia Set RendererTests";
+			productName = "Julia Set RendererTests";
+			productReference = DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DEC8CDD524ADFC9A00DB5701 /* Julia Set Renderer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEC8CDEC24ADFC9E00DB5701 /* Build configuration list for PBXNativeTarget "Julia Set Renderer" */;
+			buildPhases = (
+				DEC8CDD224ADFC9A00DB5701 /* Sources */,
+				DEC8CDD324ADFC9A00DB5701 /* Frameworks */,
+				DEC8CDD424ADFC9A00DB5701 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Julia Set Renderer";
+			productName = "Julia Set Renderer";
+			productReference = DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DEC8CDCE24ADFC9900DB5701 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1160;
+				LastUpgradeCheck = 1160;
+				ORGANIZATIONNAME = "Hezekiah Dombach";
+				TargetAttributes = {
+					DE05617E24EDDB610058925E = {
+						CreatedOnToolsVersion = 11.6;
+						TestTargetID = DEC8CDD524ADFC9A00DB5701;
+					};
+					DEC8CDD524ADFC9A00DB5701 = {
+						CreatedOnToolsVersion = 11.5;
+						LastSwiftMigration = 1150;
+					};
+				};
+			};
+			buildConfigurationList = DEC8CDD124ADFC9900DB5701 /* Build configuration list for PBXProject "Julia Set Renderer" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DEC8CDCD24ADFC9900DB5701;
+			productRefGroup = DEC8CDD724ADFC9A00DB5701 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DEC8CDD524ADFC9A00DB5701 /* Julia Set Renderer */,
+				DE05617E24EDDB610058925E /* Julia Set RendererTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DE05617D24EDDB610058925E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC8CDD424ADFC9A00DB5701 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */,
+				DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */,
+				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
+				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
+				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DE05617B24EDDB610058925E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DED103F224F4275700D6AD4E /* JuliaSetComputeTests.swift in Sources */,
+				DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DEC8CDD224ADFC9A00DB5701 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */,
+				DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */,
+				DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */,
+				DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */,
+				DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */,
+				DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */,
+				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
+				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
+				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
+				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
+				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
+				DE05617624EDD2520058925E /* oldSwiftVoxel.swift in Sources */,
+				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
+				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
+				DE491AE724F297A7002B8C67 /* JuliaSetCompute.metal in Sources */,
+				DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */,
+				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
+				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
+				DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */,
+				DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */,
+				DEAA8BC924FD12BE0080221B /* SwiftVoxel.swift in Sources */,
+				DE8237DB24AE217C000FA948 /* Engine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DE05618524EDDB610058925E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DEC8CDD524ADFC9A00DB5701 /* Julia Set Renderer */;
+			targetProxy = DE05618424EDDB610058925E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		DEC8CDE524ADFC9E00DB5701 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DEC8CDE624ADFC9E00DB5701 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DE05618724EDDB610058925E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				INFOPLIST_FILE = "Julia Set RendererTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-RendererTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Julia Set Renderer.app/Contents/MacOS/Julia Set Renderer";
+			};
+			name = Debug;
+		};
+		DE05618824EDDB610058925E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				INFOPLIST_FILE = "Julia Set RendererTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-RendererTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Julia Set Renderer.app/Contents/MacOS/Julia Set Renderer";
+			};
+			name = Release;
+		};
+		DEC8CDEA24ADFC9E00DB5701 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DEC8CDEB24ADFC9E00DB5701 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		DEC8CDED24ADFC9E00DB5701 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Julia Set Renderer/Julia_Set_Renderer.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Julia Set Renderer/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DEC8CDEE24ADFC9E00DB5701 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Julia Set Renderer/Julia_Set_Renderer.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Julia Set Renderer/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DE05618624EDDB610058925E /* Build configuration list for PBXNativeTarget "Julia Set RendererTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE05618724EDDB610058925E /* Debug */,
+				DE05618824EDDB610058925E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEC8CDD124ADFC9900DB5701 /* Build configuration list for PBXProject "Julia Set Renderer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC8CDEA24ADFC9E00DB5701 /* Debug */,
+				DEC8CDEB24ADFC9E00DB5701 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEC8CDEC24ADFC9E00DB5701 /* Build configuration list for PBXNativeTarget "Julia Set Renderer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEC8CDED24ADFC9E00DB5701 /* Debug */,
+				DEC8CDEE24ADFC9E00DB5701 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DEC8CDDE24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodel */,
+			);
+			currentVersion = DEC8CDDE24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodel */;
+			path = Julia_Set_Renderer.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = DEC8CDCE24ADFC9900DB5701 /* Project object */;
+}
