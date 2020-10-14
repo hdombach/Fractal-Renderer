@@ -62,32 +62,17 @@ struct JuliaSet {
 		}
 	}*/
     
-    int firstIndex(VoxelAddress vAddress, device Voxel *voxels, int voxelsLength) {
-        if (voxels[vAddress.index].id == vAddress.id) {
-            return vAddress.index;
-        }
-        for (int c = 0; voxelsLength > c; c++) {
-            int diff = (c % 2) * 2 - 1;
-            int index = (int(ceil(float(c) / 2)) * diff + vAddress.index) % voxelsLength;
-            if (0 > index) {
-                index += voxelsLength;
-            }
-            if (voxels[index].id == vAddress.id) {
-                return index;
-            }
-        }
-    }
-    
 	void updateAddress(device Voxel *voxels, int index, int voxelsLength) {
-        voxels[index]._0.index = firstIndex(voxels[index]._0, voxels, voxelsLength);
-        voxels[index]._1.index = firstIndex(voxels[index]._1, voxels, voxelsLength);
-        voxels[index]._2.index = firstIndex(voxels[index]._2, voxels, voxelsLength);
-        voxels[index]._3.index = firstIndex(voxels[index]._3, voxels, voxelsLength);
-        voxels[index]._4.index = firstIndex(voxels[index]._4, voxels, voxelsLength);
-        voxels[index]._5.index = firstIndex(voxels[index]._5, voxels, voxelsLength);
-        voxels[index]._6.index = firstIndex(voxels[index]._6, voxels, voxelsLength);
-        voxels[index]._7.index = firstIndex(voxels[index]._7, voxels, voxelsLength);
-        voxels[index]._p.index = firstIndex(voxels[index]._p, voxels, voxelsLength);
+        VoxelContainer container;
+        voxels[index]._0.index = container.firstIndex(voxels[index]._0, voxels, voxelsLength);
+        voxels[index]._1.index = container.firstIndex(voxels[index]._1, voxels, voxelsLength);
+        voxels[index]._2.index = container.firstIndex(voxels[index]._2, voxels, voxelsLength);
+        voxels[index]._3.index = container.firstIndex(voxels[index]._3, voxels, voxelsLength);
+        voxels[index]._4.index = container.firstIndex(voxels[index]._4, voxels, voxelsLength);
+        voxels[index]._5.index = container.firstIndex(voxels[index]._5, voxels, voxelsLength);
+        voxels[index]._6.index = container.firstIndex(voxels[index]._6, voxels, voxelsLength);
+        voxels[index]._7.index = container.firstIndex(voxels[index]._7, voxels, voxelsLength);
+        voxels[index]._p.index = container.firstIndex(voxels[index]._p, voxels, voxelsLength);
 	}
 
 	/*void shrinkVoxel(device VoxelAddress *voxelAddress, device Voxel *voxels, int voxelsLength) {
