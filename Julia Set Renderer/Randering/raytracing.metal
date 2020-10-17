@@ -413,6 +413,22 @@ struct MathContainer {
 struct VoxelContainer {
 	//Voxel voxels[5];
 	MathContainer maths;
+    
+    int firstIndex(VoxelAddress vAddress, device Voxel *voxels, int voxelsLength) {
+        if (voxels[vAddress.index].id == vAddress.id) {
+            return vAddress.index;
+        }
+        for (int c = 0; voxelsLength > c; c++) {
+            int diff = (c % 2) * 2 - 1;
+            int index = (int(ceil(float(c) / 2)) * diff + vAddress.index) % voxelsLength;
+            if (0 > index) {
+                index += voxelsLength;
+            }
+            if (voxels[index].id == vAddress.id) {
+                return index;
+            }
+        }
+    }
 
 	/*VoxelAddress getVoxelChild(device Voxel *voxel, int number) {
 		switch(number) {
@@ -463,20 +479,8 @@ struct VoxelContainer {
 	}
 
 	device Voxel * getVoxel(VoxelAddress voxelAddress, device Voxel *voxels, int voxelsLength) {
-		if (voxels[voxelAddress.index].id != voxelAddress.id) {
-			//voxelsLength = 900;
-			//voxels[0].opacity = voxelsLength;
-			for (int index = 0; voxelsLength > index; index++) {
-				if (voxels[index].id == voxelAddress.id) {
-					return &voxels[index];
-				}
-			}
-			//voxelAddress->id = 0;
-			//voxelAddress->index = 0;
-			return &voxels[0];
-		} else {
-			return &voxels[voxelAddress.index];
-		}
+       // VoxelContainer container;
+        return &voxels[firstIndex(voxelAddress, voxels, voxelsLength)];
 	}
 
 	DistanceInfo getRayStep(Ray ray, device Voxel *voxels, int voxelsLength) {
@@ -523,7 +527,7 @@ struct RayTracer {
 				return float3(10);
 			}
 		}
-		return float3(0.5);
+		return float3(0.2);
 	}
 
 	Ray reflect(Ray ray, float3 surfaceNormal, Material surfaceMaterial, uint3 _seed) {

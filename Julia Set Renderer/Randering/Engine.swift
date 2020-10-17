@@ -69,24 +69,28 @@ class Engine {
 		Settings.samples = 0
 	}
 
-	public static func JuliaSetPass() {
+    public static func JuliaSetPass(perSecond: Double) {
 		if !Container.activeAddress.isDefault() || lastUpdate {
             //print("update")
-            print("—————————NEW FRAME——————————————")
+            if countdown == 50 {
+                print("—————————NEW FRAME——————————————")
+            }
 			let startTime = CACurrentMediaTime()
             var lastTime = startTime
             func log(title: String) {
-                let currentTime = CACurrentMediaTime()
-                let deltaTime = currentTime - lastTime
-                lastTime = currentTime
-                print(title, deltaTime)
+                if countdown == 50 {
+                    let currentTime = CACurrentMediaTime()
+                    let deltaTime = currentTime - lastTime
+                    lastTime = currentTime
+                    print(title, deltaTime)
+                }
             }
 			//print("————————————NEW FRAME————————————————")
 
 			//Continue loading where last left off
 			var currentPasses: Int = 0
-			if 1 / 60 / lastPassTime > 100 {
-				currentPasses = 100
+			if 1 / perSecond / lastPassTime > 1000 {
+				currentPasses = 1000
 			} else {
 				currentPasses = Int(1 / 60 / lastPassTime)
 			}
@@ -136,7 +140,10 @@ class Engine {
                 shrinkCommandEncoder?.endEncoding()
             }
 
-
+            if countdown == 50 {
+                print(Container.queue.count)
+            }
+            
 			if Container.queue.count > 0 {
                 let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
 				computeCommandEncoder?.setComputePipelineState(JuliaSetPipelineState)

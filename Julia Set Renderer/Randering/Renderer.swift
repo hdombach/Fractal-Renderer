@@ -19,6 +19,7 @@ class Renderer: NSObject, MTKViewDelegate {
 	var exp: Float = 0
 
 	var screenRatio: Float = 0
+    var isComputingPass: Bool = false
 
 	//var camera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080))
 
@@ -132,7 +133,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.commit()
 		commandBuffer?.waitUntilCompleted()
 
-		Engine.JuliaSetPass()
+       
+        Engine.JuliaSetPass(perSecond: 60)
 
 		if Engine.Settings.window == .rendering && Engine.Settings.samples > Engine.Settings.exposure {
 			Engine.RenderPass(groupSize: Engine.Settings.kernelSize.groupSize, groups: Engine.Settings.kernelSize.groups)

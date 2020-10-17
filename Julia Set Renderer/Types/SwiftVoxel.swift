@@ -134,7 +134,7 @@ class VoxelContainer {
                     queue.append(newActiveAddress!)
 				}
                 voxel.setChildAddress(childrenCompleted, to: newActiveAddress!)
-                if getVoxelSize(position: voxel.position, size: 1, width: voxel.width) < loadQuality * 2{
+                if getVoxelSize(position: voxel.position, size: 1, width: voxel.width) < loadQuality * 2 && voxel.layer < 12{
                     newActiveAddress = newVoxel!._p
                 }
 			} else {
@@ -162,9 +162,9 @@ class VoxelContainer {
 		var a = address
 		var indexes: [Int] = []
 		var voxel = getVoxel(address: &a)
-		if voxel.isDeleted || voxel.isEnd || voxel.id == 0 || voxel.childrenCompleted() != 8{
+		/*if voxel.isDeleted || voxel.isEnd || voxel.id == 0 || voxel.childrenCompleted() != 8{
 			return
-		}
+		}*/
 		//print(voxel.id)
 		let child0 = getVoxel(address: &voxel._0)
 		for c in UInt32(0)...7 {
