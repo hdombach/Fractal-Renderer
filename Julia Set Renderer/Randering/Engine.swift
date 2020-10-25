@@ -37,6 +37,7 @@ class Engine {
 
 	private static var lastPassTime = 1.0
     private static var lastUpdate = false
+    private static var loadStartTime: Double = 10
 
 	public static func ResetRender() {
 		index = 0
@@ -174,14 +175,15 @@ class Engine {
 			lastPassTime = (CACurrentMediaTime() - startTime) / Double(currentPasses)
             
             if Container.activeAddress.isDefault() && !lastUpdate {
-                print("finisehd")
+                let deltaTime = CACurrentMediaTime() - loadStartTime
+                print("finisehd. Took \(deltaTime) to load \(Container.voxels.count) voxels. (\(Double(Container.voxels.count) / deltaTime) voxels per second")
                 lastUpdate = true
             } else {
                 if lastUpdate {
                     for voxel in Container.voxels {
                         for c in 0...8 {
                             if Container.voxels.count <= voxel.childAddress(UInt32(c)).index || (Container.voxels[Int(voxel.childAddress(UInt32(c)).index)].id != voxel.childAddress(UInt32(c)).id) {
-                                print("mismatch", c, voxel)
+                                //print("mismatch", c, voxel)
                             }
                         }
                     }
@@ -293,6 +295,7 @@ class Engine {
 			print("julia set took \(CACurrentMediaTime() - startTime) seconds.")*/
         Container.loadQuality = quality
 		Engine.Settings.savedCamera = Engine.Settings.camera
+        loadStartTime = CACurrentMediaTime()
 		Container.loadBegin()
 	}
 
