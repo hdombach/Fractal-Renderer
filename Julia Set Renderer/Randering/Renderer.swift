@@ -106,7 +106,7 @@ class Renderer: NSObject, MTKViewDelegate {
 			let renderPassDescriptor = view.currentRenderPassDescriptor
 			else { print("could not get things"); return }
 
-		var voxelsLength = UInt32(Engine.Container.voxels.count)
+		var voxelsLength = UInt32(Engine.Container.voxelCount)
 
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {

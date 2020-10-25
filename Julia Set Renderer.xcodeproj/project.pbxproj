@@ -25,6 +25,8 @@
 		DEA8931924AFBDE9008F5D78 /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8931824AFBDE9008F5D78 /* sun.png */; };
 		DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEA8931A24B20EB3008F5D78 /* raytracing.metal */; };
 		DEAA8BC924FD12BE0080221B /* SwiftVoxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */; };
+		DEBE4E092542359D0060FED0 /* JuliaSetComputeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E082542359D0060FED0 /* JuliaSetComputeTests.swift */; };
+		DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E0E254235CE0060FED0 /* BufferTests.swift */; };
 		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
 		DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */; };
 		DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */; };
@@ -34,7 +36,6 @@
 		DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDE524ADFC9E00DB5701 /* Main.storyboard */; };
 		DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */; };
 		DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */; };
-		DED103F224F4275700D6AD4E /* JuliaSetComputeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,8 @@
 		DEA8931824AFBDE9008F5D78 /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
 		DEA8931A24B20EB3008F5D78 /* raytracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = raytracing.metal; sourceTree = "<group>"; };
 		DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftVoxel.swift; sourceTree = "<group>"; };
+		DEBE4E082542359D0060FED0 /* JuliaSetComputeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JuliaSetComputeTests.swift; path = "../../../../../../Library/Mobile Documents/com~apple~CloudDocs/.Trash/JuliaSetComputeTests.swift"; sourceTree = "<group>"; };
+		DEBE4E0E254235CE0060FED0 /* BufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferTests.swift; sourceTree = "<group>"; };
 		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
 		DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Julia Set Renderer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -81,7 +84,6 @@
 		DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Julia_Set_Renderer.entitlements; sourceTree = "<group>"; };
 		DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindowController.swift; sourceTree = "<group>"; };
 		DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenderWindowController.xib; sourceTree = "<group>"; };
-		DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JuliaSetComputeTests.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,7 +109,8 @@
 			isa = PBXGroup;
 			children = (
 				DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */,
-				DED103F124F4275700D6AD4E /* JuliaSetComputeTests.swift */,
+				DEBE4E082542359D0060FED0 /* JuliaSetComputeTests.swift */,
+				DEBE4E0E254235CE0060FED0 /* BufferTests.swift */,
 				DE05618324EDDB610058925E /* Info.plist */,
 			);
 			path = "Julia Set RendererTests";
@@ -303,8 +306,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DED103F224F4275700D6AD4E /* JuliaSetComputeTests.swift in Sources */,
+				DEBE4E092542359D0060FED0 /* JuliaSetComputeTests.swift in Sources */,
 				DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */,
+				DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

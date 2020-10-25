@@ -30,7 +30,7 @@ class Engine {
 	public static var MaxThreadsPerGroup: Int!
 	//public static var MainJuliaSet = JuliaSet()
 	//public static var MainPointGen = linearComGen(rSlope: 1, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)
-	public static var JuliaSetComputeSettings = JuliaSetSettings(rSlope: 0.5, rIntercept: 0, iSlope: 0.5, iIntercept: 0, iterations: 100)
+    public static var JuliaSetSettings = LinearJuliaSet.init(rSlope: 0.5, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)
 
 	static var index: Int = 0
 	//public static var obversedSettings = RenderSettings()
@@ -70,134 +70,7 @@ class Engine {
 	}
 
     public static func JuliaSetPass(perSecond: Double) {
-		if !Container.activeAddress.isDefault() || lastUpdate {
-            //print("update")
-            if countdown == 50 {
-                print("—————————NEW FRAME——————————————")
-            }
-			let startTime = CACurrentMediaTime()
-            var lastTime = startTime
-            func log(title: String) {
-                if countdown == 50 {
-                    let currentTime = CACurrentMediaTime()
-                    let deltaTime = currentTime - lastTime
-                    lastTime = currentTime
-                    print(title, deltaTime)
-                }
-            }
-			//print("————————————NEW FRAME————————————————")
-
-			//Continue loading where last left off
-			var currentPasses: Int = 0
-			if 1 / perSecond / lastPassTime > 1000 {
-				currentPasses = 1000
-			} else {
-				currentPasses = Int(1 / 60 / lastPassTime)
-			}
-			if 10 > currentPasses {
-				currentPasses = 10
-			}
-			//Container.load(passCount: currentPasses)
-			Container.load(passCount: currentPasses)
-			log(title: "load-100")
-			/*print("newFrame____")
-			for voxel in Container.voxels {
-				print(voxel)
-			}
-			for index in Container.deleteQueue {
-				print(index)
-			}*/
-			Container.deleteVoxels()
-            log(title: "deleteVoxels")
-            //print(Container.queue)
-
-			Container.updateQueueBuffer()
-			Container.updateVoxelBuffer()
-            log(title: "updateBuffers")
-            
-            
-            let commandBuffer = ComputeQueue.makeCommandBuffer()
-
-            let maxWidth = 10
-            let threadsPerThreadgroup = MTLSize(width: maxWidth, height: 1, depth: 1)
-            let threadsPerGrid = MTLSize(width: Container.queue.count, height: 1, depth: 1)
-            var voxelLength = UInt32(Container.voxels.count)
-            
-            countdown += 1
-            if countdown > 50 || Container.activeAddress.isDefault() || lastUpdate {
-                countdown = 0
-                let shrinkCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
-                shrinkCommandEncoder?.setComputePipelineState(JuliaSetShrinkPipelineState)
-
-                shrinkCommandEncoder?.setBuffer(Container.queueBuffer, offset: 0, index: 0)
-                shrinkCommandEncoder?.setBytes(&JuliaSetComputeSettings, length: MemoryLayout<JuliaSetSettings>.stride, index: 1)
-                shrinkCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 2)
-                shrinkCommandEncoder?.setBytes(&voxelLength, length: MemoryLayout<UInt32>.stride, index: 4)
-                let threadsPerPerShrinkGrade = MTLSize(width: Container.voxels.count, height: 1, depth: 1)
-
-                shrinkCommandEncoder?.dispatchThreads(threadsPerPerShrinkGrade, threadsPerThreadgroup: threadsPerThreadgroup)
-
-                shrinkCommandEncoder?.endEncoding()
-            }
-
-            if countdown == 50 {
-                print(Container.queue.count)
-            }
-            
-			if Container.queue.count > 0 {
-                let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
-				computeCommandEncoder?.setComputePipelineState(JuliaSetPipelineState)
-
-				computeCommandEncoder?.setBuffer(Container.queueBuffer, offset: 0, index: 0)
-				computeCommandEncoder?.setBytes(&JuliaSetComputeSettings, length: MemoryLayout<JuliaSetSettings>.stride, index: 1)
-				computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 2)
-				computeCommandEncoder?.setBytes(&Settings.savedCamera, length: MemoryLayout<Camera>.stride, index: 3)
-				computeCommandEncoder?.setBytes(&voxelLength, length: MemoryLayout<UInt32>.stride, index: 4)
-
-				computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-
-				computeCommandEncoder?.endEncoding()
-
-				commandBuffer?.commit()
-				commandBuffer?.waitUntilCompleted()
-                log(title: "computers")
-				Container.updateFromBuffer()
-
-
-				log(title: "loadFromBuffer")
-                
-			}
-            
-            Container.shrinkVoxels()
-            log(title: "shrinking")
-
-			lastPassTime = (CACurrentMediaTime() - startTime) / Double(currentPasses)
-            
-            if Container.activeAddress.isDefault() && !lastUpdate {
-                print("finisehd")
-                lastUpdate = true
-            } else {
-                if lastUpdate {
-                    for voxel in Container.voxels {
-                        for c in 0...8 {
-                            if Container.voxels.count <= voxel.childAddress(UInt32(c)).index || (Container.voxels[Int(voxel.childAddress(UInt32(c)).index)].id != voxel.childAddress(UInt32(c)).id) {
-                                print("mismatch", c, voxel)
-                            }
-                        }
-                    }
-                }
-                lastUpdate = false
-            }
-			/*if Container.activeVoxel == nil || countdown > 50 {
-				Container.loadIntoVoxelBuffer()
-				UpdateVoxelBuffer()
-				countdown = 0
-				if Container.activeVoxel == nil {
-					Container.root.deleteChildren()
-					print("finished")
-				}
-			}*/
-		}
+        //Container.update(passCount: 100)
 	}
 
 	public static func RenderPass(groupSize: Int, groups: Int) {
@@ -227,7 +100,7 @@ class Engine {
 			stop = Settings.imageSize.0 * Settings.imageSize.1
 		}
 		var mutableIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
-		var voxelsLength = UInt32(Container.voxels.count)
+		var voxelsLength = UInt32(Container.voxelCount)
 
 		computeCommandEncoder?.setBytes(&Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
 		computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
@@ -293,7 +166,7 @@ class Engine {
 			print("julia set took \(CACurrentMediaTime() - startTime) seconds.")*/
         Container.loadQuality = quality
 		Engine.Settings.savedCamera = Engine.Settings.camera
-		Container.loadBegin()
+		Container.load(passSize: 10000)
 	}
 
 
@@ -409,7 +282,7 @@ class Engine {
 		//Container.loadIntoVoxelBuffer()
 
 		//print(Container ?? 2)
-		LoadJuliaSet(quality: 100)
+		LoadJuliaSet(quality: 10)
 
 
 		/*let rootVoxel = LoadVoxel()

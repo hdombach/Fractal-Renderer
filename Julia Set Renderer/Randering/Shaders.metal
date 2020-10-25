@@ -71,7 +71,7 @@ fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 
 	Camera myCamera = camera;
 
-	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), true, voxelsLength));
+	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength));
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
