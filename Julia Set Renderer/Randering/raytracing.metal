@@ -108,17 +108,14 @@ struct DistanceInfo {
 //MARK: Voxel
 struct VoxelAddress {
 	uint index;
-	uint id;
 	bool isDefault() {
-		return (index == 0 && id == 0);
+		return (index == 0);
 	}
 };
 
 struct Voxel {
-	uint id = 0;
 	float opacity;
 	bool isEnd;
-	bool isDeleted;
 	float3 position;
 	uint layer;
 
@@ -231,21 +228,6 @@ struct Voxel {
 
 
 		return getChild(newChild);
-	}
-
-	void updateAddress(device Voxel *voxels, int voxelsLength) {
-		for (int c = 0; 7 > c; c++) {
-			VoxelAddress currentAddress = child(c);
-            if (voxels[currentAddress.index].id != currentAddress.id) {
-                for (int index = 0; voxelsLength > index; index++) {
-                    if (voxels[index].id == currentAddress.id) {
-                        //currentAddress.index = index;
-                        setChildIndex(c, index);
-                        break;
-                    }
-                }
-            }
-		}
 	}
 };
 
@@ -414,7 +396,7 @@ struct VoxelContainer {
 	//Voxel voxels[5];
 	MathContainer maths;
     
-    int firstIndex(VoxelAddress vAddress, device Voxel *voxels, int voxelsLength) {
+    /*int firstIndex(VoxelAddress vAddress, device Voxel *voxels, int voxelsLength) {
         if (voxels[vAddress.index].id == vAddress.id) {
             return vAddress.index;
         }
@@ -428,30 +410,8 @@ struct VoxelContainer {
                 return index;
             }
         }
-    }
-
-	/*VoxelAddress getVoxelChild(device Voxel *voxel, int number) {
-		switch(number) {
-			case 0:
-				return voxel->_0;
-			case 1:
-				return voxel->_1;
-			case 2:
-				return voxel->_2;
-			case 3:
-				return voxel->_3;
-			case 4:
-				return voxel->_4;
-			case 5:
-				return voxel->_5;
-			case 6:
-				return voxel->_6;
-			case 7:
-				return voxel->_7;
-			default:
-				return voxel->_p;
-		}
-	}*/
+    }*/
+    
 	VoxelAddress getVoxelChild2(bool3 position, device Voxel *voxel) {
 		uint index = 0;
 		if (position.x) {
@@ -480,7 +440,7 @@ struct VoxelContainer {
 
 	device Voxel * getVoxel(VoxelAddress voxelAddress, device Voxel *voxels, int voxelsLength) {
        // VoxelContainer container;
-        return &voxels[firstIndex(voxelAddress, voxels, voxelsLength)];
+        return &voxels[voxelAddress.index];
 	}
 
 	DistanceInfo getRayStep(Ray ray, device Voxel *voxels, int voxelsLength) {
@@ -618,7 +578,6 @@ struct RayTracer {
 	}
 
 	float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength) {
-		MathContainer maths;
 		Ray ray = camera.spawnRay(pos);
 
 		//return float4(maths.rand(89, 1325, 34), maths.rand(12549018243, -78958, 1982741), maths.rand(12509, 105981823, -1093582123), maths.rand(15901283, 1509825, 1029851));

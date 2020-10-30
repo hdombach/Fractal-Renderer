@@ -7,12 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DE05617624EDD2520058925E /* oldSwiftVoxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617524EDD2520058925E /* oldSwiftVoxel.swift */; };
 		DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617724EDD2BB0058925E /* ComplexNumbers.swift */; };
 		DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
-		DE491AE724F297A7002B8C67 /* JuliaSetCompute.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */; };
 		DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6435D024D8DF8300C97FB5 /* Settings.swift */; };
 		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
 		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
@@ -50,14 +48,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		DE05617524EDD2520058925E /* oldSwiftVoxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = oldSwiftVoxel.swift; sourceTree = "<group>"; };
 		DE05617724EDD2BB0058925E /* ComplexNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplexNumbers.swift; sourceTree = "<group>"; };
 		DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Julia Set RendererTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Julia_Set_RendererTests.swift; sourceTree = "<group>"; };
 		DE05618324EDDB610058925E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
-		DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = JuliaSetCompute.metal; sourceTree = "<group>"; };
 		DE6435D024D8DF8300C97FB5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
@@ -121,7 +117,6 @@
 			children = (
 				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
 				DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */,
-				DE05617524EDD2520058925E /* oldSwiftVoxel.swift */,
 				DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */,
 				DE8237DE24AE8234000FA948 /* Other.swift */,
 			);
@@ -149,7 +144,6 @@
 				DE6435D024D8DF8300C97FB5 /* Settings.swift */,
 				DE8237DC24AE221B000FA948 /* Shaders.metal */,
 				DEA8931A24B20EB3008F5D78 /* raytracing.metal */,
-				DE491AE624F297A7002B8C67 /* JuliaSetCompute.metal */,
 			);
 			path = Randering;
 			sourceTree = "<group>";
@@ -247,7 +241,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1160;
-				LastUpgradeCheck = 1160;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = "Hezekiah Dombach";
 				TargetAttributes = {
 					DE05617E24EDDB610058925E = {
@@ -327,10 +321,8 @@
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
-				DE05617624EDD2520058925E /* oldSwiftVoxel.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
-				DE491AE724F297A7002B8C67 /* JuliaSetCompute.metal in Sources */,
 				DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
@@ -429,6 +421,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -489,6 +482,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

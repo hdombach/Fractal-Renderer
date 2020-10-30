@@ -16,8 +16,6 @@ class Engine {
 	public static var RenderPipelineState: MTLRenderPipelineState!
 	public static var ComputePipelineState: MTLComputePipelineState!
 	public static var ResetComputePipelineState: MTLComputePipelineState!
-	public static var JuliaSetPipelineState: MTLComputePipelineState!
-	public static var JuliaSetShrinkPipelineState: MTLComputePipelineState!
 	public static var SamplerState: MTLSamplerState!
 	public static var PixelFormat = (MTLPixelFormat.rgba16Float, MTLPixelFormat.r32Float)
 	//public static var SceneCamera: Camera {
@@ -42,7 +40,7 @@ class Engine {
 		index = 0
 	}
 
-	static var countdown: Int = 0
+	private static var countdown: Int = 0
 
 	public static func ResetTexture() {
 		DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + 0.1) {
@@ -67,10 +65,6 @@ class Engine {
 		ResetRender()
 		Settings.exposure = 1
 		Settings.samples = 0
-	}
-
-    public static func JuliaSetPass(perSecond: Double) {
-        //Container.update(passCount: 100)
 	}
 
 	public static func RenderPass(groupSize: Int, groups: Int) {
@@ -125,45 +119,7 @@ class Engine {
 		//commandBuffer?.waitUntilCompleted()
 	}
 
-	public static func Render(size: UInt32, depth: Int) {
-
-		DispatchQueue.global().async {
-			Settings.samples = 1
-			for i in 0...1919 {
-				//RenderPass(groupSize: 10, groups: 108, index: i * 1080)
-			}
-		}
-
-	}
-
 	public static func LoadJuliaSet(quality: Float) {
-		/*Engine.Settings.savedCamera = Engine.Settings.camera
-		DispatchQueue.global().async {
-			let startTime = CACurrentMediaTime()
-			let updateInterval: Double = 10
-			var lastTime = CACurrentMediaTime()
-			var counter = 200 //so u don'w get current time for every voxel
-			let rootVoxel = LoadVoxel()
-
-			func updateProgress() {
-				counter -= 1
-				if 0 > counter {
-					let current = CACurrentMediaTime()
-					if current - lastTime > updateInterval {
-						Engine.Container.loadIntoBuffer(rootVoxel: rootVoxel)
-						Engine.UpdateVoxelBuffer()
-						lastTime = current
-					}
-					counter = 100
-				}
-			}
-
-			rootVoxel.addJuliaSet(currentSize: 0, finalSize: quality, container: Container, progressTracker: updateProgress)
-
-			Engine.Container.loadIntoBuffer(rootVoxel: rootVoxel)
-			Engine.UpdateVoxelBuffer()
-
-			print("julia set took \(CACurrentMediaTime() - startTime) seconds.")*/
         Container.loadQuality = quality
 		Engine.Settings.savedCamera = Engine.Settings.camera
 		Container.load(passSize: 10000)
@@ -261,40 +217,7 @@ class Engine {
 		}
 		print("finished creating pipelines")
 
-		//MARK: Julia Set Compute
-		let juliaSetFunction = defaultLibrary?.makeFunction(name: "julia_set_compute_shader")
-
-		do {
-			JuliaSetPipelineState = try device.makeComputePipelineState(function: juliaSetFunction!)
-		} catch {
-			print(error)
-		}
-
-		let juliaSetShrinkFunciton = defaultLibrary?.makeFunction(name: "julia_set_shrink_Shader")
-
-		do {
-			JuliaSetShrinkPipelineState = try device.makeComputePipelineState(function: juliaSetShrinkFunciton!)
-		} catch {
-			print(error)
-		}
-
 		Container = VoxelContainer()
-		//Container.loadIntoVoxelBuffer()
-
-		//print(Container ?? 2)
 		LoadJuliaSet(quality: 10)
-
-
-		/*let rootVoxel = LoadVoxel()
-		let time = CACurrentMediaTime()
-		rootVoxel.addJuliaSet(currentSize: 0, finalSize: 100, container: Container, progressTracker: {})
-		let loadTime = CACurrentMediaTime()
-		Container = VoxelContainer()
-		Container.loadIntoBuffer(rootVoxel: rootVoxel)
-		let compressTime = CACurrentMediaTime()
-
-		print("load time: \(loadTime - time), compressTime: \(compressTime - loadTime)")
-
-		UpdateVoxelBuffer()*/
 	}
 }

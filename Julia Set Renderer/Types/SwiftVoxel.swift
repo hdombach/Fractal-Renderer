@@ -22,17 +22,8 @@ class VoxelContainer {
     var containerSemaphore = DispatchSemaphore.init(value: 1)
     var containerQueue: DispatchQueue = .init(label: "Append Thread")
     
-    func addVoxel() -> Int {
-        var index: Int!
-        containerQueue.sync {
-            index = voxelCount
-            voxelCount += 1
-        }
-        return index
-    }
-
-	func getIndex(address: inout VoxelAddress) -> Int {
-		if voxels.count <= address.index || voxels[Int(address.index)].id != address.id {
+    /*func getIndex(address: inout VoxelAddress) -> Int {
+        if voxels.count <= address.index || voxels[Int(address.index)].id != address.id {
             for c in 0...voxels.count - 1 {
                 let diff = (c % 2) * 2 - 1
                 var newIndex = (Int(ceil(Float(c) / 2)) * diff + Int(address.index)) % voxels.count
@@ -43,24 +34,10 @@ class VoxelContainer {
                     return newIndex
                 }
             }
-			return 0
-		}
-		return Int(address.index)
-	}
-
-	func getVoxel(address: inout VoxelAddress) -> Voxel {
-		let voxel = voxels[getIndex(address: &address)]
-		if voxel.isDeleted {
-			return voxels[0]
-		} else {
-			return voxel
-		}
-	}
-
-	func useVoxel(address: inout VoxelAddress, action: (inout Voxel) -> ()) {
-		let index = getIndex(address: &address)
-		action(&voxels[index])
-	}
+            return 0
+        }
+        return Int(address.index)
+    }*/
 
 	func loadBegin() {
         containerSemaphore = DispatchSemaphore.init(value: 1)
@@ -68,18 +45,15 @@ class VoxelContainer {
         threadQueue.removeAll()
 		voxels.append(Voxel.init())
 		voxels[0].isEnd = true
-		voxels[0].isDeleted = false
 		voxels[0].opacity = -1
         
         isComplete = false
         
         voxels += Array.init(repeating: Voxel.init(), count: 9)
         
-        voxels[1].id = 1
-        
         voxelCount = 2
         loadThreads = 1
-        let thread = VoxelContainerThread.init(container: self, root: VoxelAddress.init(index: 1, id: 1), thread: 1)
+        let thread = VoxelContainerThread.init(container: self, root: 1, thread: 1)
         thread.maxLayer = 1
         
         voxels.withUnsafeMutableBufferPointer { (buffer) -> () in
@@ -93,12 +67,12 @@ class VoxelContainer {
         
         threads.removeAll()
         for c in UInt32(2)...9 {
-            threadQueue.append(VoxelAddress.init(index: c, id: voxels[Int(c)].id))
+            threadQueue.append(c)
         }
         threadQueue.sort { (closer, farther) -> Bool in
             let position = Engine.Settings.camera.position
-            let closerDistance = distance(position, SIMD4<Float>(voxels[Int(closer.index)].position, 1))
-            let fartherDistance = distance(position, SIMD4<Float>(voxels[Int(farther.index)].position, 1))
+            let closerDistance = distance(position, SIMD4<Float>(voxels[Int(closer)].position, 1))
+            let fartherDistance = distance(position, SIMD4<Float>(voxels[Int(farther)].position, 1))
             return closerDistance < fartherDistance
         }
         
@@ -207,7 +181,7 @@ class VoxelContainerThread {
         
     }
     
-    func getIndex(address: VoxelAddress, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Int {
+    /*func getIndex(address: VoxelAddress, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Int {
         if container.voxelCount <= address.index || voxelBuffer[Int(address.index)].id != address.id {
             printError("Incorrect address index")
             for c in 0...container.voxelCount - 1 {
@@ -223,7 +197,7 @@ class VoxelContainerThread {
             return 0
         }
         return Int(address.index)
-    }
+    }*/
     
     func voxelSize(index: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Float {
         let width = pow(0.5, Float(voxelBuffer[index].layer + 1))
@@ -247,12 +221,12 @@ class VoxelContainerThread {
         for _ in 1...length {
             update(voxelBuffer: voxelBuffer)
             if activeAddress == rootVoxel {
-                if voxelBuffer[Int(rootVoxel.index)].childrenCompleted() == 8 {
+                if voxelBuffer[Int(rootVoxel)].childrenCompleted() == 8 {
                     isDone = true
                     return true
                 }
             }
-            if activeAddress.id == 0 {
+            if activeAddress == 0 {
                 isDone = true
                 return true
             }
@@ -261,48 +235,52 @@ class VoxelContainerThread {
     }
     
     func update(voxelBuffer: UnsafeMutableBufferPointer<Voxel>) {
-        let index = getIndex(address: activeAddress, voxelBuffer: voxelBuffer)
+        let index = activeAddress
         
-        let childrenCompleted = voxelBuffer[index].childrenCompleted()
+        let childrenCompleted = voxelBuffer[Int(index)].childrenCompleted()
         
         if 8 > childrenCompleted {
-            let newAddress = addVoxel(parentIndex: index, childIndex: Int(childrenCompleted), voxelBuffer: voxelBuffer)
-            voxelBuffer[index].setChildAddress(UInt32(childrenCompleted), to: newAddress)
-            voxelBuffer[index].isEnd = false
-            let newVoxelIndex = getIndex(address: newAddress, voxelBuffer: voxelBuffer)
-            voxelBuffer[newVoxelIndex]._p = activeAddress
-            updateVoxelOpacity(index: newVoxelIndex, voxelBuffer: voxelBuffer)
-            if voxelSize(index: newVoxelIndex, voxelBuffer: voxelBuffer) > container.loadQuality * 2 && voxelBuffer[newVoxelIndex].layer < maxLayer {
+            let newAddress = addVoxel(parentIndex: Int(index), childIndex: Int(childrenCompleted), voxelBuffer: voxelBuffer)
+            voxelBuffer[Int(index)].setChildAddress(UInt32(childrenCompleted), to: newAddress)
+            voxelBuffer[Int(index)].isEnd = false
+            let newVoxelIndex = newAddress
+            voxelBuffer[Int(newVoxelIndex)]._p = activeAddress
+            updateVoxelOpacity(index: Int(newVoxelIndex), voxelBuffer: voxelBuffer)
+            if voxelSize(index: Int(newVoxelIndex), voxelBuffer: voxelBuffer) > container.loadQuality && voxelBuffer[Int(newVoxelIndex)].layer < maxLayer {
                 activeAddress = newAddress
             }
         } else {
-            shrink(index: index, voxelBuffer: voxelBuffer)
-            activeAddress = voxelBuffer[index]._p
+            shrink(index: Int(index), voxelBuffer: voxelBuffer)
+            activeAddress = voxelBuffer[Int(index)]._p
         }
     }
     
     func updateVoxelOpacity(index: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) {
-        /*if distance(voxelBuffer[index].position, SIMD3<Float>.init(0.5, 0.5, 0.5)) > 0.5 {
-            voxelBuffer[index].opacity = 0
+        //first one is for testing purposes
+        if false {
+            if distance(voxelBuffer[index].position, SIMD3<Float>.init(0.5, 0.5, 0.5)) > 0.5 {
+                voxelBuffer[index].opacity = 0
+            } else {
+                voxelBuffer[index].opacity = 1
+            }
         } else {
-            voxelBuffer[index].opacity = 1
-        }*/
-        let position = (voxelBuffer[index].position - SIMD3<Float>.init(0.5, 0.5, 0.5)) * 3
-        if Engine.JuliaSetSettings.getLinear(point: Complex(position.x, position.y), z: position.z) {
-            voxelBuffer[index].opacity = 1
-        } else {
-            voxelBuffer[index].opacity = 0
+            let position = (voxelBuffer[index].position - SIMD3<Float>.init(0.5, 0.5, 0.5)) * 3
+            if Engine.JuliaSetSettings.getLinear(point: Complex(position.x, position.y), z: position.z) {
+                voxelBuffer[index].opacity = 1
+            } else {
+                voxelBuffer[index].opacity = 0
+            }
         }
     }
     
     func shrink(index: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) {
         let child0Address = voxelBuffer[index].childAddress(0)
-        let child0Index = getIndex(address: child0Address, voxelBuffer: voxelBuffer)
-        let child0 = voxelBuffer[child0Index]
+        let child0Index = child0Address
+        let child0 = voxelBuffer[Int(child0Index)]
         for c in UInt32(0)...7 {
             let currentChildAddress = voxelBuffer[index].childAddress(c)
-            let currentChildIndex = getIndex(address: currentChildAddress, voxelBuffer: voxelBuffer)
-            let currentChild = voxelBuffer[currentChildIndex]
+            let currentChildIndex = currentChildAddress
+            let currentChild = voxelBuffer[Int(currentChildIndex)]
             
             if !currentChild.isEnd || currentChild.opacity != child0.opacity || currentChild.opacity == -1 {
                 return
@@ -320,7 +298,7 @@ class VoxelContainerThread {
     }
     func removeChild(index: Int, child: UInt32, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) {
         let childIndex = voxelBuffer[index].childAddress(child)
-        deletedIndexes.append(getIndex(address: childIndex, voxelBuffer: voxelBuffer))
+        deletedIndexes.append(Int(childIndex))
         voxelBuffer[index].setChildAddress(child, to: VoxelAddress.init())
     }
     
@@ -336,16 +314,13 @@ class VoxelContainerThread {
             container.voxelCount += 1
             container.containerSemaphore.signal()
         }
-        returnAddress.index = UInt32(index!)
-        voxelBuffer[index].id = self.id
-        returnAddress.id = self.id
+        returnAddress = UInt32(index!)
         self.id += UInt32(containerThreads)
         
         if parentIndex > 0 {
             let parent = voxelBuffer[parentIndex]
             
-            voxelBuffer[index]._p.index = UInt32(parentIndex)
-            voxelBuffer[index]._p.id = parent.id
+            voxelBuffer[index]._p = UInt32(parentIndex)
             voxelBuffer[index].layer = parent.layer + 1
             voxelBuffer[index].position = parent.position + voxelBuffer[index].width * voxelChildOffset(index: Float(childIndex))
         }
@@ -358,11 +333,12 @@ class VoxelContainerThread {
     
 }
 
+
+//MARK: Voxel
 struct Voxel {
-	var id: UInt32 = 0
+	//var id: UInt32 = 0
 	var opacity: Float = 0
 	var isEnd: Bool = true
-	var isDeleted: Bool = false
 	var position: SIMD3<Float> = .init(0, 0, 0)
 	var layer: UInt32 = 0
 	var width: Float {
@@ -384,7 +360,6 @@ struct Voxel {
 	}
 
 	init(parent: Voxel, childIndex: UInt32) {
-		_p.id = parent.id
 		layer = parent.layer + 1
 		position = parent.position + width * getOffset(index: Float(childIndex))
 	}
@@ -443,37 +418,25 @@ struct Voxel {
 	}
 
 	func childrenCompleted() -> UInt32 {
-		if _0.isDefault() {
+		if _0 == 0{
 			return 0
-		} else if _1.isDefault() {
+		} else if _1 == 0 {
 			return 1
-		} else if _2.isDefault() {
+		} else if _2 == 0 {
 			return 2
-		} else if _3.isDefault() {
+		} else if _3 == 0 {
 			return 3
-		} else if _4.isDefault() {
+		} else if _4 == 0 {
 			return 4
-		} else if _5.isDefault() {
+		} else if _5 == 0 {
 			return 5
-		} else if _6.isDefault() {
+		} else if _6 == 0 {
 			return 6
-		} else if _7.isDefault() {
+		} else if _7 == 0 {
 			return 7
 		} else {
 			return 8
 		}
-	}
-
-	mutating func updateAddresses(container: VoxelContainer) {
-		let _ = container.getIndex(address: &_0)
-		let _ = container.getIndex(address: &_1)
-		let _ = container.getIndex(address: &_2)
-		let _ = container.getIndex(address: &_3)
-		let _ = container.getIndex(address: &_4)
-		let _ = container.getIndex(address: &_5)
-		let _ = container.getIndex(address: &_6)
-		let _ = container.getIndex(address: &_7)
-		let _ = container.getIndex(address: &_p)
 	}
 
 	mutating func resetChildren() {
@@ -488,31 +451,4 @@ struct Voxel {
 	}
 }
 
-struct VoxelAddress {
-	///Index of voxel
-	var index: UInt32 = 0
-
-	///id of voxel in case index is incorrect
-	var id: UInt32 = 0
-
-	func isDefault() -> Bool {
-		id == 0
-	}
-    
-    static func == (lhs: VoxelAddress, rhs: VoxelAddress) -> Bool {
-        return lhs.id == rhs.index
-    }
-
-	init() {
-
-	}
-
-	init(voxel: Voxel) {
-		self.id = voxel.id
-	}
-    
-    init(index: UInt32, id: UInt32) {
-        self.index = index
-        self.id = id
-    }
-}
+typealias VoxelAddress = UInt32

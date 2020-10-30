@@ -82,24 +82,6 @@ class Renderer: NSObject, MTKViewDelegate {
 			Engine.Settings.camera.position += offset
 		}
 
-		
-
-		/*let threadsPerGrid = MTLSize.init(width: self.defaultTexture.texture.width, height: self.defaultTexture.texture.height, depth: 1)
-		let maxThreadsPerThreadgroup = Engine.ComputePipelineState.maxTotalThreadsPerThreadgroup
-		let groupSize = Int(floor(sqrt(Float(maxThreadsPerThreadgroup))))
-		let threadsPerThreadgroup = MTLSize(width: groupSize, height: groupSize, depth: 1)
-
-		let containerLength = MemoryLayout<VoxelContainer>.stride + MemoryLayout<Voxel>.stride * Engine.Container.voxels.count
-		var container = Engine.Container
-
-		computeCommandEncoder?.setBytes(&Engine.SceneCamera, length: MemoryLayout<Camera>.stride, index: 0)
-		computeCommandEncoder?.setBytes(&container, length: containerLength, index: 1)
-		computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-
-		computeCommandEncoder?.endEncoding()*/
-
-		//exp += 1
-
 		//post draw commands
 
 		guard let drawable = view.currentDrawable,
@@ -134,7 +116,6 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.waitUntilCompleted()
 
        
-        Engine.JuliaSetPass(perSecond: 60)
 
 		if Engine.Settings.window == .rendering && Engine.Settings.samples > Engine.Settings.exposure {
 			Engine.RenderPass(groupSize: Engine.Settings.kernelSize.groupSize, groups: Engine.Settings.kernelSize.groups)
@@ -205,7 +186,7 @@ class Texture {
 			let options = [MTKTextureLoader.Option.origin : _origin]
 
 			do {
-				result = try textureLoader.newTexture(URL: url, options: options)
+                result = try textureLoader.newTexture(URL: url, options: options as [MTKTextureLoader.Option : Any])
 				result.label = _textureName
 			} catch let error as NSError {
 				printError("Could not load texture : :\(error)")
