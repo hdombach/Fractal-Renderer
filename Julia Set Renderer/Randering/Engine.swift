@@ -35,6 +35,8 @@ class Engine {
 
 	private static var lastPassTime = 1.0
     private static var lastUpdate = false
+    
+    public static var isRendering = false
 
 	public static func ResetRender() {
 		index = 0
@@ -67,53 +69,87 @@ class Engine {
 		Settings.samples = 0
 	}
 
-	public static func RenderPass(groupSize: Int, groups: Int) {
-		if Engine.Settings.window == .preview {
-			MainTexture = Texture.init("yeet")
-			return;
-		}
-		let commandBuffer = ComputeQueue.makeCommandBuffer()
-		let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder(dispatchType: .concurrent)
-		computeCommandEncoder?.setComputePipelineState(ComputePipelineState)
-		computeCommandEncoder?.setTexture(MainTexture.texture, index: 0)
-		computeCommandEncoder?.setTexture(MainTexture.texture, index: 1)
+	public static func RenderPass() {
+        if isRendering {
+            return
+        }
+        if Engine.Settings.window != .rendering || Engine.Settings.samples <= Engine.Settings.exposure{
+            return
+        }
+        DispatchQueue.global().async {
+            isRendering = true
+            while Engine.Settings.exposure < Engine.Settings.samples {
+                if Engine.Settings.window == .preview {
+                    MainTexture = Texture.init("yeet")
+                    isRendering = false
+                    return;
+                }
+                if Engine.Settings.window == .paused {
+                    isRendering = false
+                    return;
+                }
+                if Engine.Settings.exposure >= Engine.Settings.samples {
+                    Engine.Settings.window = .paused
+                    isRendering = false
+                    return;
+                }
+                let groupSize = Engine.Settings.kernelSize.groupSize
+                let groups = Engine.Settings.kernelSize.groups
+                
+                let commandBuffer = ComputeQueue.makeCommandBuffer()
+                let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder(dispatchType: .concurrent)
+                computeCommandEncoder?.setComputePipelineState(ComputePipelineState)
+                computeCommandEncoder?.setTexture(MainTexture.texture, index: 0)
+                computeCommandEncoder?.setTexture(MainTexture.texture, index: 1)
 
-		let threadsPerThreadgroup = MTLSize(width: groupSize, height: 1, depth: 1)
-		let threadsPerGrid = MTLSize.init(width: groupSize * groups, height: 1, depth: 1)
+                let threadsPerThreadgroup = MTLSize(width: groupSize, height: 1, depth: 1)
+                let threadsPerGrid = MTLSize.init(width: groupSize * groups, height: 1, depth: 1)
 
-		//let containerLength = MemoryLayout<VoxelContainer>.stride + MemoryLayout<Voxel>.stride * Container.voxels.count
+                //let containerLength = MemoryLayout<VoxelContainer>.stride + MemoryLayout<Voxel>.stride * Container.voxels.count
 
-		/**
-		x: starting index
-		y: image width
-		z: image height
-		w: stop index
-		*/
-		var stop = groupSize * groups + Settings.imageSize.0 * Settings.imageSize.1
-		if Settings.exposure + 1 >= Settings.samples {
-			stop = Settings.imageSize.0 * Settings.imageSize.1
-		}
-		var mutableIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
-		var voxelsLength = UInt32(Container.voxelCount)
+                /**
+                x: starting index
+                y: image width
+                z: image height
+                w: stop index
+                */
+                var stop = groupSize * groups + Settings.imageSize.0 * Settings.imageSize.1
+                if Settings.exposure + 1 >= Settings.samples {
+                    stop = Settings.imageSize.0 * Settings.imageSize.1
+                }
+                var mutableIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
+                var voxelsLength = UInt32(Container.voxelCount)
+                var renderMode = Settings.renderMode.rawValue
 
-		computeCommandEncoder?.setBytes(&Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
-		computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
-		computeCommandEncoder?.setBytes(&mutableIndex, length: MemoryLayout<SIMD4<UInt32>>.stride, index: 2)
-		var seed = SIMD3<Int32>.init(Int32.random(in: 0...10000), Int32.random(in: 0...10000), Int32.random(in: 0...10000))
-		computeCommandEncoder?.setBytes(&seed, length: MemoryLayout<SIMD3<Int32>>.stride, index: 3)
-		computeCommandEncoder?.setBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
-		computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+                computeCommandEncoder?.setBytes(&Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
+                computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
+                computeCommandEncoder?.setBytes(&mutableIndex, length: MemoryLayout<SIMD4<UInt32>>.stride, index: 2)
+                var seed = SIMD3<Int32>.init(Int32.random(in: 0...10000), Int32.random(in: 0...10000), Int32.random(in: 0...10000))
+                computeCommandEncoder?.setBytes(&seed, length: MemoryLayout<SIMD3<Int32>>.stride, index: 3)
+                computeCommandEncoder?.setBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
+                computeCommandEncoder?.setBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
+                computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
-		computeCommandEncoder?.endEncoding()
+                computeCommandEncoder?.endEncoding()
 
-		commandBuffer?.commit()
-		commandBuffer?.waitUntilCompleted()
+                commandBuffer?.commit()
+                let currentTime = CACurrentMediaTime()
+                commandBuffer?.waitUntilCompleted()
+                //print(CACurrentMediaTime() - currentTime)
 
-		index += groupSize * groups
-		while index > Settings.imageSize.0 * Settings.imageSize.1 {
-			Settings.exposure += 1
-			index -= Settings.imageSize.0 * Settings.imageSize.1
-		}
+                index += groupSize * groups
+                while index > Settings.imageSize.0 * Settings.imageSize.1 {
+                    Settings.exposure += 1
+                    index -= Settings.imageSize.0 * Settings.imageSize.1
+                }
+                if Engine.Settings.samples == 0 {
+                    Engine.Settings.progress = "0%"
+                } else {
+                    Engine.Settings.progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
+                }
+            }
+            isRendering = false
+        }
 		//print(Settings.exposure)
 
 		//commandBuffer?.waitUntilCompleted()
@@ -138,7 +174,8 @@ class Engine {
 
 		//MARK: Render
 		let vertexShader = defaultLibrary?.makeFunction(name: "basic_vertex_shader")
-		let previewFragmentShader = defaultLibrary?.makeFunction(name: "sample_fragment_shader")
+		//let previewFragmentShader = defaultLibrary?.makeFunction(name: "sample_fragment_shader")
+        let previewFragmentShader = defaultLibrary?.makeFunction(name: "depth_fragment_shader")
 		let renderFragmentShader = defaultLibrary?.makeFunction(name: "basic_fragment_shader")
 
 
@@ -218,6 +255,6 @@ class Engine {
 		print("finished creating pipelines")
 
 		Container = VoxelContainer()
-		LoadJuliaSet(quality: 10)
+		LoadJuliaSet(quality: 50)
 	}
 }

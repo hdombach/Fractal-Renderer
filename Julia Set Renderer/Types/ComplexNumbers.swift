@@ -61,6 +61,19 @@ struct Complex: Equatable {
 	func round() -> Complex {
 		return Complex(self.real.rounded(), self.imaginary.rounded())
 	}
+    
+    static func power(_ base: Complex, _ exponent: Float) -> Complex {
+        var theta = atan(base.imaginary / base.real)
+        if (base.real == 0) {
+            theta = 0
+        }
+        if (base.real < 0) {
+            theta += Float.pi
+        }
+        //r^n
+        var rn: Float = pow(Float(base.magnitude()), exponent)
+        return Complex.init(rn * cos(exponent * theta), rn * sin(exponent * theta))
+    }
 	
 }
 
@@ -71,7 +84,7 @@ class JuliaSet {
 	func getBasic(point: Complex, c: Complex) -> Bool {
 		var x = point
 		for _ in 1...iterations {
-			x = x.squared() + c
+            x = Complex.power(x, 4) + c
 			if x.magnitude() > 2 {
 				return false
 			}

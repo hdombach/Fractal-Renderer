@@ -8,8 +8,75 @@
 
 import SwiftUI
 
-struct FloatInput: View {
+struct Input<type>: View where type: Strideable, type: _FormatSpecifiable {
+    @Binding var value: type
+    var step: type
+    var name: String
+    var min: type?
+    var max: type?
+    
+    func currentType() -> types {
+        if value is Float {
+            return .float
+        } else if value is Int {
+            return .int
+        } else {
+            return .na
+        }
+    }
+    
+    func getFormat() -> NumberFormatter {
+        let newFormat = NumberFormatter()
+        if currentType() == .float {
+            newFormat.minimumSignificantDigits = 2
+            newFormat.maximumSignificantDigits = 8
+        }
+        newFormat.maximum = max as? NSNumber
+        newFormat.minimum = min as? NSNumber
+        return newFormat
+    }
+    
+    enum types {
+        case float
+        case int
+        case na
+    }
+    
+    var body: some View {
+        HStack {
+            Text("\(name):")
+                .fixedSize()
+            
+            
+            Stepper(value: $value, step: step as! type.Stride) {
+                TextField("Enter new value", value: $value, formatter: getFormat())
+            }
+        }
+        /*.popover(isPresented: $isEditing) {
+            TextField("Enter New Value", value: $value, formatter: getFormat()) {
+                isEditing.toggle()
+            }
+            .padding()
+        }*/
+    }
+}
+
+struct InputPopover<type>: View where type: _FormatSpecifiable {
+    @Binding var value: type
+    var format: NumberFormatter
+    
+    var body: some View {
+        /*TextField("Enter New Value", value: $value, formatter: format)
+            .padding()*/
+        TextField("Enter New Value", value: $value, formatter: format) {
+            hidden()
+        }
+    }
+}
+
+/*struct FloatInput: View {
 	@Binding var value: Float
+    @State var isEditing: Bool = false
 	var difference: Float
 	var name: String
 	var cap: Float?
@@ -28,13 +95,15 @@ struct FloatInput: View {
 			Text("\(name): ")
 				.fixedSize()
 
-			Stepper(onIncrement: {
-				self.value += self.difference
-			}, onDecrement: {
-				self.value -= self.difference
-			}) {
-				TextField(name, value: $value, formatter: format())
-			}
+            Stepper(value: $value, step: difference) {
+				Text("\(value)")
+                    .onTapGesture {
+                        isEditing.toggle()
+                    }
+            }.sheet(isPresented: $isEditing, content: {
+                Text("hello")
+            })
+            
 		}
     }
 }
@@ -61,25 +130,32 @@ struct IntInput: View {
 			Text("\(name): ")
 				.fixedSize()
 
-			Stepper(onIncrement: {
-				self.value += 1
-			}, onDecrement: {
-				self.value -= 1
-			}) {
-				TextField(name, value: $value, formatter: format())
-			}
+            Stepper(value: $value, step: 1) {
+                Text("\(value)")
+            }
 		}
 	}
-}
+}*/
+
 
 struct NumberInput_Previews: PreviewProvider {
+    @EnvironmentObject var settings: ObservedRenderSettings
+    
+    
+
     static var previews: some View {
+        
         Group {
-            FloatInput(value: Binding<Float>.init(get: { () -> Float in
+            Input(value: Binding<Float>.init(get: { () -> Float in
                 return Engine.Settings.camera.position.x
-            }, set: { (float) in
-                Engine.Settings.camera.position.x = float
-            }), difference: 0.1, name: "Width")
+            }, set: { (newValue) in
+                Engine.Settings.camera.position.x = newValue
+            }), step: 1, name: "x Position")
+            InputPopover(value: Binding<Float>.init(get: { () -> Float in
+                return Engine.Settings.camera.position.x
+            }, set: { (newValue) in
+                Engine.Settings.camera.position.x = newValue
+            }), format: NumberFormatter())
         }
     }
 }

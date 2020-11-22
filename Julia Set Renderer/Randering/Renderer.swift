@@ -89,6 +89,7 @@ class Renderer: NSObject, MTKViewDelegate {
 			else { print("could not get things"); return }
 
 		var voxelsLength = UInt32(Engine.Container.voxelCount)
+        var renderMode = Engine.Settings.renderMode.rawValue
 
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {
@@ -96,6 +97,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			renderCommandEncoder?.setRenderPipelineState(Engine.PreviewPipelineState)
 		case .rendering:
 			renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+        default:
+            renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
 		}
 		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
@@ -107,6 +110,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.exposure, length: MemoryLayout<Int>.stride, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
+        renderCommandEncoder?.setFragmentBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -117,10 +121,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
        
 
-		if Engine.Settings.window == .rendering && Engine.Settings.samples > Engine.Settings.exposure {
-			Engine.RenderPass(groupSize: Engine.Settings.kernelSize.groupSize, groups: Engine.Settings.kernelSize.groups)
-			Engine.Settings.progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
-		}
+		
+        Engine.RenderPass()
 
 		//Loading Pattern
 	}

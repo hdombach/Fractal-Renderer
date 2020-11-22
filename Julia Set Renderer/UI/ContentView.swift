@@ -9,19 +9,38 @@
 import SwiftUI
 
 struct ContentView: View {
-	@EnvironmentObject var settings: ObservedRenderSettings
+    @ObservedObject var settings = Engine.Settings.observed
+    @State var isShowingCamera = false
+    @State var isShowingImageSettings = false
+    @State var isShowingPatternSettings = false
+    //@State private var renderMode: RenderMode = .JuliaSet
 	
 	var body: some View {
-		ScrollView {
-			RenderBox()
-				.padding([.top, .leading, .trailing])
-			ImageSettings()
-				.padding([.top, .leading, .trailing])
-			CameraSettings()
-				.padding([.top, .leading, .trailing])
-			PatternSettings()
-				.padding([.top, .leading, .trailing])
-		}
+        ScrollView {
+            RenderBox()
+                .padding([.top, .leading, .trailing])
+            HStack {
+                Button("Camera Settings") {
+                    isShowingCamera.toggle()
+                }
+                .popover(isPresented: $isShowingCamera, content: {
+                    CameraSettings()
+                })
+                
+                Button("Image Settings") {
+                    isShowingImageSettings.toggle()
+                }
+                .popover(isPresented: $isShowingImageSettings, content: {
+                    ImageSettings()
+                })
+            }
+            TabView(selection: $settings.renderMode) {
+                PatternSettings()
+                    .tabItem { Text("yeet") }.tag(RenderMode.JuliaSet)
+                Text("yeet2")
+                    .tabItem { Text("yeet2") }.tag(RenderMode.Mandelbulb)
+            }.frame(width: 300, height: 100, alignment: .center)
+        }
     }
 }
 

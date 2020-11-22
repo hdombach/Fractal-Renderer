@@ -9,17 +9,16 @@
 import SwiftUI
 
 struct ImageSettings: View {
-	@EnvironmentObject var settings: ObservedRenderSettings
+    @ObservedObject var settings = Engine.Settings.observed
 	@State var myString: String = "hello"
 
     var body: some View {
 
-		GroupBox(label: Text("Output Image")) {
-			VStack {
-				IntInput(value: $settings.imageSize.0, name: "Width")
-				IntInput(value: $settings.imageSize.1, name: "Height")
-			}
-		}
+        VStack {
+            Input(value: $settings.imageSize.0, step: 1, name: "Width")
+            Input(value: $settings.imageSize.1, step: 1, name: "Height")
+        }
+        .padding()
     }
 }
 

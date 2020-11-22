@@ -33,8 +33,8 @@ struct Material {
 		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
 		//rgbAbsorption = float3(0.5, 0.5, 0.5);
 		diffuse = 1;
-		float distanceFromCenter = distance(position, float3(0.5, 0.5, 0.5));
-		rgbAbsorption = float3(0.3 + 0.18 * metal::precise::sin(distanceFromCenter * 30), 0.4 + 0.15 * metal::precise::sin(distanceFromCenter * 40), 0.8 + 0.15 * metal::precise::sin(distanceFromCenter * 50));//(10 + 5 * sin(distanceFromCenter * 30));
+		float distanceFromCenter = distance(position, float3(0, 0, 0));
+		rgbAbsorption = float3(0.5 + 0.3 * metal::precise::sin(distanceFromCenter * 100), 0.5 + 0.3 * metal::precise::cos(distanceFromCenter * 40), 0.5 + 0.3 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
 
 		if (0.02 > distanceFromCenter) {
 			//rgbEmitted = float3((0.02 - distanceFromCenter) * 20, 0, 0);
@@ -120,7 +120,7 @@ struct Voxel {
 	uint layer;
 
 	float width() {
-		return pow(0.5, float(layer));
+		return pow(0.5, float(layer)) * 1;
 	}
 
 	VoxelAddress _p;
@@ -462,6 +462,59 @@ struct VoxelContainer {
 	}
 };
 
+struct BulbInfo {
+    float d;
+    float orbitLife;
+};
+
+struct Mandebulb {
+    int iterations = 50;
+    float bailout = 3;
+    float power = 12;
+    
+    BulbInfo DE(float3 pos) {
+        float3 z = pos;
+        float dr = 1;
+        float r = 0;
+        BulbInfo info;
+        info.orbitLife = iterations;
+        for (int i = 0; i < iterations; i++) {
+            r = length(z);
+            if (r>bailout) {
+                info.orbitLife = i;
+                break;
+            }
+            
+            //convert to polar
+            float theta = acos(z.z / r);
+            float phi = atan(z.y / z.x);
+            dr = pow(r, power - 1) * power * dr + 1;
+            
+            //scale and rotate the point
+            float zr = pow(r, power);
+            theta = theta * power;
+            phi = phi * power;
+            
+            //convert back to cartesian
+            z = zr * float3(sin(theta) * cos(phi), sin(phi) * sin(theta), cos(theta));
+            z += pos;
+        }
+        info.d = 0.5 * log(r) * r / dr;
+        return info;
+    }
+    
+    float3 normal(float3 pos) {
+        //e is an abitrary number
+        float e = 0.000001;
+        float n = DE(pos).d;
+        float dx = DE(pos + float3(e, 0, 0)).d - n;
+        float dy = DE(pos + float3(0, e, 0)).d - n;
+        float dz = DE(pos + float3(0, 0, e)).d - n;
+        
+        return normalize(float3(dx, dy, dz));
+    }
+};
+
 //MARK: Raytracing
 struct RayTracer {
 
@@ -471,23 +524,30 @@ struct RayTracer {
 		Ray ray;
 		float distance;
 		CollisionInfo collision;
+        int steps;
 	};
 
 	//MARK: Skybox
 	float3 getSkyBox(Ray ray) {
 		MathContainer maths;
+        
+        //return float(1);
 
 		float2 der = maths.getAngle(float3(ray.deriction.x, ray.deriction.y, ray.deriction.z));
 
+        if (der.y > 0.8) {
+            return float3(2);
+        }
+        
 		if (der.x > 0.3 && der.x < 0.7) {
 			/*if (fmod(der.y, 0.2) < 0.05) {
 				return float3(1);
 			}*/
-			if (der.y > 0.3 && der.y < 0.7 && ray.deriction.y > 0){
-				return float3(10);
+			if (der.y > 0.1 && der.y < 0.7 && ray.deriction.y > 0){
+				//return float3(10);
 			}
 		}
-		return float3(0.2);
+		return float3(0);
 	}
 
 	Ray reflect(Ray ray, float3 surfaceNormal, Material surfaceMaterial, uint3 _seed) {
@@ -504,11 +564,11 @@ struct RayTracer {
 			seed.z = round(returnRay.position.z * 1518);
 		} else {
 
-			seed.x = (returnRay.position.x * 10335949);
-			seed.y = (returnRay.position.y * 12434217);
-			seed.z = (returnRay.position.z * 15166486);
+			seed.x = (returnRay.position.x * 1033594);
+			seed.y = (returnRay.position.y * 1243421);
+			seed.z = (returnRay.position.z * 1516648);
 		}
-		seed += int3(_seed);
+		seed *= int3(_seed);
 
 		float originalDifference = dot(surfaceNormal, float3(ray.deriction.x, ray.deriction.y, ray.deriction.z));
 
@@ -529,6 +589,47 @@ struct RayTracer {
 		} while (0 < difference * originalDifference);
 		return returnRay;
 	}
+    
+    SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog) {
+        Ray ray = rayIn;
+        
+        Mandebulb bulb;
+        
+        MathContainer maths;
+        
+        int steps = 0;
+        DistanceInfo d = {0, na};
+        BulbInfo bulbResut;
+        while (100000 > d.distance) {
+            bulbResut = bulb.DE(ray.position.xyz);
+            float step = bulbResut.d;
+            ray.march(step);
+            /*float3 offset;
+            offset.x = maths.rand(seed.x * uint(ray.position.y * 451245), seed.y, seed.z);
+            offset.y = maths.rand(seed.y * uint(ray.position.x * 5019823), seed.z, seed.x);
+            offset.z = maths.rand(seed.z * uint(ray.position.z * 502814), seed.x, seed.y);
+            ray.position += float4(fog * offset.x * step, fog * offset.y * step, fog * offset.z * step, 0);*/
+            d.distance += step;
+            steps ++;
+            if (1 * d.distance / 50000 > step || 500 < steps) {
+                break;
+            }
+        }
+        //ray.march(-1 * errorDifference);
+        SingleResult result;
+        result.distance = d.distance;
+        result.steps = steps;
+        result.collision.surfaceNormal = bulb.normal(ray.position.xyz);
+        
+        Material material;
+        material.init(float3(bulbResut.orbitLife, 0, 0) / 3);
+        
+        result.collision.surfaceMaterial = material;
+        result.collision.position = ray.position.xyz;
+        //result.collision.orbitPosition = bulbResut.orbitPosition;
+        result.ray = ray;
+        return result;
+    }
 
 	SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength) {
 		VoxelContainer container;
@@ -539,6 +640,7 @@ struct RayTracer {
 		device Voxel *rootVoxel = &voxels[1];
 
 		DistanceInfo distance = {0, na};
+        int steps = 0;
 		while (10000 > distance.distance) {
 			DistanceInfo step = {0, na};
 			if (maths.cubeContainsRay(ray, rootVoxel)) {
@@ -558,6 +660,7 @@ struct RayTracer {
 			ray.march(step.distance);
 			distance.distance += step.distance;
 			distance.collisionAxis = step.collisionAxis;
+            steps++;
 		}
 
 		Material material;
@@ -573,21 +676,37 @@ struct RayTracer {
 		result.distance = distance.distance;
 		result.ray = ray;
 		result.collision = collide;
+        result.steps = steps * 10;
 
 		return result;
 	}
+    
+    void bundle(texture2d_array<float, access::read> readTexture [[texture(0)]],
+                texture2d_array<float, access::write> writeTexture [[texture(1)]],
+                uint index [[ thread_position_in_grid ]],
+                constant uint &groupSize [[buffer(5)]]) {
+        
+    }
 
-	float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength) {
+    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia) {
 		Ray ray = camera.spawnRay(pos);
 
 		//return float4(maths.rand(89, 1325, 34), maths.rand(12549018243, -78958, 1982741), maths.rand(12509, 105981823, -1093582123), maths.rand(15901283, 1509825, 1029851));
 
 		int bounces = 0;
 		while (bounces < bounceLimit) {
-			SingleResult result = shootRay(ray, voxels, showVoxels, voxelsLength);
+            SingleResult result;
+            if (isJulia == 0) {
+                result = shootRay(ray, voxels, showVoxels, voxelsLength);
+            } else {
+                result = mandelBulb(ray, seed, 0.01);
+            }
+            //return float4(result.collision.surfaceNormal, 1);
 			ray = result.ray;
-			if (result.distance > 100000) {
-				ray.colorSource += ray.colorAbsorption * getSkyBox(ray);
+			if (result.distance >= 100000) {
+                if (bounces > 0) {
+                    ray.colorSource += ray.colorAbsorption * getSkyBox(ray);
+                }
 				break;
 			}
 			ray.colorAbsorption = ray.colorAbsorption * (1 - result.distance / 10);
@@ -600,17 +719,28 @@ struct RayTracer {
 		return float4((ray.colorSource), 1);
 	}
 
-	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength) {
+	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia) {
 		Ray ray = camera.spawnRay(pos);
+        SingleResult result;
+        if (isJulia == 0) {
+            result = shootRay(ray, voxels, false, voxelsLength);
+        } else {
+            result = mandelBulb(ray, uint3(0, 0, 0), 0);
+            if (result.distance < 10000) {
+                Mandebulb bulb;
+                ray.march(result.distance);
+                //return float4(bulb.normal(ray.position.xyz), 0);
+            }
+        }
 
-		SingleResult result = shootRay(ray, voxels, false, voxelsLength);
-
-		float4 color = float4(result.distance);
+		//float4 color = float4(log(result.distance)) + 0.2;
+        float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
+        color *= pow(0.99, float(result.steps));
 		if (result.distance > 100) {
 			color = float4(getSkyBox(ray), 1);
 			return color;
 		}
-		color = 1 - (color - 0.2) / color;
+		//color = 1 - (color - 0.2) / color;
 		return color;
 	}
 };

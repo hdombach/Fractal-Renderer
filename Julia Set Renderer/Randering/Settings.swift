@@ -7,10 +7,16 @@
 //
 
 import MetalKit
+import Combine
 import SwiftUI
 
+enum RenderMode: Int32 {
+    case JuliaSet = 0
+    case Mandelbulb = 1
+}
+
 class RenderSettings {
-	let delayTime = 5
+    let delayTime = 1
 	var isReady = true
 
 	var observed: ObservedRenderSettings!
@@ -18,6 +24,7 @@ class RenderSettings {
 	init() {
 		observed = .init(source: self)
 		savedCamera = camera
+        delaySet()
 	}
 
 	func delaySet() {
@@ -33,14 +40,18 @@ class RenderSettings {
 					self.observed.imageSize = self.imageSize
 				}
 
-				if self.observed.kernalSize != self.kernelSize {
-					self.observed.kernalSize = self.kernelSize
+				if self.observed.kernelSize != self.kernelSize {
+					self.observed.kernelSize = self.kernelSize
 				}
 
 				if self.observed.progress != self.progress {
 					self.observed.progress = self.progress
 				}
 
+                if self.observed.renderMode != self.renderMode {
+                    self.observed.renderMode = self.renderMode
+                }
+                
 				self.isReady = true
 			}
 		}
@@ -61,7 +72,7 @@ class RenderSettings {
 		}
 	}
 
-	var camera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
+    var camera = Camera(position: SIMD4<Float>(0, 0.001, -2, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
 		didSet {
 			delaySet()
 		}
@@ -76,15 +87,19 @@ class RenderSettings {
 	}
 
 	var samples: Int = 0
+    
+    //0 julia set
+    //1 mandelbulb
+    var renderMode: RenderMode = .JuliaSet
 }
 
 final class ObservedRenderSettings: ObservableObject {
 	var sourceSettings: RenderSettings
 
-	@Published var kernalSize: (groupSize: Int, groups: Int) {
+	@Published var kernelSize: (groupSize: Int, groups: Int) {
 		didSet {
-			if sourceSettings.kernelSize != self.kernalSize {
-				sourceSettings.kernelSize = self.kernalSize
+			if sourceSettings.kernelSize != self.kernelSize {
+				sourceSettings.kernelSize = self.kernelSize
 			}
 		}
 	}
@@ -112,19 +127,30 @@ final class ObservedRenderSettings: ObservableObject {
 			}
 		}
 	}
+    
+    @Published var renderMode: RenderMode {
+        didSet {
+            print("update render moe", oldValue, renderMode)
+            if sourceSettings.renderMode != self.renderMode {
+                sourceSettings.renderMode = self.renderMode
+            }
+        }
+    }
 
 	init(source: RenderSettings) {
 		sourceSettings = source
 		self.imageSize = sourceSettings.imageSize
 		self.camera = sourceSettings.camera
-		self.kernalSize = sourceSettings.kernelSize
+		self.kernelSize = sourceSettings.kernelSize
 		self.progress = sourceSettings.progress
+        self.renderMode = sourceSettings.renderMode
 	}
 }
 
 enum WindowView {
 	case preview
 	case rendering
+    case paused
 }
 
 struct Settings_Previews: PreviewProvider {

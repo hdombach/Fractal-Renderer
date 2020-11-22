@@ -37,11 +37,13 @@ class RenderView: MTKView {
 		addTrackingArea(trackingRect)
 
 
+        preferredFramesPerSecond = 1
 	}
 
 	override var acceptsFirstResponder: Bool { return true }
 
 	override func mouseDown(with event: NSEvent) {
+        preferredFramesPerSecond = 60
 		isTracking = true
 		CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: false))
 		CGDisplayHideCursor(1)
@@ -50,6 +52,7 @@ class RenderView: MTKView {
 	override func keyDown(with event: NSEvent) {
 		Keys.update(key: event.keyCode, value: true)
 		if event.keyCode == 53 { // escape
+            preferredFramesPerSecond = 1
 			isTracking = false
 			CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: true))
 			CGDisplayShowCursor(1)
