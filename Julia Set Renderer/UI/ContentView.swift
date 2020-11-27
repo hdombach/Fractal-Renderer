@@ -40,6 +40,8 @@ struct ContentView: View {
                 Text("yeet2")
                     .tabItem { Text("yeet2") }.tag(RenderMode.Mandelbulb)
             }.frame(width: 300, height: 100, alignment: .center)
+			SkyBoxSettings()
+				.frame(height: 300)
         }
     }
 }

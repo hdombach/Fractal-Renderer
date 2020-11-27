@@ -65,6 +65,21 @@ struct Ray {
 	}
 };
 
+struct SkyBoxLight {
+	float3 color;
+	float strength;
+	float size;
+	float3 position;
+	int id;
+	
+	float3 getColor(Ray ray) {
+		if (size < dot(normalize(ray.deriction.xyz), normalize(position))) {
+			return color * strength;
+		}
+		return float3(0);
+	}
+};
+
 //MARK: Camera
 struct Camera {
 	float4 position;
@@ -528,26 +543,17 @@ struct RayTracer {
 	};
 
 	//MARK: Skybox
-	float3 getSkyBox(Ray ray) {
-		MathContainer maths;
-        
-        //return float(1);
-
-		float2 der = maths.getAngle(float3(ray.deriction.x, ray.deriction.y, ray.deriction.z));
-
-        if (der.y > 0.8) {
-            return float3(2);
-        }
-        
-		if (der.x > 0.3 && der.x < 0.7) {
-			/*if (fmod(der.y, 0.2) < 0.05) {
-				return float3(1);
-			}*/
-			if (der.y > 0.1 && der.y < 0.7 && ray.deriction.y > 0){
-				//return float3(10);
-			}
+	float3 getSkyBox(Ray ray, constant SkyBoxLight *lights, int lightsLength) {
+		float3 color = float3(0);
+		
+		int c = 0;
+		while (lightsLength > c) {
+			SkyBoxLight light = lights[c];
+			color += light.getColor(ray);
+			c ++;
 		}
-		return float3(0);
+        
+		return color;
 	}
 
 	Ray reflect(Ray ray, float3 surfaceNormal, Material surfaceMaterial, uint3 _seed) {
@@ -688,7 +694,7 @@ struct RayTracer {
         
     }
 
-    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia) {
+    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength) {
 		Ray ray = camera.spawnRay(pos);
 
 		//return float4(maths.rand(89, 1325, 34), maths.rand(12549018243, -78958, 1982741), maths.rand(12509, 105981823, -1093582123), maths.rand(15901283, 1509825, 1029851));
@@ -705,7 +711,7 @@ struct RayTracer {
 			ray = result.ray;
 			if (result.distance >= 100000) {
                 if (bounces > 0) {
-                    ray.colorSource += ray.colorAbsorption * getSkyBox(ray);
+                    ray.colorSource += ray.colorAbsorption * getSkyBox(ray, lights, lightsLength);
                 }
 				break;
 			}
@@ -719,7 +725,7 @@ struct RayTracer {
 		return float4((ray.colorSource), 1);
 	}
 
-	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia) {
+	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength) {
 		Ray ray = camera.spawnRay(pos);
         SingleResult result;
         if (isJulia == 0) {
@@ -737,7 +743,7 @@ struct RayTracer {
         float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
         color *= pow(0.99, float(result.steps));
 		if (result.distance > 100) {
-			color = float4(getSkyBox(ray), 1);
+			color = float4(getSkyBox(ray, lights, lightsLength), 1);
 			return color;
 		}
 		//color = 1 - (color - 0.2) / color;

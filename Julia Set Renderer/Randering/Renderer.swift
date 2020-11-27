@@ -89,6 +89,7 @@ class Renderer: NSObject, MTKViewDelegate {
 			else { print("could not get things"); return }
 
 		var voxelsLength = UInt32(Engine.Container.voxelCount)
+		var lightsLength = UInt32(Engine.Settings.skyBox.count)
         var renderMode = Engine.Settings.renderMode.rawValue
 
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
@@ -111,6 +112,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.exposure, length: MemoryLayout<Int>.stride, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
         renderCommandEncoder?.setFragmentBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride, index: 6)
+		renderCommandEncoder?.setFragmentBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 

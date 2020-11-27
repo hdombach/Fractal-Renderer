@@ -119,6 +119,7 @@ class Engine {
                 }
                 var mutableIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
                 var voxelsLength = UInt32(Container.voxelCount)
+				var lightsLength = UInt32(Settings.skyBox.count)
                 var renderMode = Settings.renderMode.rawValue
 
                 computeCommandEncoder?.setBytes(&Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
@@ -128,6 +129,8 @@ class Engine {
                 computeCommandEncoder?.setBytes(&seed, length: MemoryLayout<SIMD3<Int32>>.stride, index: 3)
                 computeCommandEncoder?.setBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
                 computeCommandEncoder?.setBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
+				computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 6)
+				computeCommandEncoder?.setBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
                 computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
                 computeCommandEncoder?.endEncoding()

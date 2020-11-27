@@ -15,6 +15,20 @@ enum RenderMode: Int32 {
     case Mandelbulb = 1
 }
 
+var globalId: UInt32 = 0
+func generateID() -> UInt32 {
+	globalId += 1
+	return globalId
+}
+
+struct LightInfo: Hashable, Identifiable {
+	var color: SIMD3<Float>
+	var strength: Float
+	var size: Float
+	var position: SIMD3<Float>
+	var id: UInt32 = generateID()
+}
+
 class RenderSettings {
     let delayTime = 1
 	var isReady = true
@@ -85,6 +99,8 @@ class RenderSettings {
 			delaySet()
 		}
 	}
+	
+	var skyBox: [LightInfo] = [LightInfo.init(color: .init(0.8, 1, 1), strength: 1, size: 1, position: .init(0, 0, 0))]
 
 	var samples: Int = 0
     
@@ -130,12 +146,18 @@ final class ObservedRenderSettings: ObservableObject {
     
     @Published var renderMode: RenderMode {
         didSet {
-            print("update render moe", oldValue, renderMode)
             if sourceSettings.renderMode != self.renderMode {
                 sourceSettings.renderMode = self.renderMode
             }
         }
     }
+	
+	@Published var skyBox: [LightInfo] {
+		didSet {
+			print("update skybox")
+			sourceSettings.skyBox = self.skyBox
+		}
+	}
 
 	init(source: RenderSettings) {
 		sourceSettings = source
@@ -144,6 +166,7 @@ final class ObservedRenderSettings: ObservableObject {
 		self.kernelSize = sourceSettings.kernelSize
 		self.progress = sourceSettings.progress
         self.renderMode = sourceSettings.renderMode
+		self.skyBox = source.skyBox
 	}
 }
 

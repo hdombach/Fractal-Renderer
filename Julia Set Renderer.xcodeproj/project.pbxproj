@@ -3,14 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617724EDD2BB0058925E /* ComplexNumbers.swift */; };
 		DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */; };
+		DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */; };
+		DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C47256B4A52009C37D8 /* LightPicker.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
 		DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6435D024D8DF8300C97FB5 /* Settings.swift */; };
 		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
 		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
@@ -52,8 +55,11 @@
 		DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Julia Set RendererTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Julia_Set_RendererTests.swift; sourceTree = "<group>"; };
 		DE05618324EDDB610058925E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyBoxSettings.swift; sourceTree = "<group>"; };
+		DE167C47256B4A52009C37D8 /* LightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightPicker.swift; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
 		DE6435D024D8DF8300C97FB5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
@@ -132,6 +138,9 @@
 				DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */,
 				DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */,
 				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
+				DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */,
+				DE167C47256B4A52009C37D8 /* LightPicker.swift */,
+				DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -230,6 +239,8 @@
 			dependencies = (
 			);
 			name = "Julia Set Renderer";
+			packageProductDependencies = (
+			);
 			productName = "Julia Set Renderer";
 			productReference = DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */;
 			productType = "com.apple.product-type.application";
@@ -255,7 +266,7 @@
 				};
 			};
 			buildConfigurationList = DEC8CDD124ADFC9900DB5701 /* Build configuration list for PBXProject "Julia Set Renderer" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -263,6 +274,8 @@
 				Base,
 			);
 			mainGroup = DEC8CDCD24ADFC9900DB5701;
+			packageReferences = (
+			);
 			productRefGroup = DEC8CDD724ADFC9A00DB5701 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -319,11 +332,14 @@
 				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
 				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
+				DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */,
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
+				DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */,
 				DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */,
+				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
 				DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */,

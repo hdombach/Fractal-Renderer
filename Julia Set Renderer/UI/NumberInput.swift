@@ -8,18 +8,21 @@
 
 import SwiftUI
 
-struct Input<type>: View where type: Strideable, type: _FormatSpecifiable {
+struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type: AdditiveArithmetic {
     @Binding var value: type
     var step: type
     var name: String
     var min: type?
     var max: type?
+	var showsName: Bool = false
     
     func currentType() -> types {
         if value is Float {
             return .float
         } else if value is Int {
             return .int
+		} else if value is Double {
+			return .double
         } else {
             return .na
         }
@@ -27,9 +30,9 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable {
     
     func getFormat() -> NumberFormatter {
         let newFormat = NumberFormatter()
-        if currentType() == .float {
+		if currentType() == .float || currentType() == .double{
             newFormat.minimumSignificantDigits = 2
-            newFormat.maximumSignificantDigits = 8
+            newFormat.maximumSignificantDigits = 4
         }
         newFormat.maximum = max as? NSNumber
         newFormat.minimum = min as? NSNumber
@@ -39,19 +42,40 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable {
     enum types {
         case float
         case int
+		case double
         case na
     }
     
     var body: some View {
-        HStack {
-            Text("\(name):")
-                .fixedSize()
-            
-            
-            Stepper(value: $value, step: step as! type.Stride) {
-                TextField("Enter new value", value: $value, formatter: getFormat())
-            }
-        }
+		
+		HStack {
+			if showsName {
+				Text(name + ":")
+			}
+			ZStack {
+				TextField("Enter new value", value: $value, formatter: getFormat())
+					.multilineTextAlignment(.center)
+					.cornerRadius(3.0)
+				HStack {
+					Button("+") {
+						value = step + value
+					}.buttonStyle(PlainButtonStyle())
+					.frame(width: 20)
+					.contentShape(Rectangle())
+					
+					Spacer()
+					
+					Button("-") {
+						value = value - step
+					}.buttonStyle(PlainButtonStyle())
+					.frame(width: 20)
+					.contentShape(Rectangle())
+				}
+			}
+			.padding()
+		}
+		.padding(0.0)
+		
         /*.popover(isPresented: $isEditing) {
             TextField("Enter New Value", value: $value, formatter: getFormat()) {
                 isEditing.toggle()
@@ -150,12 +174,12 @@ struct NumberInput_Previews: PreviewProvider {
                 return Engine.Settings.camera.position.x
             }, set: { (newValue) in
                 Engine.Settings.camera.position.x = newValue
-            }), step: 1, name: "x Position")
+			}), step: 1, name: "x Position", showsName: true)
             InputPopover(value: Binding<Float>.init(get: { () -> Float in
                 return Engine.Settings.camera.position.x
             }, set: { (newValue) in
                 Engine.Settings.camera.position.x = newValue
-            }), format: NumberFormatter())
+			}), format: NumberFormatter())
         }
     }
 }

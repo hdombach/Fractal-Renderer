@@ -18,33 +18,33 @@ struct CameraSettings: View {
                     Text("Position")
                         .font(.subheadline)
 
-                    Input(value: $settings.camera.position.x, step: 0.01, name: "x")
-                    Input(value: $settings.camera.position.y, step: 0.01, name: "y")
-                    Input(value: $settings.camera.position.z, step: 0.01, name: "z")
+					Input(value: $settings.camera.position.x, step: 0.01, name: "x", showsName: true)
+					Input(value: $settings.camera.position.y, step: 0.01, name: "y", showsName: true)
+					Input(value: $settings.camera.position.z, step: 0.01, name: "z", showsName: true)
                 }
                 Divider()
                 VStack(alignment: .leading) {
                     Text("Dericiton")
                         .font(.subheadline)
 
-                    Input(value: $settings.camera.deriction.x, step: 0.01, name: "x-axis")
-                    Input(value: $settings.camera.deriction.y, step: 0.01, name: "y-axis")
-                    Input(value: $settings.camera.deriction.z, step: 0.01, name: "z-axis")
+					Input(value: $settings.camera.deriction.x, step: 0.01, name: "x-axis", showsName: true)
+					Input(value: $settings.camera.deriction.y, step: 0.01, name: "y-axis", showsName: true)
+					Input(value: $settings.camera.deriction.z, step: 0.01, name: "z-axis", showsName: true)
                 }
             }
             Divider()
             VStack() {
                 Text("Other")
 
-                Input(value: $settings.camera.zoom, step: 0.00001, name: "Zoom")
-                Input(value: $settings.camera.cameraDepth, step: 0.1, name: "Focal Lenghth")
+				Input(value: $settings.camera.zoom, step: 0.00001, name: "Zoom", showsName: true)
+				Input(value: $settings.camera.cameraDepth, step: 0.1, name: "Focal Lenghth", showsName: true)
                 Spacer()
                 Button(action: {
                     Engine.Settings.camera = Engine.Settings.savedCamera
                 }) {
                     Text("Saved Camera")
                 }
-            }
+			}
         }
         .padding()
     }
