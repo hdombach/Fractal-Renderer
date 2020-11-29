@@ -42,9 +42,9 @@ struct RenderBox: View {
 				}
 				Spacer()
 				VStack {
-					Input(value: $samples, step: 1, name: "Samples", showsName: true)
-					Input(value: $settings.kernelSize.1, step: 1, name: "Kernel groups", min: 0, showsName: true)
-					Input(value: $settings.kernelSize.0, step: 1, name: "Kernel group size", min: 0, showsName: true)
+					Input(value: $samples, step: 1, name: "Samples")
+					Input(value: $settings.kernelSize.1, step: 1, name: "Kernel groups", min: 0)
+					Input(value: $settings.kernelSize.0, step: 1, name: "Kernel group size", min: 0)
                     //max: Engine.MaxThreadsPerGroup
 				}
 			}

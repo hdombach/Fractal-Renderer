@@ -80,6 +80,10 @@ struct SkyBoxLight {
 	}
 };
 
+struct RayMarchingSettings {
+	float mandelbulbPower;
+};
+
 //MARK: Camera
 struct Camera {
 	float4 position;
@@ -485,12 +489,12 @@ struct BulbInfo {
 struct Mandebulb {
     int iterations = 50;
     float bailout = 3;
-    float power = 12;
     
-    BulbInfo DE(float3 pos) {
+    BulbInfo DE(float3 pos, RayMarchingSettings settings) {
         float3 z = pos;
         float dr = 1;
         float r = 0;
+		float power = settings.mandelbulbPower;
         BulbInfo info;
         info.orbitLife = iterations;
         for (int i = 0; i < iterations; i++) {
@@ -518,13 +522,13 @@ struct Mandebulb {
         return info;
     }
     
-    float3 normal(float3 pos) {
+    float3 normal(float3 pos, RayMarchingSettings settings) {
         //e is an abitrary number
         float e = 0.000001;
-        float n = DE(pos).d;
-        float dx = DE(pos + float3(e, 0, 0)).d - n;
-        float dy = DE(pos + float3(0, e, 0)).d - n;
-        float dz = DE(pos + float3(0, 0, e)).d - n;
+        float n = DE(pos, settings).d;
+        float dx = DE(pos + float3(e, 0, 0), settings).d - n;
+        float dy = DE(pos + float3(0, e, 0), settings).d - n;
+        float dz = DE(pos + float3(0, 0, e), settings).d - n;
         
         return normalize(float3(dx, dy, dz));
     }
@@ -596,7 +600,7 @@ struct RayTracer {
 		return returnRay;
 	}
     
-    SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog) {
+    SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings) {
         Ray ray = rayIn;
         
         Mandebulb bulb;
@@ -607,7 +611,7 @@ struct RayTracer {
         DistanceInfo d = {0, na};
         BulbInfo bulbResut;
         while (100000 > d.distance) {
-            bulbResut = bulb.DE(ray.position.xyz);
+            bulbResut = bulb.DE(ray.position.xyz, settings);
             float step = bulbResut.d;
             ray.march(step);
             /*float3 offset;
@@ -625,7 +629,7 @@ struct RayTracer {
         SingleResult result;
         result.distance = d.distance;
         result.steps = steps;
-        result.collision.surfaceNormal = bulb.normal(ray.position.xyz);
+        result.collision.surfaceNormal = bulb.normal(ray.position.xyz, settings);
         
         Material material;
         material.init(float3(bulbResut.orbitLife, 0, 0) / 3);
@@ -694,7 +698,7 @@ struct RayTracer {
         
     }
 
-    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength) {
+    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings) {
 		Ray ray = camera.spawnRay(pos);
 
 		//return float4(maths.rand(89, 1325, 34), maths.rand(12549018243, -78958, 1982741), maths.rand(12509, 105981823, -1093582123), maths.rand(15901283, 1509825, 1029851));
@@ -705,7 +709,7 @@ struct RayTracer {
             if (isJulia == 0) {
                 result = shootRay(ray, voxels, showVoxels, voxelsLength);
             } else {
-                result = mandelBulb(ray, seed, 0.01);
+                result = mandelBulb(ray, seed, 0.01, settings);
             }
             //return float4(result.collision.surfaceNormal, 1);
 			ray = result.ray;
@@ -725,13 +729,13 @@ struct RayTracer {
 		return float4((ray.colorSource), 1);
 	}
 
-	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength) {
+	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings) {
 		Ray ray = camera.spawnRay(pos);
         SingleResult result;
         if (isJulia == 0) {
             result = shootRay(ray, voxels, false, voxelsLength);
         } else {
-            result = mandelBulb(ray, uint3(0, 0, 0), 0);
+            result = mandelBulb(ray, uint3(0, 0, 0), 0, settings);
             if (result.distance < 10000) {
                 Mandebulb bulb;
                 ray.march(result.distance);

@@ -32,7 +32,7 @@ struct SkyBoxSettings: View {
 				
 				HStack {
 					Button("+") {
-						settings.skyBox.append(.init(color: .init(0.5, 0.5, 0.5), strength: 1, size: 1, position: .init(1, 0, 0)))
+						settings.skyBox.append(.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0)))
 					}
 						.padding(.leading)
 						.buttonStyle(PlainButtonStyle())

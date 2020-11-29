@@ -29,8 +29,12 @@ struct LightInfo: Hashable, Identifiable {
 	var id: UInt32 = generateID()
 }
 
+struct RayMarchingSettings {
+	var mandelbulbPower: Float = 12
+}
+
 class RenderSettings {
-    let delayTime = 1
+    let delayTime = 10
 	var isReady = true
 
 	var observed: ObservedRenderSettings!
@@ -100,13 +104,15 @@ class RenderSettings {
 		}
 	}
 	
-	var skyBox: [LightInfo] = [LightInfo.init(color: .init(0.8, 1, 1), strength: 1, size: 1, position: .init(0, 0, 0))]
+	var skyBox: [LightInfo] = [LightInfo.init(color: .init(0.8, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0))]
 
 	var samples: Int = 0
     
     //0 julia set
     //1 mandelbulb
     var renderMode: RenderMode = .JuliaSet
+	
+	var rayMarchingSettings: RayMarchingSettings = .init()
 }
 
 final class ObservedRenderSettings: ObservableObject {
@@ -158,6 +164,12 @@ final class ObservedRenderSettings: ObservableObject {
 			sourceSettings.skyBox = self.skyBox
 		}
 	}
+	
+	@Published var rayMarchingSettings: RayMarchingSettings {
+		didSet {
+			sourceSettings.rayMarchingSettings = self.rayMarchingSettings
+		}
+	}
 
 	init(source: RenderSettings) {
 		sourceSettings = source
@@ -167,6 +179,7 @@ final class ObservedRenderSettings: ObservableObject {
 		self.progress = sourceSettings.progress
         self.renderMode = sourceSettings.renderMode
 		self.skyBox = source.skyBox
+		self.rayMarchingSettings = source.rayMarchingSettings
 	}
 }
 

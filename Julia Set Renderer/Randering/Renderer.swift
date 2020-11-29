@@ -112,8 +112,9 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.exposure, length: MemoryLayout<Int>.stride, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
         renderCommandEncoder?.setFragmentBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride, index: 6)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 6)
 		renderCommandEncoder?.setFragmentBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.rayMarchingSettings, length: MemoryLayout<RayMarchingSettings>.stride, index: 8)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 

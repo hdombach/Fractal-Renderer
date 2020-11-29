@@ -15,8 +15,8 @@ struct ImageSettings: View {
     var body: some View {
 
         VStack {
-			Input(value: $settings.imageSize.0, step: 1, name: "Width", showsName: true)
-			Input(value: $settings.imageSize.1, step: 1, name: "Height", showsName: true)
+			Input(value: $settings.imageSize.0, step: 1, name: "Width")
+			Input(value: $settings.imageSize.1, step: 1, name: "Height")
         }
         .padding()
     }

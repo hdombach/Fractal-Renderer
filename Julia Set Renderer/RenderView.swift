@@ -37,7 +37,7 @@ class RenderView: MTKView {
 		addTrackingArea(trackingRect)
 
 
-        preferredFramesPerSecond = 1
+        preferredFramesPerSecond = 10
 	}
 
 	override var acceptsFirstResponder: Bool { return true }

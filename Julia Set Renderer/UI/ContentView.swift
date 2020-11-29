@@ -37,9 +37,9 @@ struct ContentView: View {
             TabView(selection: $settings.renderMode) {
                 PatternSettings()
                     .tabItem { Text("yeet") }.tag(RenderMode.JuliaSet)
-                Text("yeet2")
+				MandelbulbSettings(settings: $settings.rayMarchingSettings)
                     .tabItem { Text("yeet2") }.tag(RenderMode.Mandelbulb)
-            }.frame(width: 300, height: 100, alignment: .center)
+			}.frame(height: 200)
 			SkyBoxSettings()
 				.frame(height: 300)
         }

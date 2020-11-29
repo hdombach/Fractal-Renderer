@@ -26,6 +26,7 @@
 		DEA8931924AFBDE9008F5D78 /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8931824AFBDE9008F5D78 /* sun.png */; };
 		DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEA8931A24B20EB3008F5D78 /* raytracing.metal */; };
 		DEAA8BC924FD12BE0080221B /* SwiftVoxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */; };
+		DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEABF34625717E440036EB73 /* MandelbulbSettings.swift */; };
 		DEBE4E092542359D0060FED0 /* JuliaSetComputeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E082542359D0060FED0 /* JuliaSetComputeTests.swift */; };
 		DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E0E254235CE0060FED0 /* BufferTests.swift */; };
 		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
@@ -72,6 +73,7 @@
 		DEA8931824AFBDE9008F5D78 /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
 		DEA8931A24B20EB3008F5D78 /* raytracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = raytracing.metal; sourceTree = "<group>"; };
 		DEAA8BC824FD12BE0080221B /* SwiftVoxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftVoxel.swift; sourceTree = "<group>"; };
+		DEABF34625717E440036EB73 /* MandelbulbSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandelbulbSettings.swift; sourceTree = "<group>"; };
 		DEBE4E082542359D0060FED0 /* JuliaSetComputeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JuliaSetComputeTests.swift; path = "../../../../../../Library/Mobile Documents/com~apple~CloudDocs/.Trash/JuliaSetComputeTests.swift"; sourceTree = "<group>"; };
 		DEBE4E0E254235CE0060FED0 /* BufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferTests.swift; sourceTree = "<group>"; };
 		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */,
 				DE167C47256B4A52009C37D8 /* LightPicker.swift */,
 				DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */,
+				DEABF34625717E440036EB73 /* MandelbulbSettings.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				DEA8931B24B20EB3008F5D78 /* raytracing.metal in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
+				DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
 				DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */,
 				DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */,

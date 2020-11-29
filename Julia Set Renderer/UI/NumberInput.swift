@@ -11,10 +11,9 @@ import SwiftUI
 struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type: AdditiveArithmetic {
     @Binding var value: type
     var step: type
-    var name: String
+    var name: String?
     var min: type?
     var max: type?
-	var showsName: Bool = false
     
     func currentType() -> types {
         if value is Float {
@@ -49,8 +48,8 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type:
     var body: some View {
 		
 		HStack {
-			if showsName {
-				Text(name + ":")
+			if name != nil {
+				Text(name! + ":")
 			}
 			ZStack {
 				TextField("Enter new value", value: $value, formatter: getFormat())
@@ -174,7 +173,7 @@ struct NumberInput_Previews: PreviewProvider {
                 return Engine.Settings.camera.position.x
             }, set: { (newValue) in
                 Engine.Settings.camera.position.x = newValue
-			}), step: 1, name: "x Position", showsName: true)
+			}), step: 1, name: "x Position")
             InputPopover(value: Binding<Float>.init(get: { () -> Float in
                 return Engine.Settings.camera.position.x
             }, set: { (newValue) in

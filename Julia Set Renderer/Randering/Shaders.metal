@@ -58,10 +58,11 @@ fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
 									  constant int &voxelsLength [[buffer(4)]],
 									  constant bool &isJulia [[buffer(5)]],
 									  constant SkyBoxLight *lights [[buffer(6)]],
-									  constant int &lightsLength [[buffer(7)]]) {
+									  constant int &lightsLength [[buffer(7)]],
+									  constant RayMarchingSettings &settings [[buffer(8)]]) {
 	RayTracer yeet;
 	Camera myCamera = camera;
-	return float4(yeet.depthMap(rd.texCoord, myCamera, voxels, voxelsLength, isJulia, lights, lightsLength));
+	return float4(yeet.depthMap(rd.texCoord, myCamera, voxels, voxelsLength, isJulia, lights, lightsLength, settings));
 	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
 }
 
@@ -71,13 +72,14 @@ fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 									   constant int &voxelsLength [[buffer(4)]],
 									   constant bool &isJulia [[buffer(5)]],
 									   constant SkyBoxLight *lights [[buffer(6)]],
-									   constant int &lightsLength [[buffer(7)]]) {
+									   constant int &lightsLength [[buffer(7)]],
+									   constant RayMarchingSettings &settings [[buffer(8)]]) {
 	//MathContainer maths;
 	RayTracer rayShooter;
 
 	Camera myCamera = camera;
 
-	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength));
+	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength, settings));
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
@@ -90,7 +92,8 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 							   constant int &voxelsLength [[buffer(4)]],
 							   constant int &isJulia [[buffer(5)]],
 							   constant SkyBoxLight *lights [[buffer(6)]],
-							   constant int &lightsLength [[buffer(7)]]) {
+							   constant int &lightsLength [[buffer(7)]],
+							   constant RayMarchingSettings &settings [[buffer(8)]]) {
 	MathContainer maths;
 	RayTracer rayShooter;
 
@@ -129,7 +132,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	}
 	color = color / 10;*/
 
-	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength);
+	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength, settings);
 	//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
 	float4 oldColor;
 	oldColor.x = readTexture.read(textureIndex, 0).x;

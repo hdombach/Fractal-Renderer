@@ -131,6 +131,7 @@ class Engine {
                 computeCommandEncoder?.setBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
 				computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 6)
 				computeCommandEncoder?.setBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
+				computeCommandEncoder?.setBytes(&Settings.rayMarchingSettings, length: MemoryLayout<RayMarchingSettings>.stride, index: 8)
                 computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
                 computeCommandEncoder?.endEncoding()
