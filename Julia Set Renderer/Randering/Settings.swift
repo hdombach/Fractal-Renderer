@@ -7,10 +7,34 @@
 //
 
 import MetalKit
+import Combine
 import SwiftUI
 
+enum RenderMode: Int32 {
+    case JuliaSet = 0
+    case Mandelbulb = 1
+}
+
+var globalId: UInt32 = 0
+func generateID() -> UInt32 {
+	globalId += 1
+	return globalId
+}
+
+struct LightInfo: Hashable, Identifiable {
+	var color: SIMD3<Float>
+	var strength: Float
+	var size: Float
+	var position: SIMD3<Float>
+	var id: UInt32 = generateID()
+}
+
+struct RayMarchingSettings {
+	var mandelbulbPower: Float = 12
+}
+
 class RenderSettings {
-	let delayTime = 5
+    let delayTime = 10
 	var isReady = true
 
 	var observed: ObservedRenderSettings!
@@ -18,6 +42,7 @@ class RenderSettings {
 	init() {
 		observed = .init(source: self)
 		savedCamera = camera
+        delaySet()
 	}
 
 	func delaySet() {
@@ -33,14 +58,18 @@ class RenderSettings {
 					self.observed.imageSize = self.imageSize
 				}
 
-				if self.observed.kernalSize != self.kernelSize {
-					self.observed.kernalSize = self.kernelSize
+				if self.observed.kernelSize != self.kernelSize {
+					self.observed.kernelSize = self.kernelSize
 				}
 
 				if self.observed.progress != self.progress {
 					self.observed.progress = self.progress
 				}
 
+                if self.observed.renderMode != self.renderMode {
+                    self.observed.renderMode = self.renderMode
+                }
+                
 				self.isReady = true
 			}
 		}
@@ -61,7 +90,7 @@ class RenderSettings {
 		}
 	}
 
-	var camera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
+    var camera = Camera(position: SIMD4<Float>(0, 0.001, -2, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
 		didSet {
 			delaySet()
 		}
@@ -74,17 +103,25 @@ class RenderSettings {
 			delaySet()
 		}
 	}
+	
+	var skyBox: [LightInfo] = [LightInfo.init(color: .init(0.8, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0))]
 
 	var samples: Int = 0
+    
+    //0 julia set
+    //1 mandelbulb
+    var renderMode: RenderMode = .JuliaSet
+	
+	var rayMarchingSettings: RayMarchingSettings = .init()
 }
 
 final class ObservedRenderSettings: ObservableObject {
 	var sourceSettings: RenderSettings
 
-	@Published var kernalSize: (groupSize: Int, groups: Int) {
+	@Published var kernelSize: (groupSize: Int, groups: Int) {
 		didSet {
-			if sourceSettings.kernelSize != self.kernalSize {
-				sourceSettings.kernelSize = self.kernalSize
+			if sourceSettings.kernelSize != self.kernelSize {
+				sourceSettings.kernelSize = self.kernelSize
 			}
 		}
 	}
@@ -112,19 +149,44 @@ final class ObservedRenderSettings: ObservableObject {
 			}
 		}
 	}
+    
+    @Published var renderMode: RenderMode {
+        didSet {
+            if sourceSettings.renderMode != self.renderMode {
+                sourceSettings.renderMode = self.renderMode
+            }
+        }
+    }
+	
+	@Published var skyBox: [LightInfo] {
+		didSet {
+			print("update skybox")
+			sourceSettings.skyBox = self.skyBox
+		}
+	}
+	
+	@Published var rayMarchingSettings: RayMarchingSettings {
+		didSet {
+			sourceSettings.rayMarchingSettings = self.rayMarchingSettings
+		}
+	}
 
 	init(source: RenderSettings) {
 		sourceSettings = source
 		self.imageSize = sourceSettings.imageSize
 		self.camera = sourceSettings.camera
-		self.kernalSize = sourceSettings.kernelSize
+		self.kernelSize = sourceSettings.kernelSize
 		self.progress = sourceSettings.progress
+        self.renderMode = sourceSettings.renderMode
+		self.skyBox = source.skyBox
+		self.rayMarchingSettings = source.rayMarchingSettings
 	}
 }
 
 enum WindowView {
 	case preview
 	case rendering
+    case paused
 }
 
 struct Settings_Previews: PreviewProvider {

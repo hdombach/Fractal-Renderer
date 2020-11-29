@@ -53,35 +53,47 @@ fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
 
 
 fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
-								   constant Camera &camera [[buffer(0)]],
-								   device Voxel *voxels [[buffer(1)]],
-								   constant int &voxelsLength [[buffer(4)]]) {
+									  constant Camera &camera [[buffer(0)]],
+									  device Voxel *voxels [[buffer(1)]],
+									  constant int &voxelsLength [[buffer(4)]],
+									  constant bool &isJulia [[buffer(5)]],
+									  constant SkyBoxLight *lights [[buffer(6)]],
+									  constant int &lightsLength [[buffer(7)]],
+									  constant RayMarchingSettings &settings [[buffer(8)]]) {
 	RayTracer yeet;
 	Camera myCamera = camera;
-	return float4(yeet.depthMap(rd.texCoord, myCamera, voxels, voxelsLength));
+	return float4(yeet.depthMap(rd.texCoord, myCamera, voxels, voxelsLength, isJulia, lights, lightsLength, settings));
 	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
 }
 
 fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
-									  constant Camera &camera [[buffer(0)]],
-									  device Voxel *voxels [[buffer(1)]],
-									  constant int &voxelsLength [[buffer(4)]]) {
+									   constant Camera &camera [[buffer(0)]],
+									   device Voxel *voxels [[buffer(1)]],
+									   constant int &voxelsLength [[buffer(4)]],
+									   constant bool &isJulia [[buffer(5)]],
+									   constant SkyBoxLight *lights [[buffer(6)]],
+									   constant int &lightsLength [[buffer(7)]],
+									   constant RayMarchingSettings &settings [[buffer(8)]]) {
 	//MathContainer maths;
 	RayTracer rayShooter;
 
 	Camera myCamera = camera;
 
-	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), true, voxelsLength));
+	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength, settings));
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
-										 texture2d_array<float, access::write> writeTexture [[texture(1)]],
-										 uint index [[ thread_position_in_grid ]],
-										 constant Camera &camera [[buffer(0)]],
-										 device Voxel *voxels [[buffer(1)]],
-										 constant uint4 &realIndex [[buffer(2)]],
-										 constant uint3 &randomSeed [[buffer(3)]],
-										 constant int &voxelsLength [[buffer(4)]]) {
+							   texture2d_array<float, access::write> writeTexture [[texture(1)]],
+							   uint index [[ thread_position_in_grid ]],
+							   constant Camera &camera [[buffer(0)]],
+							   device Voxel *voxels [[buffer(1)]],
+							   constant uint4 &realIndex [[buffer(2)]],
+							   constant uint3 &randomSeed [[buffer(3)]],
+							   constant int &voxelsLength [[buffer(4)]],
+							   constant int &isJulia [[buffer(5)]],
+							   constant SkyBoxLight *lights [[buffer(6)]],
+							   constant int &lightsLength [[buffer(7)]],
+							   constant RayMarchingSettings &settings [[buffer(8)]]) {
 	MathContainer maths;
 	RayTracer rayShooter;
 
@@ -99,6 +111,12 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	pos.y = fmod(anIndex, float(realIndex.z));
 	uint2 textureIndex = uint2(pos.x, pos.y);
 
+    uint3 seed = randomSeed;
+    seed.x += index * 402;
+    seed.y += index * 503;
+    seed.z += index * 305;
+    
+    
 	float2 randomOffset;
 	randomOffset.x = maths.rand(randomSeed.x, pos.x * 983414, anIndex * 33429);
 	randomOffset.y = maths.rand(randomSeed.y, pos.y * 754239, anIndex * 46523);
@@ -114,7 +132,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	}
 	color = color / 10;*/
 
-	color = rayShooter.rayCast(pos, myCamera, 10, voxels, randomSeed, false, voxelsLength);
+	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength, settings);
 	//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
 	float4 oldColor;
 	oldColor.x = readTexture.read(textureIndex, 0).x;

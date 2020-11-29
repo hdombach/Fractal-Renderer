@@ -11,17 +11,15 @@ import SwiftUI
 struct PatternSettings: View {
 	@State var quality: Float = 1
     var body: some View {
-		GroupBox(label: Text("Pattern")) {
-			HStack {
-				Button(action: {
-					print("started loading")
-					Engine.LoadJuliaSet(quality: self.quality)
-				}) {
-					Text("Load Pattern")
-				}
-				FloatInput(value: $quality, difference: 1, name: "Quality")
-			}
-		}
+        HStack {
+            Button(action: {
+                print("started loading")
+                Engine.LoadJuliaSet(quality: self.quality)
+            }) {
+                Text("Load Pattern")
+            }
+            Input(value: $quality, step: 1, name: "Quality")
+        }.padding()
     }
 }
 

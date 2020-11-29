@@ -45,6 +45,10 @@ struct Complex: Equatable {
 	static func * (lhs: Complex, rhs: Complex) -> Complex {
 		return Complex(lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, lhs.imaginary * rhs.real + lhs.real * rhs.imaginary)
 	}
+    
+    static func * (lhs: Complex, rhs: Float) -> Complex {
+        return Complex(lhs.real * rhs, lhs.imaginary * rhs)
+    }
 
 	func squared() -> Complex {
 		return self * self
@@ -57,29 +61,30 @@ struct Complex: Equatable {
 	func round() -> Complex {
 		return Complex(self.real.rounded(), self.imaginary.rounded())
 	}
+    
+    static func power(_ base: Complex, _ exponent: Float) -> Complex {
+        var theta = atan(base.imaginary / base.real)
+        if (base.real == 0) {
+            theta = 0
+        }
+        if (base.real < 0) {
+            theta += Float.pi
+        }
+        //r^n
+        var rn: Float = pow(Float(base.magnitude()), exponent)
+        return Complex.init(rn * cos(exponent * theta), rn * sin(exponent * theta))
+    }
 	
 }
 
 class JuliaSet {
-	//var c: Complex = Complex(0, 0)
+    
+    var iterations = 20
 
-	//var value: Float = 0
-
-	//var iterations: Int = 20
-
-	//var pointGen: ComGen
-
-	//init(iterations: Int = 20, value: Float = 0, pointGen: ComGen = linearComGen()) {
-		//self.c = c
-		//self.iterations = iterations
-		//self.value = value
-		//self.pointGen = pointGen
-	//}
-
-	func getBasic(point: Complex, c: Complex, iterations: Int = 20) -> Bool {
+	func getBasic(point: Complex, c: Complex) -> Bool {
 		var x = point
 		for _ in 1...iterations {
-			x = x.squared() + c
+            x = Complex.power(x, 4) + c
 			if x.magnitude() > 2 {
 				return false
 			}
@@ -87,22 +92,9 @@ class JuliaSet {
 
 		return true
 	}
-
-	/*func getBasic(pointGen: ComGen = Engine.MainPointGen, zValue: Float, c: Complex) -> Bool {
-		return self.getBasic(point: pointGen.generateComplex(value: zValue), c: c)
-	}*/
-
-	/*func getBasic(c: Complex) -> Bool {
-		return self.getBasic(pointGen: self.pointGen, c: c)
-	}*/
 }
 
-///Generates Complex Numbers for Julia Set
-protocol ComGen {
-	func generateComplex(value: Float) -> Complex
-}
-
-class linearComGen: ComGen {
+class LinearJuliaSet: JuliaSet {
 	var realSlope: Float
 	var realIntercept: Float
 	var imaginarySlope: Float
@@ -118,4 +110,8 @@ class linearComGen: ComGen {
 	func generateComplex(value: Float) -> Complex {
 		return Complex(value * realSlope + realIntercept, value * imaginarySlope + imaginaryIntercept)
 	}
+    
+    func getLinear(point: Complex, z: Float) -> Bool {
+        return getBasic(point: point, c: generateComplex(value: z))
+    }
 }

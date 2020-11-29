@@ -9,45 +9,50 @@
 import SwiftUI
 
 struct CameraSettings: View {
-	@EnvironmentObject var settings: ObservedRenderSettings
+    @ObservedObject var settings = Engine.Settings.observed
 
     var body: some View {
-		GroupBox(label: Text("Camera")) {
-			HStack(alignment: .top) {
-				VStack {
-					VStack(alignment: .leading) {
-						Text("Position")
-							.font(.subheadline)
+        HStack(alignment: .top) {
+            VStack {
+                VStack(alignment: .leading) {
+                    Text("Position")
+                        .font(.subheadline)
 
-						FloatInput(value: $settings.camera.position.x, difference: 0.01, name: "x")
-						FloatInput(value: $settings.camera.position.y, difference: 0.01, name: "y")
-						FloatInput(value: $settings.camera.position.z, difference: 0.01, name: "z")
-					}
-					Divider()
-					VStack(alignment: .leading) {
-						Text("Dericiton")
-							.font(.subheadline)
+					Input(value: $settings.camera.position.x, step: 0.01, name: "x")
+					Input(value: $settings.camera.position.y, step: 0.01, name: "y")
+					Input(value: $settings.camera.position.z, step: 0.01, name: "z")
+                }
+                Divider()
+                VStack(alignment: .leading) {
+                    Text("Dericiton")
+                        .font(.subheadline)
 
-						FloatInput(value: $settings.camera.deriction.x, difference: 0.01, name: "x-axis")
-						FloatInput(value: $settings.camera.deriction.y, difference: 0.01, name: "y-axis")
-						FloatInput(value: $settings.camera.deriction.z, difference: 0.01, name: "z-axis")
-					}
+					Input(value: $settings.camera.deriction.x, step: 0.01, name: "x-axis")
+					Input(value: $settings.camera.deriction.y, step: 0.01, name: "y-axis")
+					Input(value: $settings.camera.deriction.z, step: 0.01, name: "z-axis")
+                }
+            }
+            Divider()
+            VStack() {
+                Text("Other")
+
+				Input(value: $settings.camera.zoom, step: 0.00001, name: "Zoom")
+				Input(value: $settings.camera.cameraDepth, step: 0.1, name: "Focal Lenghth")
+                Spacer()
+				Button(action: {
+					Engine.Settings.savedCamera = Engine.Settings.camera
+				}) {
+					Text("Set Saved Camera")
 				}
-				Divider()
-				VStack() {
-					Text("Other")
-
-					FloatInput(value: $settings.camera.zoom, difference: 0.00001, name: "Zoom")
-					FloatInput(value: $settings.camera.cameraDepth, difference: 0.1, name: "Focal Lenghth")
-					Spacer()
-					Button(action: {
-						Engine.Settings.camera = Engine.Settings.savedCamera
-					}) {
-						Text("Saved Camera")
-					}
-				}
-			}.fixedSize(horizontal: false, vertical: true)
-		}
+				
+                Button(action: {
+                    Engine.Settings.camera = Engine.Settings.savedCamera
+                }) {
+                    Text("Saved Camera")
+                }
+			}
+        }
+        .padding()
     }
 }
 

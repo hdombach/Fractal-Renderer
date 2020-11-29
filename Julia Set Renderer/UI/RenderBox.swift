@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct RenderBox: View {
-	@EnvironmentObject var settings: ObservedRenderSettings
+    @ObservedObject var settings = Engine.Settings.observed
 	@State var samples: Int = 50
 	@State var groups: Int = 100
 	@State var groupSize: Int = 100
@@ -29,7 +29,7 @@ struct RenderBox: View {
 	}
 
     var body: some View {
-		GroupBox(label: Text("Render Time! \(Int.random(in: 0...9))")) {
+		GroupBox(label: Text("Render Time!")) {
 			HStack {
 				VStack(alignment: .leading) {
 					Button(action: render) {
@@ -42,9 +42,10 @@ struct RenderBox: View {
 				}
 				Spacer()
 				VStack {
-					IntInput(value: $samples, name: "Samples")
-					IntInput(value: $settings.kernalSize.1, name: "Kernel groups", min: 0)
-					IntInput(value: $settings.kernalSize.0, name: "Kernel group size", max: Engine.MaxThreadsPerGroup, min: 0)
+					Input(value: $samples, step: 1, name: "Samples")
+					Input(value: $settings.kernelSize.1, step: 1, name: "Kernel groups", min: 0)
+					Input(value: $settings.kernelSize.0, step: 1, name: "Kernel group size", min: 0)
+                    //max: Engine.MaxThreadsPerGroup
 				}
 			}
 		}
@@ -56,3 +57,4 @@ struct RenderBox_Previews: PreviewProvider {
         RenderBox()
     }
 }
+

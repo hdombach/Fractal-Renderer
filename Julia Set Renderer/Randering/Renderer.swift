@@ -82,31 +82,15 @@ class Renderer: NSObject, MTKViewDelegate {
 			Engine.Settings.camera.position += offset
 		}
 
-		
-
-		/*let threadsPerGrid = MTLSize.init(width: self.defaultTexture.texture.width, height: self.defaultTexture.texture.height, depth: 1)
-		let maxThreadsPerThreadgroup = Engine.ComputePipelineState.maxTotalThreadsPerThreadgroup
-		let groupSize = Int(floor(sqrt(Float(maxThreadsPerThreadgroup))))
-		let threadsPerThreadgroup = MTLSize(width: groupSize, height: groupSize, depth: 1)
-
-		let containerLength = MemoryLayout<VoxelContainer>.stride + MemoryLayout<Voxel>.stride * Engine.Container.voxels.count
-		var container = Engine.Container
-
-		computeCommandEncoder?.setBytes(&Engine.SceneCamera, length: MemoryLayout<Camera>.stride, index: 0)
-		computeCommandEncoder?.setBytes(&container, length: containerLength, index: 1)
-		computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-
-		computeCommandEncoder?.endEncoding()*/
-
-		//exp += 1
-
 		//post draw commands
 
 		guard let drawable = view.currentDrawable,
 			let renderPassDescriptor = view.currentRenderPassDescriptor
 			else { print("could not get things"); return }
 
-		var voxelsLength = UInt32(Engine.Container.voxels.count)
+		var voxelsLength = UInt32(Engine.Container.voxelCount)
+		var lightsLength = UInt32(Engine.Settings.skyBox.count)
+        var renderMode = Engine.Settings.renderMode.rawValue
 
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {
@@ -114,6 +98,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			renderCommandEncoder?.setRenderPipelineState(Engine.PreviewPipelineState)
 		case .rendering:
 			renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+        default:
+            renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
 		}
 		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
@@ -125,6 +111,10 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.exposure, length: MemoryLayout<Int>.stride, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
+        renderCommandEncoder?.setFragmentBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 6)
+		renderCommandEncoder?.setFragmentBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.rayMarchingSettings, length: MemoryLayout<RayMarchingSettings>.stride, index: 8)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -134,12 +124,9 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.waitUntilCompleted()
 
        
-        Engine.JuliaSetPass(perSecond: 60)
 
-		if Engine.Settings.window == .rendering && Engine.Settings.samples > Engine.Settings.exposure {
-			Engine.RenderPass(groupSize: Engine.Settings.kernelSize.groupSize, groups: Engine.Settings.kernelSize.groups)
-			Engine.Settings.progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
-		}
+		
+        Engine.RenderPass()
 
 		//Loading Pattern
 	}
@@ -205,7 +192,7 @@ class Texture {
 			let options = [MTKTextureLoader.Option.origin : _origin]
 
 			do {
-				result = try textureLoader.newTexture(URL: url, options: options)
+                result = try textureLoader.newTexture(URL: url, options: options as [MTKTextureLoader.Option : Any])
 				result.label = _textureName
 			} catch let error as NSError {
 				printError("Could not load texture : :\(error)")
