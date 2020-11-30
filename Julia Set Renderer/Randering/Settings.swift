@@ -31,6 +31,7 @@ struct LightInfo: Hashable, Identifiable {
 
 struct RayMarchingSettings {
 	var mandelbulbPower: Float = 12
+	var bundleSize: UInt32 = 1
 }
 
 class RenderSettings {

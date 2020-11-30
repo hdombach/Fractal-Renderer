@@ -14,6 +14,7 @@ struct MandelbulbSettings: View {
     var body: some View {
 		VStack {
 			Input(value: $settings.mandelbulbPower, step: 0.1, name: "Power")
+			Input(value: $settings.bundleSize, step: 1, name: "Bundle Size")
 		}.padding()
     }
 }

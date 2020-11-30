@@ -34,7 +34,7 @@ struct Material {
 		//rgbAbsorption = float3(0.5, 0.5, 0.5);
 		diffuse = 1;
 		float distanceFromCenter = distance(position, float3(0, 0, 0));
-		rgbAbsorption = float3(0.5 + 0.3 * metal::precise::sin(distanceFromCenter * 100), 0.5 + 0.3 * metal::precise::cos(distanceFromCenter * 40), 0.5 + 0.3 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
+		rgbAbsorption = float3(0.4 + 0.4 * metal::precise::sin(distanceFromCenter * 100), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 40), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
 
 		if (0.02 > distanceFromCenter) {
 			//rgbEmitted = float3((0.02 - distanceFromCenter) * 20, 0, 0);
@@ -82,6 +82,7 @@ struct SkyBoxLight {
 
 struct RayMarchingSettings {
 	float mandelbulbPower;
+	int bundleSize;
 };
 
 //MARK: Camera
@@ -599,6 +600,28 @@ struct RayTracer {
 		} while (0 < difference * originalDifference);
 		return returnRay;
 	}
+	
+	float rideRay(Ray primaryRay, Ray secondaryRay, RayMarchingSettings settings) {
+		//float tempDot = dot(normalize(primaryRay.deriction.xyz), normalize(secondaryRay.deriction.xyz));
+		//float k = sqrt(1 - tempDot * tempDot) / tempDot;
+		float k = length(normalize(secondaryRay.deriction.xyz) - normalize(primaryRay.deriction.xyz));
+		float rLast = 0;
+		float r = 0;
+		float t = 0;
+		Mandebulb bulb;
+		while (100000 > t) {
+			rLast = r;
+			r = bulb.DE(primaryRay.position.xyz + t * normalize(primaryRay.deriction.xyz), settings).d;
+			float thing = 0.5 * r * r / rLast;
+			float tSphereIntersection = t - thing;
+			float rSphereIntersection = sqrt(r * r - thing);
+			if (rSphereIntersection < k * tSphereIntersection || t / 50000 > r) {
+				return t;
+			}
+			t += r;
+		}
+		return t;
+	}
     
     SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings) {
         Ray ray = rayIn;
@@ -698,35 +721,61 @@ struct RayTracer {
         
     }
 
-    float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings) {
-		Ray ray = camera.spawnRay(pos);
-
-		//return float4(maths.rand(89, 1325, 34), maths.rand(12549018243, -78958, 1982741), maths.rand(12509, 105981823, -1093582123), maths.rand(15901283, 1509825, 1029851));
-
-		int bounces = 0;
-		while (bounces < bounceLimit) {
-            SingleResult result;
-            if (isJulia == 0) {
-                result = shootRay(ray, voxels, showVoxels, voxelsLength);
-            } else {
-                result = mandelBulb(ray, seed, 0.01, settings);
-            }
-            //return float4(result.collision.surfaceNormal, 1);
-			ray = result.ray;
-			if (result.distance >= 100000) {
-                if (bounces > 0) {
-                    ray.colorSource += ray.colorAbsorption * getSkyBox(ray, lights, lightsLength);
-                }
-				break;
-			}
-			ray.colorAbsorption = ray.colorAbsorption * (1 - result.distance / 10);
-			if (result.collision.surfaceNormal.x == 0 && result.collision.surfaceNormal.y == 0 && result.collision.surfaceNormal.z == 0) {
-				//return float4(1, 0, 0, 1);
-			}
-			ray = reflect(ray, result.collision.surfaceNormal, result.collision.surfaceMaterial, seed);
-			bounces ++;
+	float4 rayCast(float2 pos, Camera camera, int bounceLimit, device Voxel *voxels, uint3 seed, bool showVoxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, float2 textureSize) {
+		
+		MathContainer maths;
+		
+		float skip = 0;
+		if (isJulia == 1 && settings.bundleSize > 1) {
+			Ray primary = camera.spawnRay(pos + float2(0.5 / textureSize.x, 0.5 / textureSize.y));
+			Ray secondary = camera.spawnRay(pos);
+			skip = rideRay(primary, secondary, settings);
 		}
-		return float4((ray.colorSource), 1);
+		
+		uint3 seed2 = seed;
+		float4 output = float4(0);
+		
+		for (int c = 0; settings.bundleSize > c; c++) {
+			seed2 += uint3(5129,312,5021);
+			float2 randomOffset;
+			if (settings.bundleSize > 0) {
+				randomOffset.x = maths.rand(seed2.x, pos.x * 983414, seed2.z * 33429);
+				randomOffset.y = maths.rand(seed2.y, pos.y * 754239, seed2.z * 46523);
+			} else {
+				randomOffset = float2(0);
+			}
+			
+			float2 newPos = pos + randomOffset / textureSize;
+			Ray ray = camera.spawnRay(newPos);
+			ray.march(skip);
+			
+			int bounces = 0;
+			while (bounces < bounceLimit) {
+				SingleResult result;
+				if (isJulia == 0) {
+					result = shootRay(ray, voxels, showVoxels, voxelsLength);
+				} else {
+					result = mandelBulb(ray, seed, 0.01, settings);
+				}
+				//return float4(result.collision.surfaceNormal, 1);
+				ray = result.ray;
+				if (result.distance >= 100000) {
+					if (bounces > 0) {
+						ray.colorSource += ray.colorAbsorption * getSkyBox(ray, lights, lightsLength);
+					}
+					break;
+				}
+				ray.colorAbsorption = ray.colorAbsorption * (1 - result.distance / 10);
+				if (result.collision.surfaceNormal.x == 0 && result.collision.surfaceNormal.y == 0 && result.collision.surfaceNormal.z == 0) {
+					//return float4(1, 0, 0, 1);
+				}
+				ray = reflect(ray, result.collision.surfaceNormal, result.collision.surfaceMaterial, seed);
+				bounces ++;
+			}
+			output += float4((ray.colorSource), 1);
+		}
+		
+		return output / settings.bundleSize;
 	}
 
 	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings) {

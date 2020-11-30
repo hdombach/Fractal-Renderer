@@ -78,8 +78,11 @@ fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 	RayTracer rayShooter;
 
 	Camera myCamera = camera;
+	
+	RayMarchingSettings s = settings;
+	s.bundleSize = 0;
 
-	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength, settings));
+	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength, s, float2(0)));
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
@@ -121,8 +124,8 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	randomOffset.x = maths.rand(randomSeed.x, pos.x * 983414, anIndex * 33429);
 	randomOffset.y = maths.rand(randomSeed.y, pos.y * 754239, anIndex * 46523);
 
-	pos.x = (pos.x + randomOffset.x) / readTexture.get_width();
-	pos.y = (pos.y + randomOffset.y) / readTexture.get_height();
+	pos.x = (pos.x + 0) / readTexture.get_width();
+	pos.y = (pos.y + 0) / readTexture.get_height();
 
 
 	float4 color = float4(0, 0, 0, 0);
@@ -132,7 +135,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	}
 	color = color / 10;*/
 
-	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength, settings);
+	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength, settings, float2(readTexture.get_width(), readTexture.get_height()));
 	//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
 	float4 oldColor;
 	oldColor.x = readTexture.read(textureIndex, 0).x;
