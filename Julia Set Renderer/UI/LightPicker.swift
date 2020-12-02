@@ -39,11 +39,11 @@ struct LightPicker: View {
 			HStack {
 				VStack {
 					Text("Size")
-					Input(value: $light.size, step: 0.01, name: "Size")
+					Input(value: $light.size, step: 0.01)
 				}
 				VStack {
 					Text("Strength")
-					Input(value: $light.strength, step: 0.01, name: "Strength")
+					Input(value: $light.strength, step: 0.01)
 				}
 			}
 		}

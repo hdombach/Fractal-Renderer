@@ -17,31 +17,33 @@ struct ContentView: View {
 	
 	var body: some View {
         ScrollView {
-            RenderBox()
-                .padding([.top, .leading, .trailing])
-            HStack {
-                Button("Camera Settings") {
-                    isShowingCamera.toggle()
-                }
-                .popover(isPresented: $isShowingCamera, content: {
-                    CameraSettings()
-                })
-                
-                Button("Image Settings") {
-                    isShowingImageSettings.toggle()
-                }
-                .popover(isPresented: $isShowingImageSettings, content: {
-                    ImageSettings()
-                })
-            }
-            TabView(selection: $settings.renderMode) {
-                PatternSettings()
-                    .tabItem { Text("yeet") }.tag(RenderMode.JuliaSet)
-				MandelbulbSettings(settings: $settings.rayMarchingSettings)
-                    .tabItem { Text("yeet2") }.tag(RenderMode.Mandelbulb)
-			}.frame(height: 200)
-			SkyBoxSettings()
-				.frame(height: 300)
+			if settings.isShowingUI {
+				RenderBox()
+					.padding([.top, .leading, .trailing])
+				HStack {
+					Button("Camera Settings") {
+						isShowingCamera.toggle()
+					}
+					.popover(isPresented: $isShowingCamera, content: {
+						CameraSettings()
+					})
+					
+					Button("Image Settings") {
+						isShowingImageSettings.toggle()
+					}
+					.popover(isPresented: $isShowingImageSettings, content: {
+						ImageSettings()
+					})
+				}
+				TabView(selection: $settings.renderMode) {
+					PatternSettings()
+						.tabItem { Text("yeet") }.tag(RenderMode.JuliaSet)
+					MandelbulbSettings(settings: $settings.rayMarchingSettings)
+						.tabItem { Text("yeet2") }.tag(RenderMode.Mandelbulb)
+				}.frame(height: 400)
+				SkyBoxSettings()
+					.frame(height: 300)
+			}
         }
     }
 }

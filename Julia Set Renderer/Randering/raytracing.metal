@@ -28,12 +28,12 @@ struct Material {
 		 return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
 	}
 
-	void init(float3 position) {
+	void init(float3 position, float offset) {
 		rgbEmitted = float3(0, 0, 0);
 		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
 		//rgbAbsorption = float3(0.5, 0.5, 0.5);
 		diffuse = 1;
-		float distanceFromCenter = distance(position, float3(0, 0, 0));
+		float distanceFromCenter = distance(position, float3(0, 0, 0)) + offset;
 		rgbAbsorption = float3(0.4 + 0.4 * metal::precise::sin(distanceFromCenter * 100), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 40), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
 
 		if (0.02 > distanceFromCenter) {
@@ -83,6 +83,8 @@ struct SkyBoxLight {
 struct RayMarchingSettings {
 	float mandelbulbPower;
 	int bundleSize;
+	float quality;
+	float colorOffset;
 };
 
 //MARK: Camera
@@ -531,7 +533,7 @@ struct Mandebulb {
         float dy = DE(pos + float3(0, e, 0), settings).d - n;
         float dz = DE(pos + float3(0, 0, e), settings).d - n;
         
-        return normalize(float3(dx, dy, dz));
+        return normalize(float3(dx, dy, dz) * -1);
     }
 };
 
@@ -615,7 +617,7 @@ struct RayTracer {
 			float thing = 0.5 * r * r / rLast;
 			float tSphereIntersection = t - thing;
 			float rSphereIntersection = sqrt(r * r - thing);
-			if (rSphereIntersection < k * tSphereIntersection || t / 50000 > r) {
+			if (rSphereIntersection < k * tSphereIntersection || t / settings.quality > r) {
 				return t;
 			}
 			t += r;
@@ -644,7 +646,7 @@ struct RayTracer {
             ray.position += float4(fog * offset.x * step, fog * offset.y * step, fog * offset.z * step, 0);*/
             d.distance += step;
             steps ++;
-            if (1 * d.distance / 50000 > step || 500 < steps) {
+            if (1 * d.distance / settings.quality > step || 500 < steps) {
                 break;
             }
         }
@@ -655,7 +657,7 @@ struct RayTracer {
         result.collision.surfaceNormal = bulb.normal(ray.position.xyz, settings);
         
         Material material;
-        material.init(float3(bulbResut.orbitLife, 0, 0) / 3);
+        material.init(float3(bulbResut.orbitLife, 0, 0) / 3, settings.colorOffset);
         
         result.collision.surfaceMaterial = material;
         result.collision.position = ray.position.xyz;
@@ -697,7 +699,7 @@ struct RayTracer {
 		}
 
 		Material material;
-		material.init(float3(ray.position.x, ray.position.y, ray.position.z));
+		material.init(float3(ray.position.x, ray.position.y, ray.position.z), 0);
 
 		CollisionInfo collide;
 		collide.position = float3(ray.position.x, ray.position.y, ray.position.z);
@@ -794,7 +796,8 @@ struct RayTracer {
 
 		//float4 color = float4(log(result.distance)) + 0.2;
         float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
-        color *= pow(0.99, float(result.steps));
+        color *= pow(0.995, float(result.steps));
+		color *= dot(normalize(result.ray.deriction.xyz), result.collision.surfaceNormal);
 		if (result.distance > 100) {
 			color = float4(getSkyBox(ray, lights, lightsLength), 1);
 			return color;

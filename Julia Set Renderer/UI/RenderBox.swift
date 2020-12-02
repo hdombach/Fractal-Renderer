@@ -20,6 +20,7 @@ struct RenderBox: View {
 		if Engine.Settings.samples == Engine.Settings.exposure {
 			Engine.ResetRender()
 		}
+		print("Started Rendering with camera: \(Engine.Settings.camera)")
 	}
 
 	func preview() {

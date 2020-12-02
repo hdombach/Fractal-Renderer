@@ -32,6 +32,8 @@ struct LightInfo: Hashable, Identifiable {
 struct RayMarchingSettings {
 	var mandelbulbPower: Float = 12
 	var bundleSize: UInt32 = 1
+	var quality: Float = 50000
+	var colorOffset: Float = 0
 }
 
 class RenderSettings {
@@ -114,6 +116,12 @@ class RenderSettings {
     var renderMode: RenderMode = .JuliaSet
 	
 	var rayMarchingSettings: RayMarchingSettings = .init()
+	
+	var isShowingUI: Bool = true {
+		didSet {
+			observed.isShowingUI = self.isShowingUI
+		}
+	}
 }
 
 final class ObservedRenderSettings: ObservableObject {
@@ -171,6 +179,8 @@ final class ObservedRenderSettings: ObservableObject {
 			sourceSettings.rayMarchingSettings = self.rayMarchingSettings
 		}
 	}
+	
+	@Published var isShowingUI: Bool = true
 
 	init(source: RenderSettings) {
 		sourceSettings = source

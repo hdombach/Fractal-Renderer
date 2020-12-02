@@ -44,6 +44,7 @@ class RenderView: MTKView {
 
 	override func mouseDown(with event: NSEvent) {
         preferredFramesPerSecond = 60
+		Engine.Settings.isShowingUI = false
 		isTracking = true
 		CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: false))
 		CGDisplayHideCursor(1)
@@ -53,6 +54,7 @@ class RenderView: MTKView {
 		Keys.update(key: event.keyCode, value: true)
 		if event.keyCode == 53 { // escape
             preferredFramesPerSecond = 1
+			Engine.Settings.isShowingUI = true
 			isTracking = false
 			CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: true))
 			CGDisplayShowCursor(1)
