@@ -42,6 +42,12 @@ extension Float: sizeable { }
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
+extension SIMD4 {
+	var xyz: SIMD3<Scalar> {
+		return SIMD3.init(self.x, self.y, self.z)
+	}
+}
+
 
 struct Vertex: sizeable {
 	var position: SIMD4<Float>
@@ -50,17 +56,17 @@ struct Vertex: sizeable {
 }
 
 struct Camera: Equatable {
-	var position: SIMD4<Float>
-	var deriction: SIMD4<Float> {
+	var position: SIMD4<Float> = .init()
+	var deriction: SIMD4<Float>  = .init() {
 		didSet {
 			self.updateRotationMatrix()
 		}
 	}
 	///
-	var zoom: Float
-	var cameraDepth: Float
-	var rotateMatrix: matrix_float4x4
-	var resolution: SIMD2<Float>
+	var zoom: Float = .init()
+	var cameraDepth: Float = .init()
+	var rotateMatrix: matrix_float4x4 = .init()
+	var resolution: SIMD2<Float> = .init()
 
 	mutating func pointInDeriction(angle: SIMD4<Float>) {
 		deriction = angle

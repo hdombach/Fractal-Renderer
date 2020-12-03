@@ -13,13 +13,13 @@ class Renderer: NSObject, MTKViewDelegate {
 	var imageRatio: Float = 16 / 9
 
 	var squareMesh: Mesh!
-
-	let defaultTexture = Texture.init("sun")
-	let targetTextre = Texture.init("")
+	
 	var exp: Float = 0
 
 	var screenRatio: Float = 0
     var isComputingPass: Bool = false
+	
+	var rayMarcher = RayMarcher()
 
 	//var camera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080))
 
@@ -48,8 +48,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		//print(Engine.SceneCamera.rotateMatrix)
 
 		var update = false
-
-		let speed: Float = 0.01
+		
+		let speed: Float = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
 
 		var offset = SIMD4<Float>(0, 0, 0, 0)
 
@@ -88,10 +88,6 @@ class Renderer: NSObject, MTKViewDelegate {
 			let renderPassDescriptor = view.currentRenderPassDescriptor
 			else { print("could not get things"); return }
 
-		var voxelsLength = UInt32(Engine.Container.voxelCount)
-		var lightsLength = UInt32(Engine.Settings.skyBox.count)
-        var renderMode = Engine.Settings.renderMode.rawValue
-
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {
 		case .preview:
@@ -106,15 +102,18 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
 		renderCommandEncoder?.setFragmentSamplerState(Engine.SamplerState, index: 0)
 		renderCommandEncoder?.setFragmentTexture(Engine.MainTexture.texture, index: 0)
+		
+		var info = ShaderInfo.init()
+		info.camera = Engine.Settings.camera
+		info.voxelsLength = UInt32(Engine.Container.voxelCount)
+		info.isJulia = Engine.Settings.renderMode.rawValue
+		info.lightsLength = UInt32(Engine.Settings.skyBox.count)
+		info.exposure = UInt32(Engine.Settings.exposure)
+		info.rayMarchingSettings = Engine.Settings.rayMarchingSettings
 
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
+		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.exposure, length: MemoryLayout<Int>.stride, index: 2)
-		renderCommandEncoder?.setFragmentBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
-        renderCommandEncoder?.setFragmentBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 6)
-		renderCommandEncoder?.setFragmentBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.rayMarchingSettings, length: MemoryLayout<RayMarchingSettings>.stride, index: 8)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 2)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -170,8 +169,6 @@ class Mesh {
 
 class Texture {
 	var texture: MTLTexture!
-	var rgTexture: MTLTexture!
-	var bTexture: MTLTexture!
 
 	private var _textureName: String!
 	private var _textureExtension: String!

@@ -10,7 +10,7 @@ import MetalKit
 import Combine
 import SwiftUI
 
-enum RenderMode: Int32 {
+enum RenderMode: UInt32 {
     case JuliaSet = 0
     case Mandelbulb = 1
 }
@@ -34,6 +34,7 @@ struct RayMarchingSettings {
 	var bundleSize: UInt32 = 1
 	var quality: Float = 50000
 	var colorOffset: Float = 0
+	var iterations: UInt32 = 50
 }
 
 class RenderSettings {

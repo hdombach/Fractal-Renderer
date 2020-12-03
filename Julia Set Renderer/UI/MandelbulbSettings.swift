@@ -16,7 +16,8 @@ struct MandelbulbSettings: View {
 			Input(value: $settings.mandelbulbPower, step: 0.1, name: "Power")
 			Input(value: $settings.bundleSize, step: 1, name: "Bundle Size")
 			Input(value: $settings.quality, step: 100, name: "Quality")
-			Input(value: $settings.colorOffset, step: 0.1, name: "Color Offset")
+			Input(value: $settings.colorOffset, step: 0.01, name: "Color Offset")
+			Input(value: $settings.iterations, step: 1, name: "Iterations")
 		}.padding()
     }
 }

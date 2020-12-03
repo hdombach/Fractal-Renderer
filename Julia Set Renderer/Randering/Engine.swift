@@ -117,21 +117,19 @@ class Engine {
                 if Settings.exposure + 1 >= Settings.samples {
                     stop = Settings.imageSize.0 * Settings.imageSize.1
                 }
-                var mutableIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
-                var voxelsLength = UInt32(Container.voxelCount)
-				var lightsLength = UInt32(Settings.skyBox.count)
-                var renderMode = Settings.renderMode.rawValue
+				
+				var shaderInfo = ShaderInfo()
+				shaderInfo.camera = Settings.camera
+				shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
+				shaderInfo.randomSeed = SIMD3<UInt32>.init(UInt32.random(in: 0...10000), UInt32.random(in: 0...10000), UInt32.random(in: 0...10000))
+				shaderInfo.voxelsLength = UInt32(Container.voxelCount)
+				shaderInfo.isJulia = Settings.renderMode.rawValue
+				shaderInfo.lightsLength = UInt32(Settings.skyBox.count)
+				shaderInfo.rayMarchingSettings = Settings.rayMarchingSettings
 
-                computeCommandEncoder?.setBytes(&Settings.camera, length: MemoryLayout<Camera>.stride, index: 0)
+				computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
                 computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
-                computeCommandEncoder?.setBytes(&mutableIndex, length: MemoryLayout<SIMD4<UInt32>>.stride, index: 2)
-                var seed = SIMD3<Int32>.init(Int32.random(in: 0...10000), Int32.random(in: 0...10000), Int32.random(in: 0...10000))
-                computeCommandEncoder?.setBytes(&seed, length: MemoryLayout<SIMD3<Int32>>.stride, index: 3)
-                computeCommandEncoder?.setBytes(&voxelsLength, length: MemoryLayout<UInt32>.stride, index: 4)
-                computeCommandEncoder?.setBytes(&renderMode, length: MemoryLayout<Int>.stride, index: 5)
-				computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 6)
-				computeCommandEncoder?.setBytes(&lightsLength, length: MemoryLayout<UInt32>.stride, index: 7)
-				computeCommandEncoder?.setBytes(&Settings.rayMarchingSettings, length: MemoryLayout<RayMarchingSettings>.stride, index: 8)
+				computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 2)
                 computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
                 computeCommandEncoder?.endEncoding()

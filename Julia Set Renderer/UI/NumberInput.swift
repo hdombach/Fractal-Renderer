@@ -71,7 +71,7 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type:
 					.contentShape(Rectangle())
 				}
 			}
-			.padding()
+			.padding(4.0)
 		}
 		.padding(0.0)
 		

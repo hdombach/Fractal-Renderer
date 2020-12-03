@@ -85,6 +85,7 @@ struct RayMarchingSettings {
 	int bundleSize;
 	float quality;
 	float colorOffset;
+	uint iterations;
 };
 
 //MARK: Camera
@@ -107,6 +108,17 @@ struct Camera {
 		ray.colorSource = float3(0, 0, 0);
 		return ray;
 	}
+};
+
+struct ShaderInfo {
+	RayMarchingSettings rayMarchingSettings;
+	Camera camera;
+	uint4 realIndex;
+	uint3 randomSeed;
+	uint voxelsLength;
+	uint isJulia;
+	uint lightsLength;
+	uint exposure;
 };
 
 struct VoxelInfo {
@@ -489,8 +501,8 @@ struct BulbInfo {
     float orbitLife;
 };
 
+//MARK: Mandelbulb
 struct Mandebulb {
-    int iterations = 50;
     float bailout = 3;
     
     BulbInfo DE(float3 pos, RayMarchingSettings settings) {
@@ -498,6 +510,7 @@ struct Mandebulb {
         float dr = 1;
         float r = 0;
 		float power = settings.mandelbulbPower;
+		uint iterations = settings.iterations;
         BulbInfo info;
         info.orbitLife = iterations;
         for (int i = 0; i < iterations; i++) {

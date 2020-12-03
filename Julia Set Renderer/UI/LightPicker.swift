@@ -28,22 +28,22 @@ struct LightPicker: View {
 			VStack {
 				Text("Position")
 				HStack {
-					Input(value: $light.position.x, step: 0.01, name: "X")
+					Input(value: $light.position.x, step: 0.1, name: "X")
 						.padding(.bottom, -2.0)
-					Input(value: $light.position.y, step: 0.01, name: "Y")
+					Input(value: $light.position.y, step: 0.1, name: "Y")
 						.padding(.vertical, -2.0)
-					Input(value: $light.position.z, step: 0.01, name: "Z")
+					Input(value: $light.position.z, step: 0.1, name: "Z")
 						.padding(.top, -2.0)
 				}
 			}
 			HStack {
 				VStack {
 					Text("Size")
-					Input(value: $light.size, step: 0.01)
+					Input(value: $light.size, step: 0.1)
 				}
 				VStack {
 					Text("Strength")
-					Input(value: $light.strength, step: 0.01)
+					Input(value: $light.strength, step: 0.1)
 				}
 			}
 		}

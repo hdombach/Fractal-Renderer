@@ -38,91 +38,75 @@ vertex RasterizerData basic_vertex_shader(const VertexIn vIn [[ stage_in ]],
 }
 
 fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
-												 sampler sampler2d [[ sampler(0) ]],
-												 texture2d_array<float> texture [[ texture(0) ]],
-												 constant int &exposure [[buffer(2)]]) {
+									  sampler sampler2d [[ sampler(0) ]],
+									  texture2d_array<float> texture [[ texture(0) ]],
+									  constant ShaderInfo &info [[buffer(0)]]) {
 	float4 color;// = texture.sample(sampler2d, rd.texCoord) / exposure / 100;
 	color.r = texture.sample(sampler2d, rd.texCoord, 0).x;
 	color.g = texture.sample(sampler2d, rd.texCoord, 1).x;
 	color.b = texture.sample(sampler2d, rd.texCoord, 2).x;
 	color.a = 1;
 
-	return color / exposure;
+	return color / info.exposure;
 }
 
 
 
 fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
-									  constant Camera &camera [[buffer(0)]],
+									  constant ShaderInfo &shaderInfo [[buffer(0)]],
 									  device Voxel *voxels [[buffer(1)]],
-									  constant int &voxelsLength [[buffer(4)]],
-									  constant bool &isJulia [[buffer(5)]],
-									  constant SkyBoxLight *lights [[buffer(6)]],
-									  constant int &lightsLength [[buffer(7)]],
-									  constant RayMarchingSettings &settings [[buffer(8)]]) {
+									  constant SkyBoxLight *lights [[buffer(2)]]) {
 	RayTracer yeet;
-	Camera myCamera = camera;
-	return float4(yeet.depthMap(rd.texCoord, myCamera, voxels, voxelsLength, isJulia, lights, lightsLength, settings));
+	ShaderInfo info = shaderInfo;
+	return float4(yeet.depthMap(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings));
 	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
 }
 
 fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
-									   constant Camera &camera [[buffer(0)]],
+									   constant ShaderInfo &shaderInfo [[buffer(0)]],
 									   device Voxel *voxels [[buffer(1)]],
-									   constant int &voxelsLength [[buffer(4)]],
-									   constant bool &isJulia [[buffer(5)]],
-									   constant SkyBoxLight *lights [[buffer(6)]],
-									   constant int &lightsLength [[buffer(7)]],
-									   constant RayMarchingSettings &settings [[buffer(8)]]) {
+									   constant SkyBoxLight *lights [[buffer(2)]]) {
 	//MathContainer maths;
 	RayTracer rayShooter;
 
-	Camera myCamera = camera;
-	
-	RayMarchingSettings s = settings;
-	s.bundleSize = 0;
+	ShaderInfo info = shaderInfo;
+	info.rayMarchingSettings.bundleSize = 0;
 
-	return float4(rayShooter.rayCast(rd.texCoord, myCamera, 2, voxels, uint3(0, 0, 0), false, voxelsLength, isJulia, lights, lightsLength, s, float2(0)));
+	return float4(rayShooter.rayCast(rd.texCoord, info.camera, 2, voxels, uint3(0, 0, 0), false, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, float2(0)));
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
 							   texture2d_array<float, access::write> writeTexture [[texture(1)]],
 							   uint index [[ thread_position_in_grid ]],
-							   constant Camera &camera [[buffer(0)]],
+							   constant ShaderInfo &shaderInfo [[buffer(0)]],
 							   device Voxel *voxels [[buffer(1)]],
-							   constant uint4 &realIndex [[buffer(2)]],
-							   constant uint3 &randomSeed [[buffer(3)]],
-							   constant int &voxelsLength [[buffer(4)]],
-							   constant int &isJulia [[buffer(5)]],
-							   constant SkyBoxLight *lights [[buffer(6)]],
-							   constant int &lightsLength [[buffer(7)]],
-							   constant RayMarchingSettings &settings [[buffer(8)]]) {
+							   constant SkyBoxLight *lights [[buffer(2)]]) {
 	MathContainer maths;
 	RayTracer rayShooter;
+	
+	ShaderInfo info = shaderInfo;
 
-	Camera myCamera = camera;
+	float anIndex = info.realIndex.x + index;
 
-	float anIndex = realIndex.x + index;
-
-	if (anIndex > realIndex.w) {
+	if (anIndex > info.realIndex.w) {
 		return;
 	}
-	anIndex = fmod(anIndex, realIndex.y * realIndex.z);
+	anIndex = fmod(anIndex, info.realIndex.y * info.realIndex.z);
 
 	float2 pos;
-	pos.x = floor(fmod(anIndex, float(realIndex.y * realIndex.z)) / float(realIndex.z));
-	pos.y = fmod(anIndex, float(realIndex.z));
+	pos.x = floor(fmod(anIndex, float(info.realIndex.y * info.realIndex.z)) / float(info.realIndex.z));
+	pos.y = fmod(anIndex, float(info.realIndex.z));
 	uint2 textureIndex = uint2(pos.x, pos.y);
 
-    uint3 seed = randomSeed;
+    uint3 seed = info.randomSeed;
     seed.x += index * 402;
     seed.y += index * 503;
     seed.z += index * 305;
     
     
 	float2 randomOffset;
-	randomOffset.x = maths.rand(randomSeed.x, pos.x * 983414, anIndex * 33429);
-	randomOffset.y = maths.rand(randomSeed.y, pos.y * 754239, anIndex * 46523);
+	randomOffset.x = maths.rand(info.randomSeed.x, pos.x * 983414, anIndex * 33429);
+	randomOffset.y = maths.rand(info.randomSeed.y, pos.y * 754239, anIndex * 46523);
 
 	pos.x = (pos.x + 0) / readTexture.get_width();
 	pos.y = (pos.y + 0) / readTexture.get_height();
@@ -135,7 +119,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	}
 	color = color / 10;*/
 
-	color = rayShooter.rayCast(pos, myCamera, 4, voxels, randomSeed, false, voxelsLength, isJulia, lights, lightsLength, settings, float2(readTexture.get_width(), readTexture.get_height()));
+	color = rayShooter.rayCast(pos, info.camera, 4, voxels, info.randomSeed, false, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, float2(readTexture.get_width(), readTexture.get_height()));
 	//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
 	float4 oldColor;
 	oldColor.x = readTexture.read(textureIndex, 0).x;
