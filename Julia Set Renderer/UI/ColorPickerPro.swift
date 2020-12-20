@@ -10,26 +10,32 @@ import SwiftUI
 
 struct ColorPickerPro: View {
 	@Binding var color: SIMD3<Float>
+	@State var tempColor: SIMD3<Float> = .init(1, 1, 1)
     var body: some View {
 		HStack {
 			VStack {
 				HStack {
-					Input(value: $color.x, step: 0.01, name: "R")
-					Slider(value: $color.x)
+					NumberInput(value: $tempColor.x.nsNumber, step: 0.01.nsNumber.0, name: "R")
+					Slider(value: $tempColor.x)
 				}
 				HStack {
-					Input(value: $color.y, step: 0.01, name: "G")
-					Slider(value: $color.y)
+					NumberInput(value: $tempColor.y.nsNumber, step: 0.01.nsNumber.0, name: "G")
+					Slider(value: $tempColor.y)
 				}
 				HStack {
-					Input(value: $color.z, step: 0.01, name: "B")
-					Slider(value: $color.z)
+					NumberInput(value: $tempColor.z.nsNumber, step: 0.01.nsNumber.0, name: "B")
+					Slider(value: $tempColor.z)
 				}
 			}
 				.frame(width: 200)
-			RoundedRectangle(cornerRadius: 10)
-				.frame(width: 50, height: 50)
-				.foregroundColor(Color.init(red: Double(color.x), green: Double(color.y), blue: Double(color.z), opacity: 1))
+			VStack {
+				RoundedRectangle(cornerRadius: 10)
+					.frame(width: 50, height: 50)
+					.foregroundColor(Color.init(red: Double(tempColor.x), green: Double(tempColor.y), blue: Double(tempColor.z), opacity: 1))
+				Button("Set") {
+					color = tempColor
+				}
+			}
 		}
     }
 }

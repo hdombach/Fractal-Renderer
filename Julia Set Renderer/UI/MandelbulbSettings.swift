@@ -12,13 +12,22 @@ struct MandelbulbSettings: View {
 	@Binding var settings: RayMarchingSettings
 	
     var body: some View {
-		VStack {
-			Input(value: $settings.mandelbulbPower, step: 0.1, name: "Power")
-			Input(value: $settings.bundleSize, step: 1, name: "Bundle Size")
-			Input(value: $settings.quality, step: 100, name: "Quality")
-			Input(value: $settings.colorOffset, step: 0.01, name: "Color Offset")
-			Input(value: $settings.iterations, step: 1, name: "Iterations")
-		}.padding()
+		HStack {
+			VStack {
+				NumberInput(value: $settings.mandelbulbPower.nsNumber, step: 0.1.nsNumber.0, name: "Power")
+				NumberInput(value: $settings.bundleSize.nsNumber, step: 1.nsNumber.0, name: "Bundle Size")
+				NumberInput(value: $settings.quality.nsNumber, step: 100.nsNumber.0, name: "Quality")
+				//Input(value: $settings.colorOffset, step: 0.01, name: "Color Offset")
+				NumberInput(value: $settings.iterations.nsNumber, step: 1.nsNumber.0, name: "Iterations")
+			}
+			VStack {
+				Text("Coloring")
+				Tuple3FloatInput(value: $settings.colorBase, step: 0.1.nsNumber.0, name: "Color base")
+				Tuple3FloatInput(value: $settings.colorOffset, step: 0.1.nsNumber.0, name: "Color offset")
+				Tuple3FloatInput(value: $settings.colorVariation, step: 0.1.nsNumber.0, name: "Color variation")
+				Tuple3FloatInput(value: $settings.colorFrequency, step: 10.nsNumber.0, name: "Color frequency")
+			}
+		}
     }
 }
 

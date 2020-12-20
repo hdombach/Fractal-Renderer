@@ -17,4 +17,5 @@ struct ShaderInfo {
 	var isJulia: UInt32 = .init()
 	var lightsLength: UInt32 = .init()
 	var exposure: UInt32 = 0
+	var channelsLength: UInt32 = .init()
 }

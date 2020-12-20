@@ -43,6 +43,8 @@ struct ContentView: View {
 				}.frame(height: 400)
 				SkyBoxSettings()
 					.frame(height: 300)
+				ChannelSettings()
+					.frame(height: 300)
 			}
         }
     }

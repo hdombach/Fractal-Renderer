@@ -8,6 +8,7 @@
 
 import simd
 import Foundation
+import SwiftUI
 
 func printError(_ message: String) {
 	let date = Date()
@@ -42,9 +43,18 @@ extension Float: sizeable { }
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
+typealias float3 = SIMD3<Float>
+
 extension SIMD4 {
 	var xyz: SIMD3<Scalar> {
-		return SIMD3.init(self.x, self.y, self.z)
+		get {
+			return SIMD3.init(self.x, self.y, self.z)
+		}
+		set { (newValue)
+			self.x = newValue.x
+			self.y = newValue.y
+			self.z = newValue.z
+		}
 	}
 }
 

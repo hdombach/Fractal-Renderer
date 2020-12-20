@@ -14,6 +14,11 @@ class RenderView: MTKView {
 	var trackingRect: NSTrackingArea!
 
 	var isTracking: Bool = false
+	
+	func changeRenderMode(isManual: Bool) {
+		self.isPaused = isManual
+		self.enableSetNeedsDisplay = isManual
+	}
 
 	required init(coder: NSCoder) {
 		super.init(coder: coder)
@@ -27,6 +32,8 @@ class RenderView: MTKView {
 		self.clearColor = MTLClearColor.init(red: 0, green: 0, blue: 0, alpha: 0)
 
 		self.renderer = Renderer()
+		
+		Engine.View = self
 
 		renderer.screenRatio = Float(frame.size.width / frame.size.height)
 
@@ -37,13 +44,13 @@ class RenderView: MTKView {
 		addTrackingArea(trackingRect)
 
 
-        preferredFramesPerSecond = 10
+        changeRenderMode(isManual: true)
 	}
 
 	override var acceptsFirstResponder: Bool { return true }
 
 	override func mouseDown(with event: NSEvent) {
-        preferredFramesPerSecond = 60
+		changeRenderMode(isManual: false)
 		Engine.Settings.isShowingUI = false
 		isTracking = true
 		CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: false))
@@ -53,7 +60,7 @@ class RenderView: MTKView {
 	override func keyDown(with event: NSEvent) {
 		Keys.update(key: event.keyCode, value: true)
 		if event.keyCode == 53 { // escape
-            preferredFramesPerSecond = 1
+            changeRenderMode(isManual: true)
 			Engine.Settings.isShowingUI = true
 			isTracking = false
 			CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: true))

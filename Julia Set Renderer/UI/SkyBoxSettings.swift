@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SkyBoxSettings: View {
 	@ObservedObject var settings = Engine.Settings.observed
-	@State var spareLight = LightInfo.init(color: .init(), strength: 0, size: 0, position: .init())
+	@State var spareLight = LightInfo.init(color: .init(), strength: 0, size: 0, position: .init(), channel: 0)
 	@State var selected: LightInfo?
 	@State var items = ["test1", "test2", "test3", "test4"]
 	var currentId: UInt32 = 0
@@ -32,7 +32,7 @@ struct SkyBoxSettings: View {
 				
 				HStack {
 					Button("+") {
-						settings.skyBox.append(.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0)))
+						settings.skyBox.append(.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0))
 					}
 						.padding(.leading)
 						.buttonStyle(PlainButtonStyle())

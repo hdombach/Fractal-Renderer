@@ -21,24 +21,8 @@ func generateID() -> UInt32 {
 	return globalId
 }
 
-struct LightInfo: Hashable, Identifiable {
-	var color: SIMD3<Float>
-	var strength: Float
-	var size: Float
-	var position: SIMD3<Float>
-	var id: UInt32 = generateID()
-}
-
-struct RayMarchingSettings {
-	var mandelbulbPower: Float = 12
-	var bundleSize: UInt32 = 1
-	var quality: Float = 50000
-	var colorOffset: Float = 0
-	var iterations: UInt32 = 50
-}
-
 class RenderSettings {
-    let delayTime = 10
+    let delayTime = 5
 	var isReady = true
 
 	var observed: ObservedRenderSettings!
@@ -48,8 +32,32 @@ class RenderSettings {
 		savedCamera = camera
         delaySet()
 	}
+	
+	func updateChannels() {
+		var max: UInt32 = 0
+		var min: UInt32 = UInt32.max
+		for light in skyBox {
+			if light.channel > max {
+				max = light.channel
+			}
+			if light.channel < min {
+				min = light.channel
+			}
+		}
+		print(max, min)
+		while max > channels.count - 1 {
+			channels.append(ChannelInfo.init(index: UInt32(channels.count), color: .init(1, 1, 1), strength: 1))
+		}
+		while max < channels.count - 1 {
+			channels.removeLast()
+		}
+		if self.channels != observed.channels {
+			self.observed.channels = self.channels
+		}
+		//print(channels.count, "update")
+	}
 
-	func delaySet() {
+	private func delaySet() {
 		if isReady {
 			isReady = false
 			let deadline = DispatchTime.now() + Double(delayTime)
@@ -73,6 +81,9 @@ class RenderSettings {
                 if self.observed.renderMode != self.renderMode {
                     self.observed.renderMode = self.renderMode
                 }
+				if self.observed.channels != self.channels {
+					self.observed.channels = self.channels
+				}
                 
 				self.isReady = true
 			}
@@ -108,7 +119,13 @@ class RenderSettings {
 		}
 	}
 	
-	var skyBox: [LightInfo] = [LightInfo.init(color: .init(0.8, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0))]
+	var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)]
+	
+	var channels: [ChannelInfo] = [ChannelInfo.init(index: 0, color: .init(1, 1, 1), strength: 1)] {
+		didSet {
+			delaySet()
+		}
+	}
 
 	var samples: Int = 0
     
@@ -127,11 +144,16 @@ class RenderSettings {
 
 final class ObservedRenderSettings: ObservableObject {
 	var sourceSettings: RenderSettings
+	
+	func update() {
+		Engine.View.setNeedsDisplay(Engine.View.frame)
+	}
 
 	@Published var kernelSize: (groupSize: Int, groups: Int) {
 		didSet {
 			if sourceSettings.kernelSize != self.kernelSize {
 				sourceSettings.kernelSize = self.kernelSize
+				update()
 			}
 		}
 	}
@@ -140,6 +162,7 @@ final class ObservedRenderSettings: ObservableObject {
 		didSet {
 			if sourceSettings.imageSize != self.imageSize {
 				sourceSettings.imageSize = self.imageSize
+				update()
 			}
 		}
 	}
@@ -148,6 +171,7 @@ final class ObservedRenderSettings: ObservableObject {
 		didSet {
 			if sourceSettings.camera != self.camera {
 				sourceSettings.camera = self.camera
+				update()
 			}
 		}
 	}
@@ -156,6 +180,7 @@ final class ObservedRenderSettings: ObservableObject {
 		didSet {
 			if sourceSettings.progress != self.progress {
 				sourceSettings.progress = self.progress
+				update()
 			}
 		}
 	}
@@ -164,20 +189,30 @@ final class ObservedRenderSettings: ObservableObject {
         didSet {
             if sourceSettings.renderMode != self.renderMode {
                 sourceSettings.renderMode = self.renderMode
+				update()
             }
         }
     }
 	
 	@Published var skyBox: [LightInfo] {
 		didSet {
-			print("update skybox")
 			sourceSettings.skyBox = self.skyBox
+			sourceSettings.updateChannels()
+			update()
+		}
+	}
+	
+	@Published var channels: [ChannelInfo] {
+		didSet {
+			sourceSettings.channels = self.channels
+			update()
 		}
 	}
 	
 	@Published var rayMarchingSettings: RayMarchingSettings {
 		didSet {
 			sourceSettings.rayMarchingSettings = self.rayMarchingSettings
+			update()
 		}
 	}
 	
@@ -192,6 +227,7 @@ final class ObservedRenderSettings: ObservableObject {
         self.renderMode = sourceSettings.renderMode
 		self.skyBox = source.skyBox
 		self.rayMarchingSettings = source.rayMarchingSettings
+		self.channels = source.channels
 	}
 }
 

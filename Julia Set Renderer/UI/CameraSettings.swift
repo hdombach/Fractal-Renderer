@@ -14,30 +14,22 @@ struct CameraSettings: View {
     var body: some View {
         HStack(alignment: .top) {
             VStack {
-                VStack(alignment: .leading) {
-                    Text("Position")
-                        .font(.subheadline)
-
-					Input(value: $settings.camera.position.x, step: 0.01, name: "x")
-					Input(value: $settings.camera.position.y, step: 0.01, name: "y")
-					Input(value: $settings.camera.position.z, step: 0.01, name: "z")
+				VStack(alignment: .leading) {
+					
+					Tuple3FloatInput(value: $settings.camera.position.xyz, step: 0.01.nsNumber.0, name: "Position")
                 }
                 Divider()
                 VStack(alignment: .leading) {
-                    Text("Dericiton")
-                        .font(.subheadline)
-
-					Input(value: $settings.camera.deriction.x, step: 0.01, name: "x-axis")
-					Input(value: $settings.camera.deriction.y, step: 0.01, name: "y-axis")
-					Input(value: $settings.camera.deriction.z, step: 0.01, name: "z-axis")
+					
+					Tuple3FloatInput(value: $settings.camera.deriction.xyz, step: 0.01.nsNumber.0, name: "Dericiton")
                 }
             }
             Divider()
             VStack() {
                 Text("Other")
 
-				Input(value: $settings.camera.zoom, step: 0.00001, name: "Zoom")
-				Input(value: $settings.camera.cameraDepth, step: 0.1, name: "Focal Lenghth")
+				NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
+				NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
                 Spacer()
 				Button(action: {
 					Engine.Settings.savedCamera = Engine.Settings.camera

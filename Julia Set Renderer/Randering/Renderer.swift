@@ -35,6 +35,8 @@ class Renderer: NSObject, MTKViewDelegate {
 	}
 
 	func draw(in view: MTKView) {
+		
+		
 
 		let commandBuffer = Engine.CommandQueue.makeCommandBuffer()
 
@@ -49,7 +51,11 @@ class Renderer: NSObject, MTKViewDelegate {
 
 		var update = false
 		
-		let speed: Float = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
+		var speed: Float = 0.01
+		
+		if Engine.Settings.renderMode == .Mandelbulb {
+			speed = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
+		}
 
 		var offset = SIMD4<Float>(0, 0, 0, 0)
 
@@ -110,10 +116,12 @@ class Renderer: NSObject, MTKViewDelegate {
 		info.lightsLength = UInt32(Engine.Settings.skyBox.count)
 		info.exposure = UInt32(Engine.Settings.exposure)
 		info.rayMarchingSettings = Engine.Settings.rayMarchingSettings
+		info.channelsLength = UInt32(Engine.Settings.channels.count)
 
 		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 2)
+		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.channels, length: MemoryLayout<ChannelInfo>.stride * Engine.Settings.channels.count, index: 3)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -169,6 +177,8 @@ class Mesh {
 
 class Texture {
 	var texture: MTLTexture!
+	
+	var currentChannelCount: UInt32 = 1
 
 	private var _textureName: String!
 	private var _textureExtension: String!
@@ -178,7 +188,7 @@ class Texture {
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
-		self.texture = loadTextureFromBundle()
+		self.texture = loadTextureFromBundle(size: 1)
 	}
 
 	private func oldLoadTextureFromBundle() -> MTLTexture {
@@ -200,16 +210,26 @@ class Texture {
 		return result
 	}
 
-	private func loadTextureFromBundle() -> MTLTexture? {
+	private func loadTextureFromBundle(size: UInt32) -> MTLTexture? {
 
+		self.currentChannelCount = size
+		
+		//print(size)
+		
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.textureType = .type2DArray
-		textureDescriptor.arrayLength = 3
+		textureDescriptor.arrayLength = Int(size) * 3
 		textureDescriptor.pixelFormat = Engine.PixelFormat.1
 		textureDescriptor.width = 1920
 		textureDescriptor.height = 1080
 		textureDescriptor.usage = .init([MTLTextureUsage.shaderRead, MTLTextureUsage.shaderWrite])
 		return Engine.Device.makeTexture(descriptor: textureDescriptor)
+	}
+	
+	func updateTexture() {
+		if currentChannelCount != Engine.Settings.channels.count {
+			texture = loadTextureFromBundle(size: UInt32(Engine.Settings.channels.count))
+		}
 	}
 }
 

@@ -15,6 +15,7 @@ struct RenderBox: View {
 	@State var groupSize: Int = 100
 
 	func render() {
+		Engine.MainTexture.updateTexture()
 		Engine.Settings.samples += self.samples
 		Engine.Settings.window = .rendering
 		if Engine.Settings.samples == Engine.Settings.exposure {
@@ -43,9 +44,9 @@ struct RenderBox: View {
 				}
 				Spacer()
 				VStack {
-					Input(value: $samples, step: 1, name: "Samples")
-					Input(value: $settings.kernelSize.1, step: 1, name: "Kernel groups", min: 0)
-					Input(value: $settings.kernelSize.0, step: 1, name: "Kernel group size", min: 0)
+					NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
+					NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
+					NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
                     //max: Engine.MaxThreadsPerGroup
 				}
 			}

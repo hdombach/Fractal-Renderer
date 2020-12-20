@@ -18,6 +18,7 @@ class Engine {
 	public static var ResetComputePipelineState: MTLComputePipelineState!
 	public static var SamplerState: MTLSamplerState!
 	public static var PixelFormat = (MTLPixelFormat.rgba16Float, MTLPixelFormat.r32Float)
+	public static var View: MTKView!
 	//public static var SceneCamera: Camera {
 		//return Engine.Settings.camera
 	//}
@@ -57,7 +58,10 @@ class Engine {
 			let groupSize = Int(floor(sqrt(Float(maxThreadsPerThreadgroup))))
 			let threadsPerThreadgroup = MTLSize(width: groupSize, height: groupSize, depth: 1)
 
-
+			var shaderInfo = ShaderInfo()
+			shaderInfo.channelsLength = Engine.MainTexture.currentChannelCount;
+			
+			computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 			
 			computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
@@ -126,6 +130,7 @@ class Engine {
 				shaderInfo.isJulia = Settings.renderMode.rawValue
 				shaderInfo.lightsLength = UInt32(Settings.skyBox.count)
 				shaderInfo.rayMarchingSettings = Settings.rayMarchingSettings
+				shaderInfo.channelsLength = UInt32(Settings.channels.count)
 
 				computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
                 computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)

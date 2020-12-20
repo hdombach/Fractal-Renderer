@@ -39,12 +39,12 @@ class Julia_Set_RendererTests: XCTestCase {
 		XCTAssert(test == 3)
 	}
 
-	func testVoxels() {
+	/*func testVoxels() {
 		let container = VoxelContainer.init()
 		container.loadBegin()
 		container.load(passCount: 10000)
 		for voxel in container.voxels {
 			print(voxel.id, voxel.isEnd, voxel._0.id, voxel._0.index, voxel._1.id, voxel._2.id, voxel._3.id, voxel._4.id, voxel._5.id, voxel._6.id, voxel._7.id)
 		}
-	}
+	}*/
 }

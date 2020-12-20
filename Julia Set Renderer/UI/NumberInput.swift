@@ -8,42 +8,45 @@
 
 import SwiftUI
 
-struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type: AdditiveArithmetic {
-    @Binding var value: type
-    var step: type
+enum NumberTypes {
+	case float
+	case int
+	case double
+	case uint32
+	case na
+}
+
+struct NumberInput: View {
+	@Binding var value: NSNumber
+	@State private var isActive: Bool = false
+	@State private var isEditing: Bool = false
+	var type: NumberTypes
+    var step: NSNumber = 1
     var name: String?
-    var min: type?
-    var max: type?
-    
-    func currentType() -> types {
-        if value is Float {
-            return .float
-        } else if value is Int {
-            return .int
-		} else if value is Double {
-			return .double
-        } else {
-            return .na
-        }
-    }
+    var min: NSNumber?
+    var max: NSNumber?
+	var hasPadding = true
     
     func getFormat() -> NumberFormatter {
         let newFormat = NumberFormatter()
-		if currentType() == .float || currentType() == .double{
+		if type == .float || type == .double{
             newFormat.minimumSignificantDigits = 2
             newFormat.maximumSignificantDigits = 4
         }
-        newFormat.maximum = max as? NSNumber
-        newFormat.minimum = min as? NSNumber
+		newFormat.maximum = max
+		newFormat.minimum = min
         return newFormat
     }
-    
-    enum types {
-        case float
-        case int
-		case double
-        case na
-    }
+	
+	init(value: Binding<(NSNumber, NumberTypes)>, step: NSNumber = 1, name: String? = nil, min: NSNumber? = nil, max: NSNumber? = nil, hasPadding: Bool = true) {
+		self._value = value.0
+		self.type = value.1.wrappedValue
+		self.step = step
+		self.name = name
+		self.min = min
+		self.max = max
+		self.hasPadding = hasPadding
+	}
     
     var body: some View {
 		
@@ -52,12 +55,19 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type:
 				Text(name! + ":")
 			}
 			ZStack {
-				TextField("Enter new value", value: $value, formatter: getFormat())
-					.multilineTextAlignment(.center)
-					.cornerRadius(3.0)
+				if isActive || isEditing {
+					TextField("Enter new value", value: $value, formatter: getFormat(), onEditingChanged: { (editingChanged) in
+						isEditing = editingChanged
+					})
+						.textFieldStyle(PlainTextFieldStyle())
+						.multilineTextAlignment(.center)
+						.cornerRadius(3.0)
+				} else {
+					Text(getFormat().string(from: value)!)
+				}
 				HStack {
 					Button("+") {
-						value = step + value
+						value = NSNumber(value: step.doubleValue + value.doubleValue)
 					}.buttonStyle(PlainButtonStyle())
 					.frame(width: 20)
 					.contentShape(Rectangle())
@@ -65,15 +75,20 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type:
 					Spacer()
 					
 					Button("-") {
-						value = value - step
+						value = NSNumber(value: value.doubleValue - step.doubleValue)
 					}.buttonStyle(PlainButtonStyle())
 					.frame(width: 20)
 					.contentShape(Rectangle())
 				}
 			}
-			.padding(4.0)
+			.border(SeparatorShapeStyle(), width: 1)
+			.cornerRadius(hasPadding ? 3.0 : 0.0)
+			.padding(hasPadding ? 4.0 : 0.0)
 		}
 		.padding(0.0)
+		.onHover(perform: { hovering in
+			isActive = hovering
+		})
 		
         /*.popover(isPresented: $isEditing) {
             TextField("Enter New Value", value: $value, formatter: getFormat()) {
@@ -84,82 +99,6 @@ struct Input<type>: View where type: Strideable, type: _FormatSpecifiable, type:
     }
 }
 
-struct InputPopover<type>: View where type: _FormatSpecifiable {
-    @Binding var value: type
-    var format: NumberFormatter
-    
-    var body: some View {
-        /*TextField("Enter New Value", value: $value, formatter: format)
-            .padding()*/
-        TextField("Enter New Value", value: $value, formatter: format) {
-            hidden()
-        }
-    }
-}
-
-/*struct FloatInput: View {
-	@Binding var value: Float
-    @State var isEditing: Bool = false
-	var difference: Float
-	var name: String
-	var cap: Float?
-	func format() -> NumberFormatter {
-		let newFormat = NumberFormatter()
-		newFormat.minimumSignificantDigits = 2
-		newFormat.maximumSignificantDigits = 8
-		if cap != nil {
-			newFormat.maximum = NSNumber.init(value: cap!)
-		}
-		return newFormat
-	}
-
-    var body: some View {
-		HStack {
-			Text("\(name): ")
-				.fixedSize()
-
-            Stepper(value: $value, step: difference) {
-				Text("\(value)")
-                    .onTapGesture {
-                        isEditing.toggle()
-                    }
-            }.sheet(isPresented: $isEditing, content: {
-                Text("hello")
-            })
-            
-		}
-    }
-}
-
-struct IntInput: View {
-	@Binding var value: Int
-	var name: String
-	var max: Int?
-	var min: Int?
-
-	func format() -> NumberFormatter {
-		let newFormatter = NumberFormatter()
-		if min != nil {
-			newFormatter.minimum = NSNumber.init(value: min!)
-		}
-		if max != nil {
-			newFormatter.maximum = NSNumber.init(value: max!)
-		}
-		return newFormatter
-	}
-
-	var body: some View {
-		HStack {
-			Text("\(name): ")
-				.fixedSize()
-
-            Stepper(value: $value, step: 1) {
-                Text("\(value)")
-            }
-		}
-	}
-}*/
-
 
 struct NumberInput_Previews: PreviewProvider {
     @EnvironmentObject var settings: ObservedRenderSettings
@@ -169,16 +108,11 @@ struct NumberInput_Previews: PreviewProvider {
     static var previews: some View {
         
         Group {
-            Input(value: Binding<Float>.init(get: { () -> Float in
-                return Engine.Settings.camera.position.x
-            }, set: { (newValue) in
-                Engine.Settings.camera.position.x = newValue
-			}), step: 1, name: "x Position")
-            InputPopover(value: Binding<Float>.init(get: { () -> Float in
-                return Engine.Settings.camera.position.x
-            }, set: { (newValue) in
-                Engine.Settings.camera.position.x = newValue
-			}), format: NumberFormatter())
+			NumberInput(value: Binding.init(get: {
+				return Engine.Settings.camera.position.x.nsNumber
+			}, set: { (newValue) in
+				Engine.Settings.camera.position.x.nsNumber = newValue
+			}))
         }
     }
 }

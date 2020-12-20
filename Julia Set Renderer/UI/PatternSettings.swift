@@ -18,7 +18,7 @@ struct PatternSettings: View {
             }) {
                 Text("Load Pattern")
             }
-            Input(value: $quality, step: 1, name: "Quality")
+			NumberInput(value: $quality.nsNumber, step: 1.nsNumber.0, name: "Quality")
         }.padding()
     }
 }
