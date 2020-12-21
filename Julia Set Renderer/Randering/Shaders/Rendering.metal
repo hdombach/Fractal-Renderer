@@ -11,6 +11,87 @@
 using namespace metal;
 
 struct RayTracer {
+	struct VectorPair {
+		float3 v1;
+		float3 v2;
+	};
+	
+	VectorPair orthogonalVectors(float3 n) {
+		float3 axis;
+		if (n.x < n.y && n.x < n.z) {
+			axis = float3(1.0, 0.0, 0.0);
+		} else if (n.y < n.z) {
+			axis = float3(0.0, 1.0, 0.0);
+		} else {
+			axis = float3(0.0, 0.0, 1.0);
+		}
+		
+		VectorPair result;
+		result.v1 = normalize(cross(n, axis));
+		result.v2 = normalize(cross(n, result.v1));
+		
+		return result;
+	}
+	
+	float3 sampleUniformHemisphere(float3 n, int3 randomSeed) {
+		MathContainer math;
+		float3 p;
+		int3 seed = randomSeed;
+		do {
+			p.z = math.rand(seed.x, seed.y, seed.z);
+			p.x = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
+			p.y = math.rand(seed.z, seed.x, seed.y) * 2 - 1;
+			seed += int3(512, 723, 152);
+		} while (p.x * p.x + p.y * p.y + p.z * p.z > 1);
+		
+		p = normalize(p);
+		
+		VectorPair orthogonals = orthogonalVectors(n);
+		
+		p = p.x * orthogonals.v1 + p.y * orthogonals.v2 + p.z * n;
+		return p;
+	}
+	
+	float3 sampleUniformHemisphere2(float3 n, int3 randomSeed) {
+		MathContainer math;
+		float2 p;
+		int3 seed = randomSeed;
+		do {
+			p.x = math.rand(seed.x, seed.y, seed.z) * 2 - 1;
+			p.y = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
+			seed += int3(512, 723, 152);
+		} while (p.x * p.x + p.y * p.y > 1);
+		
+		return projectToHemisphere(p, n);
+	}
+	
+	float3 mapToHemisphere(float2 p, float3 normal) {
+		float d = length(p);
+		float shift = 1 - (1 - d) * (1 - d);
+		p = p / d * shift;
+		float z = sqrt(1 - shift * shift);
+		
+		VectorPair orthogonals = orthogonalVectors(normal);
+		
+		return orthogonals.v1 * p.x + orthogonals.v2 * p.y + normal * z;
+	}
+	
+	float3 projectToHemisphere(float2 p, float3 normal) {
+		float d = length(p);
+		float z = sqrt(1 - d * d);
+		
+		VectorPair orthogonals = orthogonalVectors(normal);
+		
+		return orthogonals.v1 * p.x + orthogonals.v2 * p.y + normal * z;
+	}
+	
+	float3 correctNormal(float3 normal, float3 vector) {
+		if (dot(normal, vector) < 0) {
+			return normal;
+		} else {
+			return normal * -1;
+		}
+	}
 
 	float errorDifference = 0.00001;
 
@@ -60,26 +141,8 @@ struct RayTracer {
 			seed.z = (returnRay.position.z * 1516648);
 		}
 		seed *= int3(_seed);
-
-		float originalDifference = dot(surfaceNormal, float3(ray.deriction.x, ray.deriction.y, ray.deriction.z));
-
-		float difference;;
 		
-		float3 newNormal;
-
-		int c = 20;
-
-		do {
-			seed -= int3(123, 233, 1212);
-			newNormal.x = surfaceNormal.x + (math.rand(seed.z, seed.x, seed.y) * 92 - 31) * surfaceMaterial.diffuse;
-			newNormal.y = surfaceNormal.y + (math.rand(seed.x - 47, seed.y + 21, seed.z - 34) * 82 - 31) * surfaceMaterial.diffuse;
-			newNormal.z = surfaceNormal.z + (math.rand(seed.y + 12, seed.z + 64, seed.x - 58) * 32 - 21) * surfaceMaterial.diffuse;
-			newNormal = normalize(newNormal);
-			returnRay.deriction = metal::reflect(ray.deriction, float4(newNormal, 0));
-			difference = dot(surfaceNormal, float3(returnRay.deriction.x, returnRay.deriction.y, returnRay.deriction.z));
-			c--;
-		} while (0 < difference * originalDifference);
-		//returnRay.colorAbsorption *= abs(dot(newNormal, surfaceNormal));
+		returnRay.deriction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
 		return returnRay;
 	}
 	
@@ -134,6 +197,7 @@ struct RayTracer {
         result.distance = d.distance;
         result.steps = steps;
         result.collision.surfaceNormal = rayMarcher.DEnormal(ray.position.xyz, settings);
+		result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.deriction.xyz);
         
         Material material;
         material.init(float3(bulbResut.orbitLife, 0, 0) / 3, settings);
@@ -183,7 +247,8 @@ struct RayTracer {
 		CollisionInfo collide;
 		collide.position = float3(ray.position.x, ray.position.y, ray.position.z);
 		collide.surfaceMaterial = material;
-		collide.surfaceNormal = math.getNormal(distance.collisionAxis);
+		collide.surfaceNormal = rayMarcher.getNormal(distance.collisionAxis);
+		collide.surfaceNormal = correctNormal(collide.surfaceNormal, ray.deriction.xyz);
 
 
 		SingleResult result;
@@ -250,9 +315,7 @@ struct RayTracer {
 					break;
 				}
 				ray.colorAbsorption = ray.colorAbsorption * (1 - result.distance / 10);
-				if (result.collision.surfaceNormal.x == 0 && result.collision.surfaceNormal.y == 0 && result.collision.surfaceNormal.z == 0) {
-					//return float4(1, 0, 0, 1);
-				}
+				
 				ray = reflect(ray, result.collision.surfaceNormal, result.collision.surfaceMaterial, info.randomSeed);
 				bounces ++;
 			}
@@ -263,6 +326,7 @@ struct RayTracer {
 
 	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info) {
 		Ray ray = camera.spawnRay(pos);
+		float3 originalDirection = normalize(ray.deriction.xyz);
 		
         SingleResult result;
         if (isJulia == 0) {
@@ -278,7 +342,7 @@ struct RayTracer {
 		//float4 color = float4(log(result.distance)) + 0.2;
         float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
         color *= pow(0.995, float(result.steps));
-		color *= abs(dot(normalize(result.ray.deriction.xyz), result.collision.surfaceNormal));
+		color *= abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal)));
 		if (result.distance > 100) {
 			float3 tempColor = float3(0);
 			Colors colors = getSkyBox(ray, lights, lightsLength);

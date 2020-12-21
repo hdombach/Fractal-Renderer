@@ -21,6 +21,7 @@ struct RenderBox: View {
 		if Engine.Settings.samples == Engine.Settings.exposure {
 			Engine.ResetRender()
 		}
+		Engine.Settings.observed.update()
 		print("Started Rendering with camera: \(Engine.Settings.camera)")
 	}
 
@@ -28,6 +29,7 @@ struct RenderBox: View {
 		Engine.Settings.window = .preview
 		Engine.Settings.exposure = 0
 		Engine.ResetTexture()
+		Engine.Settings.observed.update()
 	}
 
     var body: some View {

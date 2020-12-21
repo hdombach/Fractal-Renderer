@@ -76,6 +76,8 @@ class RenderSettings {
 
 				if self.observed.progress != self.progress {
 					self.observed.progress = self.progress
+					self.observed.update()
+					//the update makes sures the view updates while rendering
 				}
 
                 if self.observed.renderMode != self.renderMode {
@@ -181,6 +183,7 @@ final class ObservedRenderSettings: ObservableObject {
 			if sourceSettings.progress != self.progress {
 				sourceSettings.progress = self.progress
 				update()
+				print("update")
 			}
 		}
 	}

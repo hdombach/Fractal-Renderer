@@ -128,16 +128,6 @@ struct Material {
 		
 		rgbAbsorption = clamp(settings.colorBase + settings.colorVariation * sin(distanceFromCenter * settings.colorFrequency + settings.colorOffset), float3(0), float3(1));
 		//rgbAbsorption = float3(0.4 + 0.4 * metal::precise::sin(distanceFromCenter * 100), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 40), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
-		
-		if (0.02 > distanceFromCenter) {
-			//rgbEmitted = float3((0.02 - distanceFromCenter) * 20, 0, 0);
-		}
-		
-		
-		if (position.x < 0.5 && position.y < 0.5 && position.z < 0.5) {
-			//rgbEmitted = float3(0.4, 0.2, 0);
-			//rgbAbsorption = float3(0.1, 0.1, 0.1);
-		}
 	}
 };
 

@@ -16,7 +16,6 @@ struct RayMarchInfo {
 };
 
 struct RayMarching {
-	//MARK: Problem
 	bool cubeContainsRay(Ray ray, device Voxel *voxel) {
 		Voxel cube = *voxel;
 		if (ray.position.x > cube.position.x && ray.position.x < cube.position.x + cube.width()) {
@@ -29,7 +28,7 @@ struct RayMarching {
 		return false;
 	}
 	
-	//MARK: Problem
+	
 	float3 getNormal(Axis axis) {
 		switch (axis) {
 			case x:
@@ -44,7 +43,6 @@ struct RayMarching {
 	}
 	
 	
-	//MARK: Problem
 	VoxelAddress getVoxelChild2(bool3 position, device Voxel *voxel) {
 		uint index = 0;
 		if (position.x) {
@@ -60,7 +58,6 @@ struct RayMarching {
 		Voxel v = *voxel;
 		return v.child(index);
 	}
-	//MARK: Problem
 	VoxelAddress getVoxelChildAtRay(float4 rayPosition, device Voxel *voxel) {
 		bool3 newChild;
 		Voxel newVoxel = *voxel;
@@ -72,13 +69,11 @@ struct RayMarching {
 		return getVoxelChild2(newChild, voxel);
 	}
 	
-	//MARK: Problem
 	device Voxel * getVoxel(VoxelAddress voxelAddress, device Voxel *voxels, int voxelsLength) {
 		// VoxelContainer container;
 		return &voxels[voxelAddress.index];
 	}
 	
-	//MARK: Problem
 	device Voxel * getVoxel(Ray atRay, device Voxel *voxels, int voxelsLength) {
 		device Voxel *currentVoxel = &voxels[1];
 		
@@ -93,13 +88,11 @@ struct RayMarching {
 		return currentVoxel;
 	}
 	
-	//MARK: Problem
 	DistanceInfo getVoxelRayStep(Ray ray, device Voxel *voxels, int voxelsLength) {
 		MathContainer maths;
 		return maths.distanceToVoxel(ray, getVoxel(ray, voxels, voxelsLength));
 	}
 	
-	//MARK: Problem
 	RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 		float3 z = pos;
 		float dr = 1;
@@ -137,7 +130,6 @@ struct RayMarching {
 		return newBulbDE(pos, settings);
 	}
 	
-	//MARK: Problem
 	float3 DEnormal(float3 pos, RayMarchingSettings settings) {
 		//e is an abitrary number
 		float e = 0.000001;

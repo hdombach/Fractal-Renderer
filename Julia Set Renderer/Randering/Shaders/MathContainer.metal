@@ -11,7 +11,7 @@
 using namespace metal;
 
 struct MathContainer {
-	//MARK: Problem
+	// Generate a random float in the range [0.0f, 1.0f] using x, y, and z (based on the xor128 algorithm)
 	float rand(int x, int y, int z) {
 		int seed = x + y * 57 + z * 241;
 		seed= (seed<< 13) ^ seed;
