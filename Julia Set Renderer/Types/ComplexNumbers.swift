@@ -8,22 +8,6 @@
 
 import Foundation
 
-struct JuliaSetSettings {
-	var realSlope: Float
-	var realIntercept: Float
-	var imaginarySlope: Float
-	var imaginaryIntercept: Float
-	var iterations: Int
-
-	init(rSlope: Float = 1, rIntercept: Float = 0, iSlope: Float = 1, iIntercept: Float = 0, iterations: Int = 20) {
-		self.realSlope = rSlope
-		self.realIntercept = rIntercept
-		self.imaginarySlope = iSlope
-		self.imaginaryIntercept = iIntercept
-		self.iterations = iterations
-	}
-}
-
 struct Complex: Equatable {
 
 	var real: Float
@@ -79,11 +63,13 @@ struct Complex: Equatable {
 
 class JuliaSet {
     
-    var iterations = 20
+	lazy var settings: JuliaSetSettings = {
+		Engine.Settings.juliaSetSettings
+	}()
 
 	func getBasic(point: Complex, c: Complex) -> Bool {
 		var x = point
-		for _ in 1...iterations {
+		for _ in 1...settings.iterations {
             x = Complex.power(x, 4) + c
 			if x.magnitude() > 2 {
 				return false
@@ -95,20 +81,9 @@ class JuliaSet {
 }
 
 class LinearJuliaSet: JuliaSet {
-	var realSlope: Float
-	var realIntercept: Float
-	var imaginarySlope: Float
-	var imaginaryIntercept: Float
-
-	init(rSlope: Float = 1, rIntercept: Float = 0, iSlope: Float = 1, iIntercept: Float = 0) {
-		self.realSlope = rSlope
-		self.realIntercept = rIntercept
-		self.imaginarySlope = iSlope
-		self.imaginaryIntercept = iIntercept
-	}
 
 	func generateComplex(value: Float) -> Complex {
-		return Complex(value * realSlope + realIntercept, value * imaginarySlope + imaginaryIntercept)
+		return Complex(value * settings.realSlope + settings.realIntercept, value * settings.imaginarySlope + settings.imaginaryIntercept)
 	}
     
     func getLinear(point: Complex, z: Float) -> Bool {

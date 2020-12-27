@@ -133,9 +133,11 @@ class RenderSettings {
     
     //0 julia set
     //1 mandelbulb
-    var renderMode: RenderMode = .JuliaSet
+	var renderMode: RenderMode = .Mandelbulb
 	
 	var rayMarchingSettings: RayMarchingSettings = .init()
+	
+	var juliaSetSettings = JuliaSetSettings()
 	
 	var isShowingUI: Bool = true {
 		didSet {

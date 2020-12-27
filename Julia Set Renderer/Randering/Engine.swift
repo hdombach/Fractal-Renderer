@@ -29,7 +29,7 @@ class Engine {
 	public static var MaxThreadsPerGroup: Int!
 	//public static var MainJuliaSet = JuliaSet()
 	//public static var MainPointGen = linearComGen(rSlope: 1, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)
-    public static var JuliaSetSettings = LinearJuliaSet.init(rSlope: 0.5, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)
+    public static var JuliaSetSettings = LinearJuliaSet()
 
 	static var index: Int = 0
 	//public static var obversedSettings = RenderSettings()
@@ -169,7 +169,10 @@ class Engine {
 		Container.load(passSize: 10000)
 	}
 
-
+	public static func ResetJuliaSet() {
+		Container.reset()
+	}
+	
 	public static func Init(device: MTLDevice) {
 
 		self.Device = device
@@ -263,6 +266,6 @@ class Engine {
 		print("finished creating pipelines")
 
 		Container = VoxelContainer()
-		LoadJuliaSet(quality: 50)
+		ResetJuliaSet()
 	}
 }
