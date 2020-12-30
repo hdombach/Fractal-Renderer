@@ -43,7 +43,7 @@ extension Float: sizeable { }
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
-typealias float3 = SIMD3<Float>
+typealias Float3 = SIMD3<Float>
 
 extension SIMD4 {
 	var xyz: SIMD3<Scalar> {

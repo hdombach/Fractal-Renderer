@@ -11,8 +11,6 @@ import SwiftUI
 struct RenderBox: View {
     @ObservedObject var settings = Engine.Settings.observed
 	@State var samples: Int = 50
-	@State var groups: Int = 100
-	@State var groupSize: Int = 100
 
 	func render() {
 		Engine.MainTexture.updateTexture()
@@ -33,26 +31,25 @@ struct RenderBox: View {
 	}
 
     var body: some View {
-		GroupBox(label: Text("Render Time!")) {
-			HStack {
-				VStack(alignment: .leading) {
-					Button(action: render) {
-						Text("Render")
-					}
-					Button(action: preview) {
-						Text("Pause")
-					}
-					Text(Engine.Settings.progress)
+		HStack {
+			VStack(alignment: .leading) {
+				Button(action: render) {
+					Text("Render")
 				}
-				Spacer()
-				VStack {
-					NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
-					NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
-					NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
-                    //max: Engine.MaxThreadsPerGroup
+				Button(action: preview) {
+					Text("Pause")
 				}
+				Text(Engine.Settings.progress)
+			}
+			Spacer()
+			VStack {
+				NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
+				NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
+				NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
+				//max: Engine.MaxThreadsPerGroup
 			}
 		}
+		.padding()
     }
 }
 

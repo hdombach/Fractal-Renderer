@@ -126,7 +126,38 @@ struct RayMarching {
 		return info;
 	}
 	
+	float3 mirror(float3 p, float3 normal) {
+		return p - 2 * fmin(0, dot(p, normal)) * normal;
+	}
+	
+	float TriangleDE(float3 z, RayMarchingSettings settings)
+	{
+		float Scale = 2;
+		float Offset = 1;
+		int n = 0;
+		while (n < settings.iterations) {
+			if(z.x+z.y<0) z.xy = -z.yx; // fold 1
+			if(z.x+z.z<0) z.xz = -z.zx; // fold 2
+			if(z.y+z.z<0) z.zy = -z.yz; // fold 3
+			z = z*Scale - Offset*(Scale-1.0);
+			n++;
+		}
+		return (length(z) ) * pow(Scale, -float(n));
+	}
+	
+	RayMarchInfo SphereDE(float3 pos, float r, RayMarchingSettings settings) {
+		RayMarchInfo info;
+		float3 c = float3(0.5, 0.5, 0.5);
+		//info.d = length(pos - c) - r;
+		info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
+		info.orbitLife = settings.iterations;
+		return info;
+	}
+	
 	RayMarchInfo DE(float3 pos, RayMarchingSettings settings) {
+		//RayMarchInfo info;
+		//info.orbitLife = settings.iterations;
+		//info.d = TriangleDE(mirror(pos, float3(0, 1, 0)), settings);
 		return newBulbDE(pos, settings);
 	}
 	

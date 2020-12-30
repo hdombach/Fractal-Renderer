@@ -30,6 +30,10 @@
 		DE8237DB24AE217C000FA948 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DA24AE217C000FA948 /* Engine.swift */; };
 		DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DC24AE221B000FA948 /* Shaders.metal */; };
 		DE8237DF24AE8234000FA948 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DE24AE8234000FA948 /* Other.swift */; };
+		DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F096259CDDE300FF475F /* MaterialSettings.swift */; };
+		DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F09D259CDEB600FF475F /* NodeView.swift */; };
+		DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F0A6259CEA5600FF475F /* NodeValue.swift */; };
+		DE85F0AD259CED8700FF475F /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F0AC259CED8700FF475F /* Node.swift */; };
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
 		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
@@ -92,6 +96,10 @@
 		DE8237DA24AE217C000FA948 /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		DE8237DC24AE221B000FA948 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		DE8237DE24AE8234000FA948 /* Other.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
+		DE85F096259CDDE300FF475F /* MaterialSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialSettings.swift; sourceTree = "<group>"; };
+		DE85F09D259CDEB600FF475F /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
+		DE85F0A6259CEA5600FF475F /* NodeValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeValue.swift; sourceTree = "<group>"; };
+		DE85F0AC259CED8700FF475F /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
 		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
@@ -115,6 +123,7 @@
 		DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Julia_Set_Renderer.entitlements; sourceTree = "<group>"; };
 		DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindowController.swift; sourceTree = "<group>"; };
 		DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenderWindowController.xib; sourceTree = "<group>"; };
+		DECAB994259BFB840029C141 /* sun.max.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = sun.max.svg; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Types.metal; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MathContainer.metal; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayMarching.metal; sourceTree = "<group>"; };
@@ -152,6 +161,7 @@
 		DE05618924EDDD190058925E /* Types */ = {
 			isa = PBXGroup;
 			children = (
+				DE85F0A5259CEA3800FF475F /* Nodes */,
 				DE9EF7FD259555AF007F2BA3 /* SwiftVoxel */,
 				DE627E80259290A700B2DA8F /* Settings */,
 				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
@@ -166,11 +176,13 @@
 		DE304FC724DB567600125844 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DE85F09C259CDE9A00FF475F /* Nodes */,
 				DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */,
 				DE8F06E524DB65E1004D2687 /* RenderBox.swift */,
 				DE304FC924DB574700125844 /* ImageSettings.swift */,
 				DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */,
 				DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */,
+				DE85F096259CDDE300FF475F /* MaterialSettings.swift */,
 				DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */,
 				DE62BD392579C3F300E67351 /* ChannelSettings.swift */,
 				DEABF34625717E440036EB73 /* MandelbulbSettings.swift */,
@@ -218,6 +230,23 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		DE85F09C259CDE9A00FF475F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				DE85F09D259CDEB600FF475F /* NodeView.swift */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
+		DE85F0A5259CEA3800FF475F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				DE85F0A6259CEA5600FF475F /* NodeValue.swift */,
+				DE85F0AC259CED8700FF475F /* Node.swift */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
 		DE9EF7FD259555AF007F2BA3 /* SwiftVoxel */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,6 +279,7 @@
 		DEC8CDD824ADFC9A00DB5701 /* Julia Set Renderer */ = {
 			isa = PBXGroup;
 			children = (
+				DECAB994259BFB840029C141 /* sun.max.svg */,
 				DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */,
 				DE8237D624AE2023000FA948 /* RenderView.swift */,
 				DE1E40A624CB7FC5003B198F /* Keys.swift */,
@@ -397,6 +427,7 @@
 				DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */,
 				DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */,
 				DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */,
+				DE85F0AD259CED8700FF475F /* Node.swift in Sources */,
 				DEDC34CC258CE66B009B47A0 /* Types.metal in Sources */,
 				DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */,
 				DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */,
@@ -409,6 +440,7 @@
 				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
 				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
+				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
 				DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */,
@@ -418,8 +450,10 @@
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
 				DE62BD282579B66A00E67351 /* RayMarchingSettings.swift in Sources */,
+				DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */,
 				DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */,
 				DE212FF5258D59580050AC95 /* Number.swift in Sources */,
+				DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */,
 				DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */,
 				DEA8931B24B20EB3008F5D78 /* Rendering.metal in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
@@ -623,7 +657,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -650,7 +684,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;

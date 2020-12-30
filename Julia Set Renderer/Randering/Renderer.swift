@@ -53,7 +53,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		
 		var speed: Float = 0.01
 		
-		if Engine.Settings.renderMode == .Mandelbulb {
+		if Engine.Settings.renderMode == .Mandelbulb && false {
 			speed = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
 		}
 

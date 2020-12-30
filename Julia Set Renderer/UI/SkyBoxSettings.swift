@@ -23,34 +23,32 @@ struct SkyBoxSettings: View {
 	}
 	
     var body: some View {
-		GroupBox(label: Text("Sky Box"), content: {
-			VStack {
-				
-				List(settings.skyBox, id: \.self, selection: $selected) { light in
-					LightPicker(light: $settings.skyBox[index(id: light.id)])
+		VStack {
+			Text("Lights")
+			List(settings.skyBox, id: \.self, selection: $selected) { light in
+				LightPicker(light: $settings.skyBox[index(id: light.id)])
+			}.cornerRadius(5)
+
+			HStack {
+				Button("+") {
+					settings.skyBox.append(.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0))
 				}
+				.padding(.leading)
+				.buttonStyle(PlainButtonStyle())
 				
-				HStack {
-					Button("+") {
-						settings.skyBox.append(.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0))
+				Button("-") {
+					if selected != nil {
+						let i = index(id: selected!.id)
+						settings.skyBox.remove(at: i)
+						selected = nil
 					}
-						.padding(.leading)
-						.buttonStyle(PlainButtonStyle())
-					
-					Button("-") {
-						if selected != nil {
-							let i = index(id: selected!.id)
-							settings.skyBox.remove(at: i)
-							selected = nil
-						}
-					}
-						.disabled(selected == nil)
-						.buttonStyle(PlainButtonStyle())
-					Spacer()
-					
 				}
+				.disabled(selected == nil)
+				.buttonStyle(PlainButtonStyle())
+				Spacer()
+				
 			}
-		}).padding()
+		}.padding([.top, .leading, .trailing])
     }
 }
 

@@ -18,9 +18,9 @@ struct RayTracer {
 	
 	VectorPair orthogonalVectors(float3 n) {
 		float3 axis;
-		if (n.x < n.y && n.x < n.z) {
+		if (abs(n.x) < abs(n.y) && abs(n.x) < abs(n.z)) {
 			axis = float3(1.0, 0.0, 0.0);
-		} else if (n.y < n.z) {
+		} else if (abs(n.y) < abs(n.z)) {
 			axis = float3(0.0, 1.0, 0.0);
 		} else {
 			axis = float3(0.0, 0.0, 1.0);
@@ -189,9 +189,14 @@ struct RayTracer {
             d.distance += step;
             steps ++;
             if (1 * d.distance / settings.quality > step || 500 < steps) {
+				if (steps > 500 && false) {
+					ray.march(100000);
+					d.distance += 100000;
+				}
                 break;
             }
         }
+		ray.march(errorDifference * -1);
         //ray.march(-1 * errorDifference);
         SingleResult result;
         result.distance = d.distance;
@@ -338,6 +343,8 @@ struct RayTracer {
                 //return float4(bulb.normal(ray.position.xyz), 0);
             }
         }
+		
+		//return float4(result.collision.surfaceNormal, 1);
 
 		//float4 color = float4(log(result.distance)) + 0.2;
         float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
