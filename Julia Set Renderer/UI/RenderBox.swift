@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct RenderBox: View {
-    @ObservedObject var settings = Engine.Settings.observed
+    @ObservedObject var settings = Engine.Settings
 	@State var samples: Int = 50
 
 	func render() {
@@ -19,7 +19,7 @@ struct RenderBox: View {
 		if Engine.Settings.samples == Engine.Settings.exposure {
 			Engine.ResetRender()
 		}
-		Engine.Settings.observed.update()
+		Engine.Settings.update()
 		print("Started Rendering with camera: \(Engine.Settings.camera)")
 	}
 
@@ -27,7 +27,7 @@ struct RenderBox: View {
 		Engine.Settings.window = .preview
 		Engine.Settings.exposure = 0
 		Engine.ResetTexture()
-		Engine.Settings.observed.update()
+		Engine.Settings.update()
 	}
 
     var body: some View {

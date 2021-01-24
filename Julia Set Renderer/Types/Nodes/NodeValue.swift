@@ -8,15 +8,56 @@
 
 import Foundation
 
+enum NodeValueType {
+	case float
+	case float3
+	case int
+}
+
+/*class NodeValue: Equatable {
+	static func == (lhs: NodeValue, rhs: NodeValue) -> Bool {
+		false
+	}
+	
+	var float: Float {
+		get { 0 }
+		set { }
+	}
+	
+	var float3: Float3 {
+		get { .init() }
+		set { }
+	}
+	
+	var int: Int {
+		get { 0 }
+		set { }
+	}
+	
+	var name: String { "" }
+	
+	var type: NodeValueType { .float }
+	
+	var position: CGPoint = .init()
+}*/
+
+
+
 protocol NodeValue {
 	var float: Float { get set }
 	var float3: Float3 { get set }
 	var int: Int { get set }
 	var name: String { get }
+	
+	///Offset within parent node
+	//var position: CGPoint? { get set }
+	var type: NodeValueType { get set }
 }
 
 struct NodeFloat: NodeValue {
 	var value: Float
+	var position: CGPoint?
+	var type: NodeValueType = .float
 	private var personalName: String?
 	
 	init(_ value: Float, name initName: String?) {
@@ -44,6 +85,8 @@ struct NodeFloat: NodeValue {
 
 struct NodeFloat3: NodeValue {
 	var value: Float3
+	var position: CGPoint?
+	var type: NodeValueType = .float3
 	private var personalName: String?
 	
 	init(_ value: Float3, name initName: String?) {
@@ -71,6 +114,8 @@ struct NodeFloat3: NodeValue {
 
 struct NodeInt: NodeValue {
 	var value: Int
+	var position: CGPoint?
+	var type: NodeValueType = .int
 	private var personalName: String?
 	
 	init(_ value: Int, name initName: String?) {

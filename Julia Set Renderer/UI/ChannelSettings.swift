@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ChannelSettings: View {
-	@ObservedObject var settings = Engine.Settings.observed
+	@ObservedObject var settings = Engine.Settings
 	@State var selected: ChannelInfo?
 	
 	func index(id: UInt32) -> Int {

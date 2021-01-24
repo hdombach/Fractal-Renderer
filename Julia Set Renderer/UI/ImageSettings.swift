@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ImageSettings: View {
-    @ObservedObject var settings = Engine.Settings.observed
+    @ObservedObject var settings = Engine.Settings
 	@State var myString: String = "hello"
 
     var body: some View {
@@ -25,6 +25,6 @@ struct ImageSettings: View {
 struct ImageSettings_Previews: PreviewProvider {
     static var previews: some View {
         ImageSettings()
-			.environmentObject(Engine.Settings.observed)
+			.environmentObject(Engine.Settings)
     }
 }

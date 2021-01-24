@@ -16,14 +16,18 @@ struct Tuple3FloatInput: View {
 	var max: NSNumber?
 	
     var body: some View {
-		VStack(spacing: -1.0) {
+		VStack {
 			if name != nil {
 				Text(name!)
 			}
-			NumberInput(value: $value.x.nsNumber, step: step, min: min, max: max, hasPadding: false)
-			NumberInput(value: $value.y.nsNumber, step: step, min: min, max: max, hasPadding: false)
-			NumberInput(value: $value.z.nsNumber, step: step, min: min, max: max, hasPadding: false)
-		}.cornerRadius(3.0)
+			VStack(spacing: -1) {
+				NumberInput(value: $value.x.nsNumber, step: step, min: min, max: max, hasPadding: false)
+				NumberInput(value: $value.y.nsNumber, step: step, min: min, max: max, hasPadding: false)
+				NumberInput(value: $value.z.nsNumber, step: step, min: min, max: max, hasPadding: false)
+			}.cornerRadius(5.0)
+			.overlay(RoundedRectangle(cornerRadius: 5)
+						.stroke(Color.controlHighlightColor))
+		}
     }
 }
 
@@ -33,6 +37,6 @@ struct Tuple3FloatInput_Previews: PreviewProvider {
 			Engine.Settings.rayMarchingSettings.colorBase
 		}, set: { (newValue) in
 			Engine.Settings.rayMarchingSettings.colorBase = newValue
-		}))
+		}), name: "Color").padding()
     }
 }

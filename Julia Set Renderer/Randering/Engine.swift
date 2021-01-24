@@ -25,7 +25,7 @@ class Engine {
 	//public static var SceneCamera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080))
 	public static var Container: VoxelContainer!
 	public static var MainTexture = Texture.init("yeet")
-	public static var Settings = RenderSettings()
+	public static var Settings = JoinedRenderSettings()
 	public static var MaxThreadsPerGroup: Int!
 	//public static var MainJuliaSet = JuliaSet()
 	//public static var MainPointGen = linearComGen(rSlope: 1, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)

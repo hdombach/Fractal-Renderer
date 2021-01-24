@@ -9,8 +9,14 @@
 import SwiftUI
 
 struct MaterialSettings: View {
-    var body: some View {
-        Text("Add Stuff Later")
+	@ObservedObject var settings = Engine.Settings
+	
+	@State var code: String = ""
+	
+	
+	
+	var body: some View {
+		NodeEditor(nodeContainer: $settings.nodeContainer)
     }
 }
 

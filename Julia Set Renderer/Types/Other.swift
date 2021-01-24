@@ -45,6 +45,29 @@ extension SIMD4: sizeable { }
 
 typealias Float3 = SIMD3<Float>
 
+extension CGPoint {
+	static func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+		return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+	}
+	static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+		return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+	}
+	func scale(_ factor: CGFloat) -> CGPoint {
+		return CGPoint(x: self.x * factor, y: self.y * factor)
+	}
+	func distanceTo(point: CGPoint) -> CGFloat {
+		return sqrt((point.x - x) * (point.x - x) + (point.y - y) * (point.y - y))
+	}
+}
+
+extension CGRect {
+	var midPoint: CGPoint {
+		get {
+			return CGPoint(x: self.midX, y: self.midY)
+		}
+	}
+}
+
 extension SIMD4 {
 	var xyz: SIMD3<Scalar> {
 		get {

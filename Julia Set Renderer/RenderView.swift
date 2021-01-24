@@ -53,7 +53,7 @@ class RenderView: MTKView {
 		changeRenderMode(isManual: false)
 		Engine.Settings.isShowingUI = false
 		isTracking = true
-		CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: false))
+		CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: false)))
 		CGDisplayHideCursor(1)
 	}
 
@@ -63,7 +63,7 @@ class RenderView: MTKView {
             changeRenderMode(isManual: true)
 			Engine.Settings.isShowingUI = true
 			isTracking = false
-			CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: true))
+			CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: true)))
 			CGDisplayShowCursor(1)
 		}
 	}

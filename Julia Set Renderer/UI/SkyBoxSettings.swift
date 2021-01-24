@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SkyBoxSettings: View {
-	@ObservedObject var settings = Engine.Settings.observed
+	@ObservedObject var settings = Engine.Settings
 	@State var spareLight = LightInfo.init(color: .init(), strength: 0, size: 0, position: .init(), channel: 0)
 	@State var selected: LightInfo?
 	@State var items = ["test1", "test2", "test3", "test4"]
