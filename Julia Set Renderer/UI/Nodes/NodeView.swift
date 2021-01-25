@@ -55,13 +55,14 @@ struct NodeView: View, Equatable {
 	func deletePathGesture(valueIndex: Int) -> some Gesture {
 		DragGesture().onChanged { (data) in
 			if nodeContainer.activePath == nil {
-				let path = nodeContainer.getPathAt(address: nodeContainer.createValueAddress(node: node, valueIndex: valueIndex))
-				nodeContainer.delete(path: path)
-				
-				let begginingNode = nodeContainer[path!.beggining.nodeAddress()]
-				let draggable = DraggablePath(beggining: nodeContainer.createValueAddress(node: begginingNode, valueIndex: path!.beggining.valueIndex), ending: nodeContainer.getPosition(value: path!.ending))
-				
-				nodeContainer.activePath = draggable
+				if let path = nodeContainer.getPathsAt(address: nodeContainer.createValueAddress(node: node, valueIndex: valueIndex)).first {
+					nodeContainer.delete(path: path)
+					
+					let begginingNode = nodeContainer[path.beggining.nodeAddress()]
+					let draggable = DraggablePath(beggining: nodeContainer.createValueAddress(node: begginingNode, valueIndex: path.beggining.valueIndex), ending: nodeContainer.getPosition(value: path.ending))
+					
+					nodeContainer.activePath = draggable
+				}
 			} else {
 				nodeContainer.activePath?.ending = nodeContainer.getPosition(value: nodeContainer.createValueAddress(node: node, valueIndex: valueIndex)) + CGPoint(x: data.translation.width, y: data.translation.height)
 			}

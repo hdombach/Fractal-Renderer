@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 
 let allNodes: [Node] = [CoordinateNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode()]
+let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
 protocol Node {
 	var name: String { get }
@@ -29,12 +30,18 @@ protocol Node {
 
 extension Node {
 	
+	var command: Int32 {
+		get {
+			return commandDictionary[type] ?? -1
+		}
+	}
+	
 	subscript(valueIndex: Int) -> NodeValue {
 		get {
 			if outputs.count > valueIndex {
 				return outputs[valueIndex]
 			} else {
-				return outputs[valueIndex - outputs.count]
+				return inputs[valueIndex - outputs.count]
 			}
 		}
 		
@@ -42,7 +49,7 @@ extension Node {
 			if outputs.count > valueIndex {
 				outputs[valueIndex] = newValue
 			} else {
-				return outputs[valueIndex - outputs.count] = newValue
+				return inputs[valueIndex - outputs.count] = newValue
 			}
 		}
 	}

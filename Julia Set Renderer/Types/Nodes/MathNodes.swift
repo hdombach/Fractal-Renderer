@@ -138,5 +138,3 @@ struct SeperateNode: Node {
 		SeperateNode()
 	}
 }
-
-//Seperate Node

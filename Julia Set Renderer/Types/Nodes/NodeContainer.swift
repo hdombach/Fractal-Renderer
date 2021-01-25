@@ -22,12 +22,17 @@ struct NodeContainer {
 	let nodeWidth: CGFloat = 200
 	var type: NodeContainerType = .Material
 	
-	var compiled: [UInt32] = []
+	var compiled: [Int32] = []
 	var compilerMessage: String = "Succesfully updated"
 	var compilerCompleted: Bool = true
 	
 	mutating func delete(node nodeIn: Node?) {
 		if nodeIn != nil {
+			for valueIndex in 0...nodeIn!.inputs.count + nodeIn!.outputs.count - 1 {
+				for path in getPathsAt(address: createValueAddress(node: nodeIn!, valueIndex: valueIndex)) {
+					delete(path: path)
+				}
+			}
 			nodes.removeAll { (node) -> Bool in
 				nodeIn!.id == node.id
 			}
@@ -61,11 +66,16 @@ struct NodeContainer {
 		return DraggablePath(beggining: createValueAddress(node: node, valueIndex: valueIndex), ending: getPosition(value: createValueAddress(node: node, valueIndex: valueIndex)))
 	}
 	
-	func getPathAt(address: NodeValueAddress) -> NodePath? {
+	func getPathsAt(address: NodeValueAddress) -> [NodePath] {
 		let node = self[address.nodeAddress()]
-		return paths.first { (path) -> Bool in
-			path.ending.id == node.id && path.ending.valueIndex == address.valueIndex
+		var result: [NodePath] = []
+		for path in paths {
+			if (path.ending.id == node.id && path.ending.valueIndex == address.valueIndex) || (path.beggining.id == node.id && path.beggining.valueIndex == address.valueIndex) {
+				result.append(path)
+			}
 		}
+		
+		return result
 	}
 	
 	func getHeight(nodeAddress: NodeAddress) -> Int {
@@ -122,7 +132,9 @@ struct NodeContainer {
 							let begging = activePath!.beggining
 							let ending = NodeValueAddress(nodeIndex: nodeIndex, valueIndex: valueIndex, id: node.id)
 							
-							delete(path: getPathAt(address: ending))
+							getPathsAt(address: ending).forEach { (path) in
+								delete(path: path)
+							}
 							
 							paths.append(NodePath(beggining: begging, ending: ending))
 							
@@ -205,7 +217,9 @@ extension NodeContainer {
 		compilerCompleted = false
 		compilerMessage = "Error: " + message
 	}
+	
 	mutating func compile() {
+		print(nodes)
 		//Find all outputs nodes if there is more than one, throw error.
 		var output: NodeAddress? = nil
 		for node in nodes {
@@ -223,7 +237,175 @@ extension NodeContainer {
 				}
 			}
 		}
+		if output == nil {
+			throwError("No output node")
+			return
+		}
 		
+		//Find the depth of each node and add constants to variable list
+		//keeps track of a value and the number of observers
+		
+		//
+		var variables: [(observers: Int, value: NodeValueAddress, vectorIndex: Int)] = []
+		var history: [Node] = []
+		var depthDictionary: [NodeAddress: Int] = [:]
+		
+		func depthSort(node: Node, previousDepth: Int) -> Bool {
+			if history.contains(where: { (anotherNode) -> Bool in
+				anotherNode.id == node.id
+			}) {
+				throwError("Recursivness detected")
+				return false
+			}
+			history.append(node)
+			
+			let currentDepth = previousDepth + 1
+			if currentDepth > depthDictionary[createNodeAddress(node: node)] ?? -1 {
+				depthDictionary.updateValue(currentDepth, forKey: createNodeAddress(node: node))
+			}
+			
+			if node.inputs.count > 0 {
+				for valueIndex in node.outputs.count...node.outputs.count + node.inputs.count - 1 {
+					if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
+						let result = depthSort(node: self[path.beggining.nodeAddress()], previousDepth: currentDepth)
+						if result == false {
+							return result
+						}
+					} else {
+						let valueAddress = createValueAddress(node: node, valueIndex: valueIndex)
+						
+						if node[valueIndex].type == .float3 {
+							variables.append((1, valueAddress, 0))
+							variables.append((1, valueAddress, 1))
+							variables.append((1, valueAddress, 2))
+						} else {
+							variables.append((1, valueAddress, 0))
+						}
+					}
+				}
+			}
+			history.removeLast()
+			return true
+		}
+		
+		depthSort(node: self[output!], previousDepth: -1)
+		
+		var maxDepth: Int = 0
+		for depth in depthDictionary.values {
+			if depth > maxDepth {
+				maxDepth = depth
+			}
+		}
+		
+		var layers: [[Node]] = Array.init(repeating: [], count: maxDepth + 1)
+		for key in depthDictionary.keys {
+			layers[depthDictionary[key]!].append(self[key])
+		}
+		//all nodes starting from deepest layer
+		layers.reverse()
+		
+		var tempCode: [Int32] = []
+		var dealocatedVariables: [Int] = []
+		
+		//generate code from nodes
+		//Format: <command code> <outputs> <inputs>
+		//Free up variables for future use when all readers are accounted for.
+		
+		//Maybe fix later. float3 variables that are read as a float1 will never get deallocated
+		
+		func createVariable(info: (observers: Int, value: NodeValueAddress, vectorIndex: Int)) -> Int32 {
+			if dealocatedVariables.isEmpty {
+				variables.append(info)
+				return Int32(variables.count - 1)
+			} else {
+				variables[dealocatedVariables.last!] = info
+				return Int32(dealocatedVariables.removeLast())
+			}
+		}
+		
+		func findVariable(value: NodeValueAddress, vectorIndex: Int) -> Int {
+			var fallBack: Int = -1
+			var index: Int = -1
+			for c in 0...variables.count - 1 {
+				let variable = variables[c]
+				
+				if variable.value == value {
+					if variable.vectorIndex == vectorIndex {
+						index = c
+					}
+					if variable.vectorIndex == 0 {
+						fallBack = c
+					}
+				}
+			}
+			if index == -1 {
+				index = fallBack
+				if index == -1 {
+					return -1
+				}
+			}
+			
+			variables[index].observers -= 1
+			if variables[index].observers >= 0 {
+				dealocatedVariables.append(index)
+			}
+			
+			return index
+		}
+		
+		func compileNode(node: Node) {
+			tempCode.append(node.command)
+			
+			var valueIndex = 0
+			
+			for output in node.outputs {
+				let addresss = createValueAddress(node: node, valueIndex: valueIndex)
+				let obsevors = getPathsAt(address: addresss).count
+				
+				if obsevors > 0 {
+					if output.type == .float3 {
+						tempCode.append(createVariable(info: (observers: obsevors, value: addresss, vectorIndex: 0)))
+						tempCode.append(createVariable(info: (obsevors, addresss, 1)))
+						tempCode.append(createVariable(info: (obsevors, addresss, 2)))
+					} else {
+						tempCode.append(createVariable(info: (obsevors, addresss, 0)))
+					}
+				}
+				
+				valueIndex += 1
+			}
+			
+			for input in node.inputs {
+				var address: NodeValueAddress!
+				if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
+					address = path.beggining
+				} else {
+					address = createValueAddress(node: node, valueIndex: valueIndex)
+				}
+				
+				if input.type == .float3 {
+					tempCode.append(findVariable(value: address, vectorIndex: 0).int32)
+					tempCode.append(findVariable(value: address, vectorIndex: 1).int32)
+					tempCode.append(findVariable(value: address, vectorIndex: 2).int32)
+				} else {
+					tempCode.append(findVariable(value: address, vectorIndex: 0).int32)
+				}
+				
+				valueIndex += 1
+			}
+		}
+		
+		for layer in layers {
+			for node in layer {
+				compileNode(node: node)
+			}
+		}
+		
+		
+		compiled = tempCode
+		print(compiled)
+		
+		compilerCompleted = true
 		compilerMessage = "Succesfully updated"
 	}
 }
