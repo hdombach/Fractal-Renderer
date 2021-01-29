@@ -68,6 +68,17 @@ extension CGRect {
 	}
 }
 
+extension Int {
+	var int32: Int32 {
+		get {
+			return Int32(self)
+		}
+		set {
+			self = Int(newValue)
+		}
+	}
+}
+
 extension SIMD4 {
 	var xyz: SIMD3<Scalar> {
 		get {

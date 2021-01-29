@@ -14,7 +14,7 @@ let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1,
 
 protocol Node {
 	var name: String { get }
-	var type: String { get }
+	var functionName: String { get }
 	var color: Color { get }
 	var size: CGSize { get }
 	var id: UUID { get }
@@ -32,7 +32,7 @@ extension Node {
 	
 	var command: Int32 {
 		get {
-			return commandDictionary[type] ?? -1
+			return commandDictionary[functionName] ?? -1
 		}
 	}
 	
@@ -100,7 +100,7 @@ extension Node {
 
 struct ErrorNode: Node {
 	var name: String = "Error"
-	var type: String = "Error Node"
+	var functionName: String = "error"
 	var color = Color.clear
 	var size: CGSize = .init()
 	var id = UUID()

@@ -11,7 +11,7 @@ import SwiftUI
 
 struct CoordinateNode: Node {
 	var name = "Coordinate"
-	var type: String = "Coordinate Node"
+	var functionName: String = "coordinate"
 	var color: Color = .nodeInput
 	var size: CGSize = CGSize(width: 200, height: 100)
 	var id = UUID()
@@ -32,7 +32,7 @@ struct CoordinateNode: Node {
 
 struct MaterialNode: Node {
 	var name: String = "Material"
-	var type: String = "Material Node"
+	var functionName: String = "material"
 	var color: Color = .nodeOutput
 	var size: CGSize = CGSize(width: 200, height: 150)
 	var id = UUID()
@@ -53,7 +53,7 @@ struct MaterialNode: Node {
 
 struct DENode: Node {
 	var name: String = "DE"
-	var type: String = "DE Node"
+	var functionName: String = "de"
 	var color: Color = .nodeOutput
 	var size: CGSize = CGSize(width: 200, height: 100)
 	var id = UUID()

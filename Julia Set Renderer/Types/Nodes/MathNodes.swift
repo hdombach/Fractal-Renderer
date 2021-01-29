@@ -11,7 +11,7 @@ import SwiftUI
 
 struct AddNode: Node {
 	var name: String = "Add"
-	var type: String = "Add Node"
+	var functionName: String = "add"
 	var color: Color = .nodeMath
 	var size: CGSize = CGSize(width: 200, height: 150)
 	var id = UUID()
@@ -32,7 +32,7 @@ struct AddNode: Node {
 
 struct MultiplyNode: Node {
 	var name: String = "Multiply"
-	var type: String = "Multiply Node"
+	var functionName: String = "multiply"
 	var color: Color = .nodeMath
 	var size: CGSize = CGSize(width: 200, height: 150)
 	var id = UUID()
@@ -53,7 +53,7 @@ struct MultiplyNode: Node {
 
 struct DivideNode: Node {
 	var name: String = "Divide"
-	var type: String = "Divide Node"
+	var functionName: String = "divide"
 	var color: Color = .nodeMath
 	var size: CGSize = CGSize(width: 200, height: 150)
 	var id = UUID()
@@ -74,7 +74,7 @@ struct DivideNode: Node {
 
 struct IsGreaterNode: Node {
 	var name: String = "Is Greater"
-	var type: String = "Is Greater Node"
+	var functionName: String = "isGreater"
 	var color: Color = .nodeMath
 	var size = CGSize(width: 200, height: 150)
 	var id = UUID()
@@ -99,7 +99,7 @@ struct IsGreaterNode: Node {
 
 struct CombineNode: Node {
 	var name: String = "Combine"
-	var type: String = "Combine Node"
+	var functionName: String = "combine"
 	var color: Color = .nodeMath
 	var size = CGSize(width: 200, height: 200)
 	var id = UUID()
@@ -120,7 +120,7 @@ struct CombineNode: Node {
 
 struct SeperateNode: Node {
 	var name: String = "Seperate"
-	var type: String = "Seperate Node"
+	var functionName: String = "seperate"
 	var color: Color = .nodeMath
 	var size = CGSize(width: 200, height: 200)
 	var id = UUID()

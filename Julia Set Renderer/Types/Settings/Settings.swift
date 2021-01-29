@@ -59,15 +59,24 @@ class JoinedRenderSettings: ObservableObject {
 	
 	@Published var kernelSize: (groupSize: Int, groups: Int) = (200, 50)
 	
-	@Published var camera: Camera = Camera(position: SIMD4<Float>(0, 0.001, -2, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080))
+	@Published var camera: Camera = Camera(position: SIMD4<Float>(0, 0.001, -2, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
+		didSet {
+			update()
+		}
+	}
 	
 	var savedCamera: Camera!
 	
-	@Published var progress: String = "0% (0 / 0)"
+	@Published var progress: String = "0% (0 / 0)" {
+		didSet {
+			update()
+		}
+	}
 	
 	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] {
 		didSet {
 			updateChannels()
+			update()
 		}
 	}
 	
@@ -80,9 +89,17 @@ class JoinedRenderSettings: ObservableObject {
 	
 	var renderMode: RenderMode = .Mandelbulb
 	
-	@Published var rayMarchingSettings: RayMarchingSettings = .init()
+	@Published var rayMarchingSettings: RayMarchingSettings = .init() {
+		didSet {
+			update()
+		}
+	}
 	
-	@Published var juliaSetSettings = JuliaSetSettings()
+	@Published var juliaSetSettings = JuliaSetSettings() {
+		didSet {
+			update()
+		}
+	}
 	
 	@Published var isShowingUI: Bool = true
 }

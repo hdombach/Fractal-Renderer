@@ -18,7 +18,6 @@ struct MathContainer {
 		return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
 	}
 	
-	//MARK: Problem
 	float2 getAngle(float3 normal) {
 		float2 angle;
 		angle.x = atan(normal.y / normal.z);
@@ -28,7 +27,6 @@ struct MathContainer {
 		return angle;
 	}
 	
-	//MARK: Problem
 	float3 getNormal(float2 angle) {
 		
 		float3x3 xRotation = float3x3 {
@@ -46,7 +44,6 @@ struct MathContainer {
 		return xRotation * yRotation * float3(0, 0, 1);
 	}
 	
-	//MARK: Problem
 	DistanceInfo distanceToPlane(Ray ray, Plane plane) {
 		if (plane.axis == x) {
 			float xDistance = (plane.value - ray.position.x) / ray.deriction.x;
@@ -73,13 +70,11 @@ struct MathContainer {
 		return {FLT_MAX, na};
 	}
 	
-	//MARK: Problem
 	float4 intersectionOnPlane(Ray ray, Plane plane) {
 		return ray.position + distanceToPlane(ray, plane).distance * ray.deriction;
 	}
 	
 	//this function assumes the ray is already inside a voxel
-	//MARK: Problem
 	DistanceInfo distanceToVoxel(Ray ray, device Voxel *voxel) {
 		Voxel newVoxel = *voxel;
 		float3 planes;
@@ -113,7 +108,6 @@ struct MathContainer {
 	}
 	
 	//this function assumes ray is outside the voxel/cube
-	//MARK: Problem
 	DistanceInfo distanceToCube(Ray ray, device Voxel *voxel) {
 		Voxel cube = *voxel;
 		float3 planes;

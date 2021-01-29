@@ -97,16 +97,16 @@ class Renderer: NSObject, MTKViewDelegate {
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {
 		case .preview:
-			renderCommandEncoder?.setRenderPipelineState(Engine.PreviewPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.preview])
 		case .rendering:
-			renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
         default:
-            renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
 		}
 		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
 		renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
-		renderCommandEncoder?.setFragmentSamplerState(Engine.SamplerState, index: 0)
+		renderCommandEncoder?.setFragmentSamplerState(Engine.Library.samplerState, index: 0)
 		renderCommandEncoder?.setFragmentTexture(Engine.MainTexture.texture, index: 0)
 		
 		var info = ShaderInfo.init()

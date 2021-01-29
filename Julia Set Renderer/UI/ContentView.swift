@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var settings = Engine.Settings
+	@ObservedObject var settings = Engine.Settings
     @State var isShowingCamera = false
     @State var isShowingImageSettings = false
     @State var isShowingPatternSettings = false

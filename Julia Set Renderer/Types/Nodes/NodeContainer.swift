@@ -16,13 +16,29 @@ enum NodeContainerType {
 struct NodeContainer {
 	var nodes: [Node] = []
 	var paths: [NodePath] = []
+	
+	private var constantsAddresses: [(address: NodeValueAddress, vector: Int)] = []
+	var constants: [Float] {
+		var output: [Float] = []
+		for address in constantsAddresses {
+			if address.vector == 0 {
+				output.append(self[address.address].float)
+			} else {
+				output.append(self[address.address].float3[address.vector])
+			}
+		}
+		return output
+	}
+	
+	
 	var activePath: DraggablePath?
 	let circleSize: CGFloat = 8
 	let gridSize: CGFloat = 25
 	let nodeWidth: CGFloat = 200
 	var type: NodeContainerType = .Material
 	
-	var compiled: [Int32] = []
+	var compiledMaterial: String?
+	var compiledDE: String?
 	var compilerMessage: String = "Succesfully updated"
 	var compilerCompleted: Bool = true
 	
@@ -275,11 +291,11 @@ extension NodeContainer {
 						let valueAddress = createValueAddress(node: node, valueIndex: valueIndex)
 						
 						if node[valueIndex].type == .float3 {
-							variables.append((1, valueAddress, 0))
-							variables.append((1, valueAddress, 1))
-							variables.append((1, valueAddress, 2))
+							variables.append((-1, valueAddress, 0))
+							variables.append((-1, valueAddress, 1))
+							variables.append((-1, valueAddress, 2))
 						} else {
-							variables.append((1, valueAddress, 0))
+							variables.append((-1, valueAddress, 0))
 						}
 					}
 				}
@@ -289,6 +305,8 @@ extension NodeContainer {
 		}
 		
 		depthSort(node: self[output!], previousDepth: -1)
+		
+		let constantsLength = variables.count
 		
 		var maxDepth: Int = 0
 		for depth in depthDictionary.values {
@@ -304,7 +322,7 @@ extension NodeContainer {
 		//all nodes starting from deepest layer
 		layers.reverse()
 		
-		var tempCode: [Int32] = []
+		var tempCode: String = ""
 		var dealocatedVariables: [Int] = []
 		
 		//generate code from nodes
@@ -313,17 +331,17 @@ extension NodeContainer {
 		
 		//Maybe fix later. float3 variables that are read as a float1 will never get deallocated
 		
-		func createVariable(info: (observers: Int, value: NodeValueAddress, vectorIndex: Int)) -> Int32 {
+		func createVariable(info: (observers: Int, value: NodeValueAddress, vectorIndex: Int)) -> String {
 			if dealocatedVariables.isEmpty {
 				variables.append(info)
-				return Int32(variables.count - 1)
+				return "v\(variables.count - 1 - constantsLength)"
 			} else {
 				variables[dealocatedVariables.last!] = info
-				return Int32(dealocatedVariables.removeLast())
+				return "v\(dealocatedVariables.removeLast() - constantsLength)"
 			}
 		}
 		
-		func findVariable(value: NodeValueAddress, vectorIndex: Int) -> Int {
+		func findVariable(value: NodeValueAddress, vectorIndex: Int) -> String {
 			var fallBack: Int = -1
 			var index: Int = -1
 			for c in 0...variables.count - 1 {
@@ -340,58 +358,91 @@ extension NodeContainer {
 			}
 			if index == -1 {
 				index = fallBack
+				fallBack = -2
 				if index == -1 {
-					return -1
+					return "error"
 				}
 			}
 			
-			variables[index].observers -= 1
-			if variables[index].observers >= 0 {
-				dealocatedVariables.append(index)
+			//is constant if observers is -1
+			if variables[index].observers == -1 {
+				return "constants[\(index)]"
+			} else {
+				if fallBack > -2 {
+					variables[index].observers -= 1
+					if variables[index].observers <= 0 {
+						dealocatedVariables.append(index)
+					}
+				}
+				return "v\(index - constantsLength)"
 			}
-			
-			return index
 		}
 		
 		func compileNode(node: Node) {
-			tempCode.append(node.command)
-			
-			var valueIndex = 0
-			
-			for output in node.outputs {
-				let addresss = createValueAddress(node: node, valueIndex: valueIndex)
-				let obsevors = getPathsAt(address: addresss).count
+			let functionName = node.functionName
+			switch functionName {
+			case "coordinate":
+				let address = createValueAddress(node: node, valueIndex: 0)
+				let observors = getPathsAt(address: address).count
+				tempCode.append(createVariable(info: (observors, address, 0)) + " = position.x;\n")
+				tempCode.append(createVariable(info: (observors, address, 1)) + " = position.y;\n")
+				tempCode.append(createVariable(info: (observors, address, 2)) + " = position.z;\n")
 				
-				if obsevors > 0 {
-					if output.type == .float3 {
-						tempCode.append(createVariable(info: (observers: obsevors, value: addresss, vectorIndex: 0)))
-						tempCode.append(createVariable(info: (obsevors, addresss, 1)))
-						tempCode.append(createVariable(info: (obsevors, addresss, 2)))
-					} else {
-						tempCode.append(createVariable(info: (obsevors, addresss, 0)))
-					}
-				}
-				
-				valueIndex += 1
-			}
-			
-			for input in node.inputs {
+			case "material":
 				var address: NodeValueAddress!
-				if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
+				if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: 0)).first {
 					address = path.beggining
 				} else {
-					address = createValueAddress(node: node, valueIndex: valueIndex)
+					address = createValueAddress(node: node, valueIndex: 0)
 				}
 				
-				if input.type == .float3 {
-					tempCode.append(findVariable(value: address, vectorIndex: 0).int32)
-					tempCode.append(findVariable(value: address, vectorIndex: 1).int32)
-					tempCode.append(findVariable(value: address, vectorIndex: 2).int32)
-				} else {
-					tempCode.append(findVariable(value: address, vectorIndex: 0).int32)
+				tempCode.append("rgbAbsorption.x = " + findVariable(value: address, vectorIndex: 0) + ";\n")
+				tempCode.append("rgbAbsorption.y = " + findVariable(value: address, vectorIndex: 1) + ";\n")
+				tempCode.append("rgbAbsorption.z = " + findVariable(value: address, vectorIndex: 2) + ";\n")
+				tempCode.append("return;\n")
+			case "de":
+				break;
+			default:
+				tempCode += "functions." + functionName + "("
+				var valueIndex = 0
+				
+				for output in node.outputs {
+					let addresss = createValueAddress(node: node, valueIndex: valueIndex)
+					let obsevors = getPathsAt(address: addresss).count
+					
+					if obsevors > 0 {
+						if output.type == .float3 {
+							tempCode += "&" + createVariable(info: (obsevors, addresss, 0)) + ", "
+							tempCode += "&" + createVariable(info: (obsevors, addresss, 1)) + ", "
+							tempCode += "&" + createVariable(info: (obsevors, addresss, 2)) + ", "
+						} else {
+							tempCode += "&" + createVariable(info: (obsevors, addresss, 0)) + ", "
+						}
+					}
+					
+					valueIndex += 1
 				}
 				
-				valueIndex += 1
+				for input in node.inputs {
+					var address: NodeValueAddress!
+					if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
+						address = path.beggining
+					} else {
+						address = createValueAddress(node: node, valueIndex: valueIndex)
+					}
+					
+					if input.type == .float3 {
+						tempCode.append(findVariable(value: address, vectorIndex: 0) + ", ")
+						tempCode.append(findVariable(value: address, vectorIndex: 1) + ", ")
+						tempCode.append(findVariable(value: address, vectorIndex: 2) + ", ")
+					} else {
+						tempCode.append(findVariable(value: address, vectorIndex: 0) + ", ")
+					}
+					
+					valueIndex += 1
+				}
+				tempCode.removeLast(2)
+				tempCode.append(");\n")
 			}
 		}
 		
@@ -401,11 +452,30 @@ extension NodeContainer {
 			}
 		}
 		
+		if variables.count - constantsLength > 0 {
+			var createdVariables: String = "float "
+			for c in 0...(variables.count - constantsLength - 1) {
+				createdVariables.append("v\(c), ")
+			}
+			createdVariables.removeLast(2)
+			createdVariables.append(";\n\n")
+			tempCode.insert(contentsOf: createdVariables, at: tempCode.startIndex)
+		}
 		
-		compiled = tempCode
-		print(compiled)
+		
+		//compiled = tempCode
+		print("\n\n*__CODE__*\n\n")
+		print(tempCode)
+		compiledMaterial = tempCode
 		
 		compilerCompleted = true
 		compilerMessage = "Succesfully updated"
+		
+		//compiledMaterial = "rgbAbsorption = float3(1, 0, 0); return;"
+		Engine.Library.loadLibrary(material: compiledMaterial, de: compiledDE, completion: {
+			DispatchQueue.main.async {
+				Engine.View.setNeedsDisplay(Engine.View.frame)
+			}
+		})
 	}
 }

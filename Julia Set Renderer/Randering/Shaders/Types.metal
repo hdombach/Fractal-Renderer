@@ -99,6 +99,37 @@ struct Channel {
 	float strength;
 };
 
+struct NodeFunctions {
+	void add(thread float *out1, float in1, float in2) {
+		*out1 = in1 + in2;
+	}
+	
+	void multiply(thread float *out1, float in1, float in2) {
+		*out1 = in1 * in2;
+	}
+	
+	void divide(thread float *out1, float in1, float in2) {
+		*out1 = in1 / in2;
+	}
+	
+	void isGreater(thread float *out1, float in1, float in2) {
+		*out1 = in1 > in2;
+	}
+	
+	void combine(thread float *out1, thread float *out2, thread float *out3, float in1, float in2, float in3) {
+		*out1 = in1;
+		*out2 = in2;
+		*out3 = in3;
+	}
+	
+	void seperate(thread float *out1, thread float *out2, thread float *out3, float in1, float in2, float in3) {
+		*out1 = in1;
+		*out2 = in2;
+		*out3 = in3;
+	}
+};
+
+
 //MARK: Material
 struct Material {
 	float3 rgbAbsorption, rgbEmitted;
@@ -116,6 +147,10 @@ struct Material {
 	}
 	
 	void init(float3 position, RayMarchingSettings settings) {
+		NodeFunctions functions;
+		
+		//INSERT_MATERIAL//
+		
 		rgbEmitted = float3(0, 0, 0);
 		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
 		//rgbAbsorption = float3(0.5, 0.5, 0.5);
@@ -341,7 +376,77 @@ struct Voxel {
 		newChild.y = (rayPosition.y > position.y + selfWidth);
 		newChild.z = (rayPosition.z > position.z + selfWidth);
 		
-		
+
 		return getChild(newChild);
+	}
+};
+
+struct NodeReader {
+	float3 position;
+	constant int *code;
+	thread float *variables;
+	int index = 0;
+	float3 result;
+	
+	void update(int codeLength) {
+		for (int c = 0; codeLength > c; c++) {
+			switch (code[index]) {
+				case 1: //coordinate node
+					variables[code[index + 1]] = position.x;
+					variables[code[index + 2]] = position.y;
+					variables[code[index + 3]] = position.z;
+					index += 4;
+					break;
+					
+				case 2://Material Node
+					result.x = variables[code[index + 1]];
+					result.y = variables[code[index + 2]];
+					result.z = variables[code[index + 3]];
+					index += 4;
+					return;
+					
+				case 3://DE Node
+					result.x = variables[code[index + 1]];
+					index += 2;
+					break;
+					
+				case 4://Add Node
+					variables[code[index + 1]] = variables[code[index + 2]] + variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 5://multiply
+					variables[code[index + 1]] = variables[code[index + 2]] * variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 6://Divide
+					variables[code[index + 1]] = variables[code[index + 2]] / variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 7://is greater
+					variables[code[index + 1]] = variables[code[index + 2]] > variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 8://combine
+					variables[code[index + 1]] = variables[code[index + 4]];
+					variables[code[index + 2]] = variables[code[index + 5]];
+					variables[code[index + 3]] = variables[code[index + 6]];
+					index += 7;
+					break;
+					
+				case 9://seperate
+					variables[code[index + 1]] = variables[code[index + 4]];
+					variables[code[index + 2]] = variables[code[index + 5]];
+					variables[code[index + 3]] = variables[code[index + 6]];
+					index += 7;
+					break;
+					
+				default:
+					break;
+			}
+		}
 	}
 };

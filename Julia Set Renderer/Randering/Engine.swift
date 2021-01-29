@@ -12,11 +12,7 @@ class Engine {
 	public static var Device: MTLDevice!
 	public static var CommandQueue: MTLCommandQueue!
 	public static var ComputeQueue: MTLCommandQueue!
-	public static var PreviewPipelineState: MTLRenderPipelineState!
-	public static var RenderPipelineState: MTLRenderPipelineState!
-	public static var ComputePipelineState: MTLComputePipelineState!
-	public static var ResetComputePipelineState: MTLComputePipelineState!
-	public static var SamplerState: MTLSamplerState!
+	public static var Library = LibraryManager()
 	public static var PixelFormat = (MTLPixelFormat.rgba16Float, MTLPixelFormat.r32Float)
 	public static var View: MTKView!
 	//public static var SceneCamera: Camera {
@@ -31,30 +27,25 @@ class Engine {
 	//public static var MainPointGen = linearComGen(rSlope: 1, rIntercept: 0.1, iSlope: 1, iIntercept: -0.3)
     public static var JuliaSetSettings = LinearJuliaSet()
 
-	static var index: Int = 0
-	//public static var obversedSettings = RenderSettings()
-
-	private static var lastPassTime = 1.0
-    private static var lastUpdate = false
+	static var computeIndex: Int = 0
     
     public static var isRendering = false
 
 	public static func ResetRender() {
-		index = 0
+		computeIndex = 0
 	}
 
 	private static var countdown: Int = 0
 
 	public static func ResetTexture() {
 		DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + 0.1) {
-			//print("reset")
 			let commandBuffer = ComputeQueue.makeCommandBuffer()
 			let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
-			computeCommandEncoder?.setComputePipelineState(ResetComputePipelineState)
+			computeCommandEncoder?.setComputePipelineState(Library[LibraryManager.ComputePipelineState.reset])
 			computeCommandEncoder?.setTexture(MainTexture.texture, index: 0)
 
 			let threadsPerGrid = MTLSize.init(width: MainTexture.texture.width, height: MainTexture.texture.height, depth: 1)
-			let maxThreadsPerThreadgroup = ComputePipelineState.maxTotalThreadsPerThreadgroup
+			let maxThreadsPerThreadgroup = Library[LibraryManager.ComputePipelineState.render].maxTotalThreadsPerThreadgroup
 			let groupSize = Int(floor(sqrt(Float(maxThreadsPerThreadgroup))))
 			let threadsPerThreadgroup = MTLSize(width: groupSize, height: groupSize, depth: 1)
 
@@ -102,7 +93,7 @@ class Engine {
                 
                 let commandBuffer = ComputeQueue.makeCommandBuffer()
                 let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder(dispatchType: .concurrent)
-                computeCommandEncoder?.setComputePipelineState(ComputePipelineState)
+				computeCommandEncoder?.setComputePipelineState(Library[LibraryManager.ComputePipelineState.render])
                 computeCommandEncoder?.setTexture(MainTexture.texture, index: 0)
                 computeCommandEncoder?.setTexture(MainTexture.texture, index: 1)
 
@@ -124,7 +115,7 @@ class Engine {
 				
 				var shaderInfo = ShaderInfo()
 				shaderInfo.camera = Settings.camera
-				shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(index), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
+				shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(computeIndex), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
 				shaderInfo.randomSeed = SIMD3<UInt32>.init(UInt32.random(in: 0...10000), UInt32.random(in: 0...10000), UInt32.random(in: 0...10000))
 				shaderInfo.voxelsLength = UInt32(Container.voxelCount)
 				shaderInfo.isJulia = Settings.renderMode.rawValue
@@ -144,23 +135,25 @@ class Engine {
                 commandBuffer?.waitUntilCompleted()
                 //print(CACurrentMediaTime() - currentTime)
 
-                index += groupSize * groups
-                while index > Settings.imageSize.0 * Settings.imageSize.1 {
+                computeIndex += groupSize * groups
+                while computeIndex > Settings.imageSize.0 * Settings.imageSize.1 {
                     Settings.exposure += 1
-                    index -= Settings.imageSize.0 * Settings.imageSize.1
+                    computeIndex -= Settings.imageSize.0 * Settings.imageSize.1
                 }
-                if Engine.Settings.samples == 0 {
-                    Engine.Settings.progress = "0%"
-                } else {
-                    Engine.Settings.progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
-                }
-                lastUpdate = false
+				var progress: String = ""
+				if Engine.Settings.samples == 0 {
+					progress = "0%"
+				} else {
+					progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
+				}
+				if progress != Engine.Settings.progress {
+					DispatchQueue.main.async {
+						Engine.Settings.progress = progress
+					}
+				}
             }
             isRendering = false
         }
-		//print(Settings.exposure)
-
-		//commandBuffer?.waitUntilCompleted()
 	}
 
 	public static func LoadJuliaSet(quality: Float) {
@@ -183,87 +176,7 @@ class Engine {
 
 		assert(defaultLibrary != nil, "could not get default library")
 
-		//MARK: Render
-		let vertexShader = defaultLibrary?.makeFunction(name: "basic_vertex_shader")
-		//let previewFragmentShader = defaultLibrary?.makeFunction(name: "sample_fragment_shader")
-        let previewFragmentShader = defaultLibrary?.makeFunction(name: "depth_fragment_shader")
-		let renderFragmentShader = defaultLibrary?.makeFunction(name: "basic_fragment_shader")
-
-
-		let vertexDescriptor = MTLVertexDescriptor()
-
-		//Position
-		vertexDescriptor.attributes[0].format = .float3
-		vertexDescriptor.attributes[0].bufferIndex = 0
-		vertexDescriptor.attributes[0].offset = 0
-
-		//Color
-		vertexDescriptor.attributes[1].format = .float4
-		vertexDescriptor.attributes[1].bufferIndex = 0
-		vertexDescriptor.attributes[1].offset = SIMD3<Float>.size
-
-		//Texture Coordinate
-		vertexDescriptor.attributes[2].format = .float2
-		vertexDescriptor.attributes[2].bufferIndex = 0
-		vertexDescriptor.attributes[2].offset = SIMD3<Float>.size + SIMD4<Float>.size
-
-		vertexDescriptor.layouts[0].stride = Vertex.stride
-
-
-		//MARK: PreviewState
-		let PreviewPipelineDescriptor = MTLRenderPipelineDescriptor()
-
-		PreviewPipelineDescriptor.colorAttachments[0].pixelFormat = PixelFormat.0
-		PreviewPipelineDescriptor.vertexFunction = vertexShader
-		PreviewPipelineDescriptor.fragmentFunction = previewFragmentShader
-		PreviewPipelineDescriptor.vertexDescriptor = vertexDescriptor
-
-		do {
-			PreviewPipelineState = try device.makeRenderPipelineState(descriptor: PreviewPipelineDescriptor)
-		} catch {
-			print(error)
-		}
-
-		//MARK: RenderState
-		let RenderPipelineDescriptor = MTLRenderPipelineDescriptor()
-
-		RenderPipelineDescriptor.colorAttachments[0].pixelFormat = PixelFormat.0
-		RenderPipelineDescriptor.vertexFunction = vertexShader
-		RenderPipelineDescriptor.fragmentFunction = renderFragmentShader
-		RenderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-
-		do {
-			RenderPipelineState = try device.makeRenderPipelineState(descriptor: RenderPipelineDescriptor)
-		} catch {
-			print(error)
-		}
-
-		//MARK: Sampler
-		let samplerDescriptor = MTLSamplerDescriptor()
-		samplerDescriptor.minFilter = .linear
-		samplerDescriptor.magFilter = .linear
-		samplerDescriptor.label = "basic"
-		SamplerState = Device.makeSamplerState(descriptor: samplerDescriptor)
-
-		//MARK: Compute
-		let computeFunction = defaultLibrary?.makeFunction(name: "ray_compute_shader")
-
-		do {
-			ComputePipelineState = try device.makeComputePipelineState(function: computeFunction!)
-		} catch {
-			print(error)
-		}
-		MaxThreadsPerGroup = ComputePipelineState.maxTotalThreadsPerThreadgroup
-
-		//MARK: Reset Compute
-		let resetFunction = defaultLibrary?.makeFunction(name: "reset_compute_shader")
-
-		do {
-			ResetComputePipelineState = try device.makeComputePipelineState(function: resetFunction!)
-		} catch {
-			print(error)
-		}
-		print("finished creating pipelines")
+		Library.setUp(library: Device.makeDefaultLibrary())
 
 		Container = VoxelContainer()
 		ResetJuliaSet()

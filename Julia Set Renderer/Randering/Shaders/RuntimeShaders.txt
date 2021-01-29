@@ -1,0 +1,1320 @@
+/* 
+  RuntimeShaders.strings
+  Julia Set Renderer
+
+  Created by Hezekiah Dombach on 1/27/21.
+  Copyright © 2021 Hezekiah Dombach. All rights reserved.
+*/
+
+
+
+
+
+//MARK: Type.metal
+#include <metal_stdlib>
+using namespace metal;
+
+
+enum Axis {x, y, z, na};
+
+struct Plane {
+	Axis axis;
+	float value;
+};
+
+//MARK: RayMarcingSettings
+struct RayMarchingSettings {
+	float mandelbulbPower;
+	int bundleSize;
+	float quality;
+	uint iterations;
+	float bailout;
+	float3 colorBase;
+	float3 colorVariation;
+	float3 colorFrequency;
+	float3 colorOffset;
+};
+
+//MARK: Colors
+struct Colors {
+	float3 channel0;
+	float3 channel1;
+	float3 channel2;
+	float3 channel3;
+	float3 channel4;
+	float3 channel5;
+	float3 channel6;
+	float3 channel7;
+	
+	float3 channel(int index) {
+		switch (index) {
+			case 0:
+				return channel0;
+			case 1:
+				return channel1;
+			case 2:
+				return channel2;
+			case 3:
+				return channel3;
+			case 4:
+				return channel4;
+			case 5:
+				return channel5;
+			case 6:
+				return channel6;
+			case 7:
+				return channel7;
+		}
+	}
+	
+	void setChannel(int index, float3 newColor) {
+		switch(index) {
+			case 0:
+				channel0 = newColor;
+			case 1:
+				channel1 = newColor;
+			case 2:
+				channel2 = newColor;
+			case 3:
+				channel3 = newColor;
+			case 4:
+				channel4 = newColor;
+			case 5:
+				channel5 = newColor;
+			case 6:
+				channel6 = newColor;
+			case 7:
+				channel7 = newColor;
+		}
+	}
+	
+	void changeChannel(int index, float3 offsetColor) {
+		float3 oldColor = channel(index);
+		setChannel(index, oldColor + offsetColor);
+	}
+	
+	uint channels() {
+		return 8;
+	}
+};
+
+struct Channel {
+	uint index;
+	float3 color;
+	float strength;
+};
+
+//MARK: Material
+struct Material {
+	float3 rgbAbsorption, rgbEmitted;
+	float diffuse;
+	
+	float rand(int x, int y, int z)
+	{
+		int seed = x + y * 57 + z * 241;
+		seed= (seed<< 13) ^ seed;
+		return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
+	}
+	
+	float3 sin(float3 value) {
+		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));
+	}
+	
+	void init(float3 position, RayMarchingSettings settings) {
+		
+		//INSERT_MATERIAL//
+		
+		rgbEmitted = float3(0, 0, 0);
+		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
+		//rgbAbsorption = float3(0.5, 0.5, 0.5);
+		if (rand(x * 12059812, y * 98213, z * 5091283) > 0.5) {
+			diffuse = 0.1;
+		} else {
+			diffuse = 0.9;
+		}
+		float distanceFromCenter = distance(position, float3(0, 0, 0));
+		
+		rgbAbsorption = clamp(settings.colorBase + settings.colorVariation * sin(distanceFromCenter * settings.colorFrequency + settings.colorOffset), float3(0), float3(1));
+		//rgbAbsorption = float3(0.4 + 0.4 * metal::precise::sin(distanceFromCenter * 100), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 40), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
+	}
+};
+
+//MARK: Ray
+struct Ray {
+	float4 position;
+	float4 deriction;
+	
+	float3 colorAbsorption;
+	Colors colors;
+	
+	void normalize() {
+		deriction = metal::normalize(deriction);
+	};
+	
+	void march(float distance) {
+		position += deriction * distance;
+	}
+};
+
+//MARK: SkyBoxLight
+struct SkyBoxLight {
+	float3 color;
+	float strength;
+	float size;
+	float3 position;
+	uint channel;
+	uint id;
+	
+	float3 getColor(Ray ray) {
+		if (size < dot(normalize(ray.deriction.xyz), normalize(position))) {
+			return color * strength;
+		}
+		return float3(0);
+	}
+};
+
+//MARK: Camera
+struct Camera {
+	float4 position;
+	float4 deriction;
+	float zoom;
+	float depth;
+	float4x4 rotateMatrix;
+	float2 resolution;
+	
+	//text coord is from -1 to 1
+	Ray spawnRay(float2 texCoord) {
+		float4 rayDeriction = normalize(float4((texCoord.x - 0.5) * resolution.x * zoom, (texCoord.y - 0.5) * resolution.y * zoom, 1, 1));
+		rayDeriction *= rotateMatrix;
+		Ray ray;
+		ray.deriction = normalize(rayDeriction);
+		ray.position = position;
+		ray.colorAbsorption = float3(1, 1, 1);
+		for (int c = 0; 8 > c; c++) {
+			ray.colors.setChannel(c, float3(0, 0, 0));
+		}
+		return ray;
+	}
+};
+
+//MARK: ShaderInfo
+struct ShaderInfo {
+	RayMarchingSettings rayMarchingSettings;
+	Camera camera;
+	uint4 realIndex;
+	uint3 randomSeed;
+	uint voxelsLength;
+	uint isJulia;
+	uint lightsLength;
+	uint exposure;
+	uint channelsLength;
+};
+
+struct VoxelInfo {
+	float3 position;
+	float size;
+	uint index;
+};
+
+struct CollisionInfo {
+	float3 position;
+	float3 surfaceNormal;
+	Material surfaceMaterial;
+};
+
+struct DistanceInfo {
+	float distance;
+	Axis collisionAxis;
+};
+
+//Int allows numbers from 0 to 4294967295(2^32)
+//MARK: Voxel
+struct VoxelAddress {
+	uint index;
+	bool isDefault() {
+		return (index == 0);
+	}
+};
+
+struct Voxel {
+	float opacity;
+	bool isEnd;
+	float3 position;
+	uint layer;
+	
+	float width() {
+		return pow(0.5, float(layer)) * 1;
+	}
+	
+	VoxelAddress _p;
+	VoxelAddress _0;
+	VoxelAddress _1;
+	VoxelAddress _2;
+	VoxelAddress _3;
+	VoxelAddress _4;
+	VoxelAddress _5;
+	VoxelAddress _6;
+	VoxelAddress _7;
+	
+	//uint children[8];
+	
+	VoxelAddress child(int number) {
+		switch(number) {
+			case 0:
+				return _0;
+			case 1:
+				return _1;
+			case 2:
+				return _2;
+			case 3:
+				return _3;
+			case 4:
+				return _4;
+			case 5:
+				return _5;
+			case 6:
+				return _6;
+			case 7:
+				return _7;
+			default:
+				return _p;
+		}
+	}
+	
+	void setChild(int number, VoxelAddress newAddress) {
+		switch(number) {
+			case 0:
+				_0 = newAddress;
+			case 1:
+				_1 = newAddress;
+			case 2:
+				_2 = newAddress;
+			case 3:
+				_3 = newAddress;
+			case 4:
+				_4 = newAddress;
+			case 5:
+				_5 = newAddress;
+			case 6:
+				_6 = newAddress;
+			case 7:
+				_7 = newAddress;
+			default:
+				_p = newAddress;
+		}
+	}
+	
+	void setChildIndex(int number, int newIndex) {
+		switch(number) {
+			case 0:
+				_0.index = newIndex;
+			case 1:
+				_1.index = newIndex;
+			case 2:
+				_2.index = newIndex;
+			case 3:
+				_3.index = newIndex;
+			case 4:
+				_4.index = newIndex;
+			case 5:
+				_5.index = newIndex;
+			case 6:
+				_6.index = newIndex;
+			case 7:
+				_7.index = newIndex;
+			default:
+				_p.index = newIndex;
+		}
+	}
+	
+	VoxelAddress getChild(bool3 position) {
+		uint index = 0;
+		if (position.x) {
+			index += 1;
+		}
+		if (position.y) {
+			index += 2;
+		}
+		if (position.z) {
+			index += 4;
+		}
+		
+		return child(index);
+	}
+	
+	VoxelAddress getChildRay(float4 rayPosition) {
+		bool3 newChild;
+		float selfWidth = width();
+		newChild.x = (rayPosition.x > position.x + selfWidth);
+		newChild.y = (rayPosition.y > position.y + selfWidth);
+		newChild.z = (rayPosition.z > position.z + selfWidth);
+		
+
+		return getChild(newChild);
+	}
+};
+
+struct NodeReader {
+	float3 position;
+	constant int *code;
+	thread float *variables;
+	int index = 0;
+	float3 result;
+	
+	void update(int codeLength) {
+		for (int c = 0; codeLength > c; c++) {
+			switch (code[index]) {
+				case 1: //coordinate node
+					variables[code[index + 1]] = position.x;
+					variables[code[index + 2]] = position.y;
+					variables[code[index + 3]] = position.z;
+					index += 4;
+					break;
+					
+				case 2://Material Node
+					result.x = variables[code[index + 1]];
+					result.y = variables[code[index + 2]];
+					result.z = variables[code[index + 3]];
+					index += 4;
+					return;
+					
+				case 3://DE Node
+					result.x = variables[code[index + 1]];
+					index += 2;
+					break;
+					
+				case 4://Add Node
+					variables[code[index + 1]] = variables[code[index + 2]] + variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 5://multiply
+					variables[code[index + 1]] = variables[code[index + 2]] * variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 6://Divide
+					variables[code[index + 1]] = variables[code[index + 2]] / variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 7://is greater
+					variables[code[index + 1]] = variables[code[index + 2]] > variables[code[index + 3]];
+					index += 4;
+					break;
+					
+				case 8://combine
+					variables[code[index + 1]] = variables[code[index + 4]];
+					variables[code[index + 2]] = variables[code[index + 5]];
+					variables[code[index + 3]] = variables[code[index + 6]];
+					index += 7;
+					break;
+					
+				case 9://seperate
+					variables[code[index + 1]] = variables[code[index + 4]];
+					variables[code[index + 2]] = variables[code[index + 5]];
+					variables[code[index + 3]] = variables[code[index + 6]];
+					index += 7;
+					break;
+					
+				default:
+					break;
+			}
+		}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//MARK: MatchContainer.metal
+struct MathContainer {
+	// Generate a random float in the range [0.0f, 1.0f] using x, y, and z (based on the xor128 algorithm)
+	float rand(int x, int y, int z) {
+		int seed = x + y * 57 + z * 241;
+		seed= (seed<< 13) ^ seed;
+			return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
+			}
+			
+			float2 getAngle(float3 normal) {
+			float2 angle;
+			angle.x = atan(normal.y / normal.z);
+			float distance = sqrt(normal.y * normal.y + normal.z * normal.z);
+			angle.y = atan(normal.x / distance);
+			
+			return angle;
+			}
+			
+			float3 getNormal(float2 angle) {
+			
+			float3x3 xRotation = float3x3 {
+			float3(1, 0, 0),
+			float3(0, cos(angle.x), -sin(angle.x)),
+			float3(0, sin(angle.x), cos(angle.x))
+			};
+			
+			float3x3 yRotation = float3x3 {
+			float3(cos(angle.y), 0, sin(angle.y)),
+			float3(0, 1, 0),
+			float3(-sin(angle.y), 0, cos(angle.y))
+			};
+			
+			return xRotation * yRotation * float3(0, 0, 1);
+			}
+			
+			DistanceInfo distanceToPlane(Ray ray, Plane plane) {
+			if (plane.axis == x) {
+			float xDistance = (plane.value - ray.position.x) / ray.deriction.x;
+			if (xDistance > 0) {
+				return {xDistance, x};
+			} else {
+				return {FLT_MAX, x};
+			}
+	} else if (plane.axis == y) {
+		float yDistance =  (plane.value - ray.position.y) / ray.deriction.y;
+		if (yDistance > 0) {
+			return {yDistance, y};
+		} else {
+			return {FLT_MAX, y};
+		}
+	} else if (plane.axis == z) {
+		float zDistance = (plane.value - ray.position.z) / ray.deriction.z;
+		if (zDistance > 0) {
+			return {zDistance, z};
+		} else {
+			return {FLT_MAX, z};
+		}
+	}
+	return {FLT_MAX, na};
+}
+
+float4 intersectionOnPlane(Ray ray, Plane plane) {
+	return ray.position + distanceToPlane(ray, plane).distance * ray.deriction;
+}
+
+//this function assumes the ray is already inside a voxel
+DistanceInfo distanceToVoxel(Ray ray, device Voxel *voxel) {
+	Voxel newVoxel = *voxel;
+	float3 planes;
+	if (ray.deriction.x > 0) {
+		planes.x = newVoxel.position.x + newVoxel.width();
+	} else {
+		planes.x = newVoxel.position.x;
+	}
+	if (ray.deriction.y > 0) {
+		planes.y = newVoxel.position.y + newVoxel.width();
+	} else {
+		planes.y = newVoxel.position.y;
+	}
+	if (ray.deriction.z > 0) {
+		planes.z = newVoxel.position.z + newVoxel.width();
+	} else {
+		planes.z = newVoxel.position.z;
+	}
+	
+	DistanceInfo lengthX = distanceToPlane(ray, {x, planes.x});
+	DistanceInfo lengthY = distanceToPlane(ray, {y, planes.y});
+	DistanceInfo lengthZ = distanceToPlane(ray, {z, planes.z});
+	
+	if (lengthX.distance < lengthY.distance && lengthX.distance < lengthZ.distance) {
+		return lengthX;
+		} else if (lengthY.distance < lengthZ.distance) {
+		return lengthY;
+		} else {
+		return lengthZ;
+		}
+		}
+		
+		//this function assumes ray is outside the voxel/cube
+		DistanceInfo distanceToCube(Ray ray, device Voxel *voxel) {
+		Voxel cube = *voxel;
+		float3 planes;
+		if (ray.deriction.x > 0) {
+			planes.x = cube.position.x;
+		} else {
+			planes.x = cube.position.x + cube.width();
+		}
+		if (ray.deriction.y > 0) {
+			planes.y = cube.position.y;
+		} else {
+			planes.y = cube.position.y + cube.width();
+		}
+		if (ray.deriction.z > 0) {
+			planes.z = cube.position.z;
+		} else {
+			planes.z = cube.position.z + cube.width();
+		}
+		
+		float3 intersectionX = intersectionOnPlane(ray, {x, planes.x}).xyz;
+		float3 intersectionY = intersectionOnPlane(ray, {y, planes.y}).xyz;
+		float3 intersectionZ = intersectionOnPlane(ray, {z, planes.z}).xyz;
+		
+		if (intersectionX.y > cube.position.y && intersectionX.y < cube.position.y + cube.width() && intersectionX.z > cube.position.z && intersectionX.z < cube.position.z + cube.width()) {
+			return distanceToPlane(ray, {x, planes.x});
+			}
+			if (intersectionY.x > cube.position.x && intersectionY.x < cube.position.x + cube.width() && intersectionY.z > cube.position.z && intersectionY.z < cube.position.z + cube.width()) {
+				return distanceToPlane(ray, {y, planes.y});
+				}
+				if (intersectionZ.x > cube.position.x && intersectionZ.x < cube.position.x + cube.width() && intersectionZ.y > cube.position.y && intersectionZ.y < cube.position.y + cube.width()) {
+					return distanceToPlane(ray, {z, planes.z});
+					}
+					return {FLT_MAX, na};
+					}
+					};
+
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+//MARK: RayMarching.metal
+
+struct RayMarchInfo {
+float d;
+float orbitLife;
+};
+
+struct RayMarching {
+bool cubeContainsRay(Ray ray, device Voxel *voxel) {
+Voxel cube = *voxel;
+					if (ray.position.x > cube.position.x && ray.position.x < cube.position.x + cube.width()) {
+						if (ray.position.y > cube.position.y && ray.position.y < cube.position.y + cube.width()) {
+							if (ray.position.z > cube.position.z && ray.position.z < cube.position.z + cube.width()) {
+								return true;
+								}
+								}
+								}
+								return false;
+								}
+								
+								
+								float3 getNormal(Axis axis) {
+								switch (axis) {
+								case x:
+								return float3(1, 0, 0);
+								case y:
+								return float3(0, 1, 0);
+								case z:
+								return float3(0, 0, 1);
+								case na:
+								return float3(0, 0, 0);
+								}
+								}
+								
+								
+								VoxelAddress getVoxelChild2(bool3 position, device Voxel *voxel) {
+								uint index = 0;
+								if (position.x) {
+								index += 1;
+								}
+								if (position.y) {
+								index += 2;
+								}
+								if (position.z) {
+								index += 4;
+								}
+								
+								Voxel v = *voxel;
+								return v.child(index);
+								}
+								VoxelAddress getVoxelChildAtRay(float4 rayPosition, device Voxel *voxel) {
+								bool3 newChild;
+								Voxel newVoxel = *voxel;
+								float width = newVoxel.width() / 2;
+								newChild.x = (rayPosition.x > newVoxel.position.x + width);
+		newChild.y = (rayPosition.y > newVoxel.position.y + width);
+		newChild.z = (rayPosition.z > newVoxel.position.z + width);
+		
+		return getVoxelChild2(newChild, voxel);
+}
+
+device Voxel * getVoxel(VoxelAddress voxelAddress, device Voxel *voxels, int voxelsLength) {
+	// VoxelContainer container;
+	return &voxels[voxelAddress.index];
+}
+
+device Voxel * getVoxel(Ray atRay, device Voxel *voxels, int voxelsLength) {
+	device Voxel *currentVoxel = &voxels[1];
+	
+	while (!currentVoxel->isEnd) {
+		VoxelAddress newAddress = getVoxelChildAtRay(atRay.position, currentVoxel);
+		if (newAddress.isDefault()) {
+			return currentVoxel;
+		}
+		currentVoxel = getVoxel(newAddress, voxels, voxelsLength);
+	}
+	
+	return currentVoxel;
+}
+
+DistanceInfo getVoxelRayStep(Ray ray, device Voxel *voxels, int voxelsLength) {
+	MathContainer maths;
+	return maths.distanceToVoxel(ray, getVoxel(ray, voxels, voxelsLength));
+}
+
+RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
+	float3 z = pos;
+	float dr = 1;
+	float r = 0;
+	float power = settings.mandelbulbPower;
+	uint iterations = settings.iterations;
+	RayMarchInfo info;
+	info.orbitLife = iterations;
+	for (int i = 0; i < iterations; i++) {
+		r = length(z);
+		if (r > settings.bailout) {
+			info.orbitLife = i;
+			break;
+		}
+		
+		//convert to polar
+		float theta = acos(z.z / r);
+		float phi = atan(z.y / z.x);
+		dr = pow(r, power - 1) * power * dr + 1;
+		
+		//scale and rotate the point
+		float zr = pow(r, power);
+		theta = theta * power;
+		phi = phi * power;
+		
+		//convert back to cartesian
+		z = zr * float3(sin(theta) * cos(phi), sin(phi) * sin(theta), cos(theta));
+		z += pos;
+}
+info.d = 0.5 * log(r) * r / dr;
+return info;
+}
+
+float3 mirror(float3 p, float3 normal) {
+	return p - 2 * fmin(0, dot(p, normal)) * normal;
+}
+
+float TriangleDE(float3 z, RayMarchingSettings settings)
+{
+	float Scale = 2;
+	float Offset = 1;
+	int n = 0;
+	while (n < settings.iterations) {
+		if(z.x+z.y<0) z.xy = -z.yx; // fold 1
+		if(z.x+z.z<0) z.xz = -z.zx; // fold 2
+		if(z.y+z.z<0) z.zy = -z.yz; // fold 3
+		z = z*Scale - Offset*(Scale-1.0);
+		n++;
+		}
+		return (length(z) ) * pow(Scale, -float(n));
+		}
+		
+		RayMarchInfo SphereDE(float3 pos, float r, RayMarchingSettings settings) {
+		RayMarchInfo info;
+		float3 c = float3(0.5, 0.5, 0.5);
+		//info.d = length(pos - c) - r;
+		info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
+		info.orbitLife = settings.iterations;
+		return info;
+		}
+		
+		RayMarchInfo DE(float3 pos, RayMarchingSettings settings) {
+		//RayMarchInfo info;
+		//info.orbitLife = settings.iterations;
+		//info.d = TriangleDE(mirror(pos, float3(0, 1, 0)), settings);
+		return newBulbDE(pos, settings);
+		}
+		
+		float3 DEnormal(float3 pos, RayMarchingSettings settings) {
+		//e is an abitrary number
+		float e = 0.000001;
+		float n = DE(pos, settings).d;
+		float dx = DE(pos + float3(e, 0, 0), settings).d - n;
+		float dy = DE(pos + float3(0, e, 0), settings).d - n;
+		float dz = DE(pos + float3(0, 0, e), settings).d - n;
+		
+		return normalize(float3(dx, dy, dz) * -1);
+		}
+		};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//MARK: Rendering.metal
+
+struct RayTracer {
+struct VectorPair {
+float3 v1;
+float3 v2;
+};
+
+VectorPair orthogonalVectors(float3 n) {
+float3 axis;
+if (abs(n.x) < abs(n.y) && abs(n.x) < abs(n.z)) {
+axis = float3(1.0, 0.0, 0.0);
+} else if (abs(n.y) < abs(n.z)) {
+axis = float3(0.0, 1.0, 0.0);
+} else {
+axis = float3(0.0, 0.0, 1.0);
+}
+
+VectorPair result;
+result.v1 = normalize(cross(n, axis));
+result.v2 = normalize(cross(n, result.v1));
+
+return result;
+}
+
+float3 sampleUniformHemisphere(float3 n, int3 randomSeed) {
+MathContainer math;
+float3 p;
+int3 seed = randomSeed;
+do {
+p.z = math.rand(seed.x, seed.y, seed.z);
+p.x = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
+p.y = math.rand(seed.z, seed.x, seed.y) * 2 - 1;
+seed += int3(512, 723, 152);
+		} while (p.x * p.x + p.y * p.y + p.z * p.z > 1);
+	
+	p = normalize(p);
+	
+	VectorPair orthogonals = orthogonalVectors(n);
+	
+	p = p.x * orthogonals.v1 + p.y * orthogonals.v2 + p.z * n;
+	return p;
+}
+
+float3 sampleUniformHemisphere2(float3 n, int3 randomSeed) {
+	MathContainer math;
+	float2 p;
+	int3 seed = randomSeed;
+	do {
+		p.x = math.rand(seed.x, seed.y, seed.z) * 2 - 1;
+		p.y = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
+		seed += int3(512, 723, 152);
+	} while (p.x * p.x + p.y * p.y > 1);
+	
+	return projectToHemisphere(p, n);
+}
+
+float3 mapToHemisphere(float2 p, float3 normal) {
+	float d = length(p);
+	float shift = 1 - (1 - d) * (1 - d);
+	p = p / d * shift;
+	float z = sqrt(1 - shift * shift);
+	
+	VectorPair orthogonals = orthogonalVectors(normal);
+	
+	return orthogonals.v1 * p.x + orthogonals.v2 * p.y + normal * z;
+}
+
+float3 projectToHemisphere(float2 p, float3 normal) {
+	float d = length(p);
+	float z = sqrt(1 - d * d);
+	
+	VectorPair orthogonals = orthogonalVectors(normal);
+	
+	return orthogonals.v1 * p.x + orthogonals.v2 * p.y + normal * z;
+}
+
+float3 correctNormal(float3 normal, float3 vector) {
+	if (dot(normal, vector) < 0) {
+		return normal;
+		} else {
+		return normal * -1;
+		}
+		}
+		
+		float errorDifference = 0.00001;
+		
+		struct SingleResult {
+		Ray ray;
+		float distance;
+		CollisionInfo collision;
+		int steps;
+		};
+		
+		//MARK: Skybox
+		Colors getSkyBox(Ray ray, constant SkyBoxLight *lights, int lightsLength) {
+		Colors color;
+		for (uint c = 0; 8 > c; c++) {
+			
+			color.setChannel(c, float3(0, 0, 0));
+		}
+		
+		for (int c = 0; lightsLength > c; c++) {
+			SkyBoxLight light = lights[c];
+			
+			color.setChannel(light.channel, light.getColor(ray));
+		}
+		
+		return color;
+}
+
+Ray reflect(Ray ray, float3 surfaceNormal, Material surfaceMaterial, uint3 _seed) {
+	MathContainer math;
+	
+	Ray returnRay = ray;
+	for (int c = 0; 8 > c; c++) {
+		
+		returnRay.colors.changeChannel(c, ray.colorAbsorption * surfaceMaterial.rgbEmitted);
+	}
+	returnRay.colorAbsorption *= surfaceMaterial.rgbAbsorption;
+	
+	int3 seed = int3(0, 0, 0);
+	if (false) { //set false for more random bounces
+		seed.x = round(returnRay.position.x * 1030);
+		seed.y = round(returnRay.position.y * 1241);
+		seed.z = round(returnRay.position.z * 1518);
+	} else {
+		
+		seed.x = (returnRay.position.x * 1033594);
+		seed.y = (returnRay.position.y * 1243421);
+		seed.z = (returnRay.position.z * 1516648);
+	}
+	seed *= int3(_seed);
+	
+	returnRay.deriction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
+	return returnRay;
+}
+
+float rideRay(Ray primaryRay, Ray secondaryRay, RayMarchingSettings settings) {
+	RayMarching rayMarcher;
+	//float tempDot = dot(normalize(primaryRay.deriction.xyz), normalize(secondaryRay.deriction.xyz));
+	//float k = sqrt(1 - tempDot * tempDot) / tempDot;
+	float k = length(normalize(secondaryRay.deriction.xyz) - normalize(primaryRay.deriction.xyz));
+	float rLast = 0;
+	float r = 0;
+	float t = 0;
+	
+	while (100000 > t) {
+		rLast = r;
+		r = rayMarcher.DE(primaryRay.position.xyz + t * normalize(primaryRay.deriction.xyz), settings).d;
+		float thing = 0.5 * r * r / rLast;
+		float tSphereIntersection = t - thing;
+		float rSphereIntersection = sqrt(r * r - thing);
+		if (rSphereIntersection < k * tSphereIntersection || t / settings.quality > r) {
+			return t;
+		}
+		t += r;
+	}
+	return t;
+}
+
+SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings) {
+	RayMarching rayMarcher;
+	
+	Ray ray = rayIn;
+	
+	int steps = 0;
+	DistanceInfo d = {0, na};
+	RayMarchInfo bulbResut;
+	while (100000 > d.distance) {
+		bulbResut = rayMarcher.DE(ray.position.xyz, settings);
+		float step = bulbResut.d;
+		ray.march(step);
+		/*float3 offset;
+		 offset.x = maths.rand(seed.x * uint(ray.position.y * 451245), seed.y, seed.z);
+		 offset.y = maths.rand(seed.y * uint(ray.position.x * 5019823), seed.z, seed.x);
+		 offset.z = maths.rand(seed.z * uint(ray.position.z * 502814), seed.x, seed.y);
+		 ray.position += float4(fog * offset.x * step, fog * offset.y * step, fog * offset.z * step, 0);*/
+		d.distance += step;
+		steps ++;
+		if (1 * d.distance / settings.quality > step || 500 < steps) {
+			if (steps > 500 && false) {
+				ray.march(100000);
+				d.distance += 100000;
+			}
+			break;
+	}
+}
+ray.march(errorDifference * -1);
+//ray.march(-1 * errorDifference);
+SingleResult result;
+result.distance = d.distance;
+result.steps = steps;
+result.collision.surfaceNormal = rayMarcher.DEnormal(ray.position.xyz, settings);
+result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.deriction.xyz);
+
+Material material;
+material.init(float3(bulbResut.orbitLife, 0, 0) / 3, settings);
+
+result.collision.surfaceMaterial = material;
+result.collision.position = ray.position.xyz;
+//result.collision.orbitPosition = bulbResut.orbitPosition;
+result.ray = ray;
+return result;
+}
+
+SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength, RayMarchingSettings settings) {
+	MathContainer math;
+	RayMarching rayMarcher;
+	
+	Ray ray = rayIn;
+	
+	device Voxel *rootVoxel = &voxels[1];
+	
+	DistanceInfo distance = {0, na};
+	int steps = 0;
+	while (10000 > distance.distance) {
+		DistanceInfo step = {0, na};
+		if (rayMarcher.cubeContainsRay(ray, rootVoxel)) {
+			device Voxel *intersectedVoxel = rayMarcher.getVoxel(ray, voxels, voxelsLength);
+			if (intersectedVoxel->opacity > 0.5) {
+				ray.march(errorDifference * -2);
+				break;
+			}
+			if (showVoxels) {
+				ray.colorAbsorption *= float3(0.9);
+			}
+			step = math.distanceToVoxel(ray, intersectedVoxel);
+		} else {
+			step = math.distanceToCube(ray, rootVoxel);
+		}
+		step.distance += errorDifference;
+		ray.march(step.distance);
+		distance.distance += step.distance;
+		distance.collisionAxis = step.collisionAxis;
+		steps++;
+	}
+	
+	Material material;
+	material.init(float3(ray.position.x, ray.position.y, ray.position.z), settings);
+	
+	CollisionInfo collide;
+	collide.position = float3(ray.position.x, ray.position.y, ray.position.z);
+	collide.surfaceMaterial = material;
+	collide.surfaceNormal = rayMarcher.getNormal(distance.collisionAxis);
+	collide.surfaceNormal = correctNormal(collide.surfaceNormal, ray.deriction.xyz);
+	
+	
+	SingleResult result;
+	result.distance = distance.distance;
+	result.ray = ray;
+	result.collision = collide;
+	result.steps = steps * 10;
+	
+	return result;
+}
+
+void bundle(texture2d_array<float, access::read> readTexture [[texture(0)]],
+	texture2d_array<float, access::write> writeTexture [[texture(1)]],
+	uint index [[ thread_position_in_grid ]],
+	constant uint &groupSize [[buffer(5)]]) {
+		
+	}
+
+Colors rayCast(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info) {
+	MathContainer math;
+	
+	float skip = 0;
+	if (info.isJulia == 1 && info.rayMarchingSettings.bundleSize > 1) {
+		Ray primary = info.camera.spawnRay(pos + float2(0.5 / textureSize.x, 0.5 / textureSize.y));
+		Ray secondary = info.camera.spawnRay(pos);
+		skip = rideRay(primary, secondary, info.rayMarchingSettings);
+	}
+	
+	uint3 seed2 = info.randomSeed;
+	
+	//for (int c = 0; info.rayMarchingSettings.bundleSize > c; c++) {
+	seed2 += uint3(5129,312,5021);
+	float2 randomOffset;
+	if (info.rayMarchingSettings.bundleSize > 0) {
+		randomOffset.x = math.rand(seed2.x, pos.x * 983414, seed2.z * 33429);
+		randomOffset.y = math.rand(seed2.y, pos.y * 754239, seed2.z * 46523);
+	} else {
+		randomOffset = float2(0);
+	}
+	
+	float2 newPos = pos + randomOffset / textureSize;
+	Ray ray = info.camera.spawnRay(newPos);
+	ray.march(skip);
+	
+	int bounces = 0;
+	while (bounces < bounceLimit) {
+		SingleResult result;
+		if (info.isJulia == 0) {
+		result = shootRay(ray, voxels, showVoxels, info.voxelsLength, info.rayMarchingSettings);
+		} else {
+		result = mandelBulb(ray, info.randomSeed, 0.01, info.rayMarchingSettings);
+		}
+		//return float4(result.collision.surfaceNormal, 1);
+		ray = result.ray;
+		if (result.distance >= 100000) {
+			if (bounces > 0) {
+				Colors colors = getSkyBox(ray, lights, info.lightsLength);
+				for (int c = 0; 8 > c; c++) {
+					float3 oldColor = colors.channel(c);
+					ray.colors.setChannel(c, oldColor * ray.colorAbsorption);
+					//ray.colors.changeChannel(c, ray.colorAbsorption * colors.channel(c));
+				}
+			}
+			break;
+		}
+		ray.colorAbsorption = ray.colorAbsorption * (1 - result.distance / 10);
+		
+		ray = reflect(ray, result.collision.surfaceNormal, result.collision.surfaceMaterial, info.randomSeed);
+		bounces ++;
+}
+//}
+//return getSkyBox(ray, lights, info.lightsLength);
+return ray.colors;
+}
+
+float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info) {
+	Ray ray = camera.spawnRay(pos);
+	float3 originalDirection = normalize(ray.deriction.xyz);
+	
+	SingleResult result;
+	if (isJulia == 0) {
+		result = shootRay(ray, voxels, false, voxelsLength, settings);
+	} else {
+		result = mandelBulb(ray, uint3(0, 0, 0), 0, settings);
+		if (result.distance < 10000) {
+			ray.march(result.distance);
+			//return float4(bulb.normal(ray.position.xyz), 0);
+			}
+			}
+			
+			//return float4(result.collision.surfaceNormal, 1);
+			
+			//float4 color = float4(log(result.distance)) + 0.2;
+			float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
+			color *= pow(0.995, float(result.steps));
+			color *= abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal)));
+			if (result.distance > 100) {
+				float3 tempColor = float3(0);
+				Colors colors = getSkyBox(ray, lights, lightsLength);
+				for (uint c = 0; c < info.channelsLength; c++) {
+					tempColor += colors.channel(c);
+					}
+					color = float4(tempColor, 1);
+					return color;
+					}
+					//color = 1 - (color - 0.2) / color;
+					return color;
+					}
+					};
+
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+//MARK: shaders.metal
+
+struct VertexIn {
+float3 position [[ attribute(0) ]];
+float4 color [[ attribute(1) ]];
+float2 texCoord [[ attribute(2) ]];
+};
+
+struct RasterizerData {
+float4 position [[ position ]];
+float4 color;
+float2 texCoord;
+};
+vertex RasterizerData basic_vertex_shader(const VertexIn vIn [[ stage_in ]],
+constant float &viewRatio [[ buffer(1) ]],
+constant float &imageRatio [[ buffer(2) ]]) {
+RasterizerData rd;
+if (imageRatio < viewRatio) {
+rd.position = float4(vIn.position.x * imageRatio / viewRatio, vIn.position.y, vIn.position.z, 1);
+} else {
+rd.position = float4(vIn.position.x, vIn.position.y / imageRatio * viewRatio, vIn.position.z, 1);
+}
+//rd.position = float4(vIn.position.x / 2, vIn.position.y / 2, 0, 1);
+rd.color = vIn.color;
+rd.texCoord = vIn.texCoord;
+
+return rd;
+}
+
+fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
+sampler sampler2d [[ sampler(0) ]],
+					texture2d_array<float> texture [[ texture(0) ]],
+				constant ShaderInfo &info [[buffer(0)]],
+					constant Channel *channels [[buffer(3)]]) {
+						float4 color = float4(0);
+						for (uint c = 0; info.channelsLength > c; c++) {
+							float3 channelColor;
+							Channel channel = channels[c];
+							channelColor.r = texture.sample(sampler2d, rd.texCoord, 0 + c * 3).x * channel.color.r;
+							channelColor.g = texture.sample(sampler2d, rd.texCoord, 1 + c * 3).x * channel.color.g;
+							channelColor.b = texture.sample(sampler2d, rd.texCoord, 2 + c * 3).x * channel.color.b;
+							
+							channelColor *= channel.strength;
+							
+							color.r += channelColor.r;
+							color.g += channelColor.g;
+							color.b += channelColor.b;
+						}
+						color.a = 1;
+						
+						return color / info.exposure;
+					}
+					
+					
+					
+					fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
+						constant ShaderInfo &shaderInfo [[buffer(0)]],
+						device Voxel *voxels [[buffer(1)]],
+						constant SkyBoxLight *lights [[buffer(2)]]) {
+							RayTracer yeet;
+							ShaderInfo info = shaderInfo;
+							return float4(yeet.depthMap(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, info));
+							//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
+						}
+						
+						fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
+							constant ShaderInfo &shaderInfo [[buffer(0)]],
+							device Voxel *voxels [[buffer(1)]],
+							constant SkyBoxLight *lights [[buffer(2)]]) {
+								//MathContainer maths;
+								RayTracer rayShooter;
+								
+								ShaderInfo info = shaderInfo;
+								info.rayMarchingSettings.bundleSize = 0;
+								
+								return float4(rayShooter.rayCast(rd.texCoord, 2, voxels, false, lights, float2(0), info).channel(0), 1);
+							}
+							
+							kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
+								texture2d_array<float, access::write> writeTexture [[texture(1)]],
+								uint index [[ thread_position_in_grid ]],
+								constant ShaderInfo &shaderInfo [[buffer(0)]],
+								device Voxel *voxels [[buffer(1)]],
+								constant SkyBoxLight *lights [[buffer(2)]]) {
+									RayTracer rayShooter;
+									MathContainer math;
+									
+									ShaderInfo info = shaderInfo;
+									
+									float anIndex = info.realIndex.x + index;
+									
+									if (anIndex > info.realIndex.w) {
+										return;
+									}
+									anIndex = fmod(anIndex, info.realIndex.y * info.realIndex.z);
+									
+									float2 pos;
+									pos.x = floor(fmod(anIndex, float(info.realIndex.y * info.realIndex.z)) / float(info.realIndex.z));
+									pos.y = fmod(anIndex, float(info.realIndex.z));
+									uint2 textureIndex = uint2(pos.x, pos.y);
+									
+									uint3 seed = info.randomSeed;
+									seed.x += index * 402;
+									seed.y += index * 503;
+									seed.z += index * 305;
+									
+									
+									float2 randomOffset;
+									randomOffset.x = math.rand(info.randomSeed.x, pos.x * 983414, anIndex * 33429);
+									randomOffset.y = math.rand(info.randomSeed.y, pos.y * 754239, anIndex * 46523);
+									
+									pos.x = (pos.x + 0) / readTexture.get_width();
+									pos.y = (pos.y + 0) / readTexture.get_height();
+									/*int a;
+									 for( a = 0; a < 10; a++ ){
+									 color += rayShooter.rayCast(pos, myCamera, 10, voxels, randomSeed);
+									 }
+									 color = color / 10;*/
+									Colors colors = rayShooter.rayCast(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info);
+									//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
+									for (uint c = 0; info.channelsLength > c; c++) {
+										float3 oldColor;
+										oldColor.x = readTexture.read(textureIndex, 3 * c).x;
+										oldColor.y = readTexture.read(textureIndex, 3 * c + 1).x;
+										oldColor.z = readTexture.read(textureIndex, 3 * c + 2).x;
+										
+										float3 color = colors.channel(c);
+										writeTexture.write(float4(oldColor.x + color.x, 0, 0, 0), textureIndex, 3 * c);
+										writeTexture.write(float4(oldColor.y + color.y, 0, 0, 0), textureIndex, 3 * c + 1);
+										writeTexture.write(float4(oldColor.z + color.z, 0, 0, 0), textureIndex, 3 * c + 2);
+									}
+									//writeTexture.write(color + oldColor, textureIndex);
+									//writeTexture.write(float4(randomOffset.x, randomOffset.y, 0, 1), textureIndex);
+									return;
+								}
+								
+								kernel void reset_compute_shader(texture2d_array<float, access::write> writeTexture [[texture(0)]],
+									uint2 index [[ thread_position_in_grid]],
+									constant ShaderInfo &info [[buffer(0)]]) {
+										for (int c = 0; c < info.channelsLength * 3; c++) {
+											writeTexture.write(float4(0, 0, 0, 0), index, c);
+											}
+											return;
+											}

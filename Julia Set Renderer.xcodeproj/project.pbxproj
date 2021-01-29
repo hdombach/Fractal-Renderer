@@ -14,6 +14,7 @@
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
 		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE360F1A25C1D52C004962BE /* RuntimeShaders.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE360F1925C1D52C004962BE /* RuntimeShaders.txt */; };
 		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
 		DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */; };
 		DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */; };
@@ -44,6 +45,7 @@
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
+		DEA0347725C10D4200FA5B23 /* LibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0347625C10D4200FA5B23 /* LibraryManager.swift */; };
 		DEA8931924AFBDE9008F5D78 /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8931824AFBDE9008F5D78 /* sun.png */; };
 		DEA8931B24B20EB3008F5D78 /* Rendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEA8931A24B20EB3008F5D78 /* Rendering.metal */; };
 		DEAA8BC924FD12BE0080221B /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA8BC824FD12BE0080221B /* Thread.swift */; };
@@ -89,6 +91,7 @@
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE360F1925C1D52C004962BE /* RuntimeShaders.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RuntimeShaders.txt; sourceTree = "<group>"; };
 		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
 		DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuple3FloatInput.swift; sourceTree = "<group>"; };
 		DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderInfo.swift; sourceTree = "<group>"; };
@@ -119,6 +122,7 @@
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
+		DEA0347625C10D4200FA5B23 /* LibraryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryManager.swift; sourceTree = "<group>"; };
 		DEA8931824AFBDE9008F5D78 /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
 		DEA8931A24B20EB3008F5D78 /* Rendering.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Rendering.metal; sourceTree = "<group>"; };
 		DEAA8BC824FD12BE0080221B /* Thread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thread.swift; sourceTree = "<group>"; };
@@ -140,7 +144,6 @@
 		DEC91209259E2C74002158C9 /* NodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditor.swift; sourceTree = "<group>"; };
 		DEC9120F259E47D5002158C9 /* IONodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONodes.swift; sourceTree = "<group>"; };
 		DEC91213259E4871002158C9 /* MathNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathNodes.swift; sourceTree = "<group>"; };
-		DECAB994259BFB840029C141 /* sun.max.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = sun.max.svg; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Types.metal; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MathContainer.metal; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayMarching.metal; sourceTree = "<group>"; };
@@ -217,9 +220,10 @@
 		DE304FC824DB56A600125844 /* Randering */ = {
 			isa = PBXGroup;
 			children = (
-				DE4B1013258B830B00868327 /* Shaders */,
-				DE8237D824AE20BF000FA948 /* Renderer.swift */,
 				DE8237DA24AE217C000FA948 /* Engine.swift */,
+				DEA0347625C10D4200FA5B23 /* LibraryManager.swift */,
+				DE8237D824AE20BF000FA948 /* Renderer.swift */,
+				DE4B1013258B830B00868327 /* Shaders */,
 			);
 			path = Randering;
 			sourceTree = "<group>";
@@ -227,6 +231,7 @@
 		DE4B1013258B830B00868327 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				DE360F1925C1D52C004962BE /* RuntimeShaders.txt */,
 				DEDC34CB258CE66B009B47A0 /* Types.metal */,
 				DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */,
 				DEDC34D5258CE77B009B47A0 /* RayMarching.metal */,
@@ -306,13 +311,12 @@
 		DEC8CDD824ADFC9A00DB5701 /* Julia Set Renderer */ = {
 			isa = PBXGroup;
 			children = (
-				DECAB994259BFB840029C141 /* sun.max.svg */,
 				DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */,
 				DE8237D624AE2023000FA948 /* RenderView.swift */,
 				DE1E40A624CB7FC5003B198F /* Keys.swift */,
 				DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */,
-				DE05618924EDDD190058925E /* Types */,
 				DE304FC824DB56A600125844 /* Randering */,
+				DE05618924EDDD190058925E /* Types */,
 				DE304FC724DB567600125844 /* UI */,
 				DEC8CDE024ADFC9E00DB5701 /* Assets.xcassets */,
 				DEA8931824AFBDE9008F5D78 /* sun.png */,
@@ -431,6 +435,7 @@
 				DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */,
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
+				DE360F1A25C1D52C004962BE /* RuntimeShaders.txt in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,6 +473,7 @@
 				DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */,
 				DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */,
 				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
+				DEA0347725C10D4200FA5B23 /* LibraryManager.swift in Sources */,
 				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
 				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
