@@ -30,6 +30,25 @@ struct CoordinateNode: Node {
 	}
 }
 
+struct OrbitNode: Node {
+	var name: String = "Orbit"
+	var functionName: String = "orbit"
+	var color: Color = .nodeInput
+	var id = UUID()
+	var position: CGPoint = CGPoint()
+	
+	var inputs: [NodeValue] = []
+	var outputs: [NodeValue] = [NodeFloat(0, name: "orbit")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		OrbitNode()
+	}
+}
+
 struct MaterialNode: Node {
 	var name: String = "Material"
 	var functionName: String = "material"

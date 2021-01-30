@@ -126,6 +126,7 @@ class Engine {
 				computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
                 computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
 				computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 2)
+				computeCommandEncoder?.setBytes(Engine.Settings.nodeContainer.constants, length: MemoryLayout<Float>.stride * Engine.Settings.nodeContainer.constants.count, index: 4)
                 computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 
                 computeCommandEncoder?.endEncoding()

@@ -11,7 +11,7 @@ import Foundation
 struct RayMarchingSettings {
 	var mandelbulbPower: Float = 12
 	var bundleSize: UInt32 = 1
-	var quality: Float = 50000
+	var quality: Float = 5000
 	var iterations: UInt32 = 50
 	var bailout: Float = 3
 	var colorBase: Float3 = .init(0.2, 0.2, 0.8);

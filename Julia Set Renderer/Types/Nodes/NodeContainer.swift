@@ -14,17 +14,29 @@ enum NodeContainerType {
 }
 
 struct NodeContainer {
-	var nodes: [Node] = []
+	var nodes: [Node] = [] {
+		didSet {
+			if oldConstants != constants {
+				Engine.View.setNeedsDisplay(Engine.View.frame)
+				oldConstants = constants
+			}
+		}
+	}
 	var paths: [NodePath] = []
 	
 	private var constantsAddresses: [(address: NodeValueAddress, vector: Int)] = []
+	private var oldConstants: [Float] = []
 	var constants: [Float] {
 		var output: [Float] = []
 		for address in constantsAddresses {
-			if address.vector == 0 {
-				output.append(self[address.address].float)
+			if let value = self[address.address] {
+				if address.vector == 0 {
+					output.append(value.float)
+				} else {
+					output.append(value.float3[address.vector])
+				}
 			} else {
-				output.append(self[address.address].float3[address.vector])
+				output.append(0)
 			}
 		}
 		return output
@@ -83,58 +95,70 @@ struct NodeContainer {
 	}
 	
 	func getPathsAt(address: NodeValueAddress) -> [NodePath] {
-		let node = self[address.nodeAddress()]
-		var result: [NodePath] = []
-		for path in paths {
-			if (path.ending.id == node.id && path.ending.valueIndex == address.valueIndex) || (path.beggining.id == node.id && path.beggining.valueIndex == address.valueIndex) {
-				result.append(path)
+		if let node = self[address.nodeAddress()] {
+			var result: [NodePath] = []
+			for path in paths {
+				if (path.ending.id == node.id && path.ending.valueIndex == address.valueIndex) || (path.beggining.id == node.id && path.beggining.valueIndex == address.valueIndex) {
+					result.append(path)
+				}
 			}
+			
+			return result
+		} else {
+			printError("Incorrect address while getting paths")
+			return []
 		}
-		
-		return result
 	}
 	
 	func getHeight(nodeAddress: NodeAddress) -> Int {
-		let node = self[nodeAddress]
-		var height = node.outputs.count + 2
-		
-		for value in node.inputs {
-			if value.type == .float3 {
-				height += 3
-			} else {
-				height += 1
+		if let node = self[nodeAddress] {
+			var height = node.outputs.count + 2
+			
+			for value in node.inputs {
+				if value.type == .float3 {
+					height += 3
+				} else {
+					height += 1
+				}
 			}
+			
+			return height
+		} else {
+			printError("Incorrect address while getting node height")
+			return 1
 		}
-		
-		return height
 	}
 	
 	func getPosition(value: NodeValueAddress) -> CGPoint {
-		let node = self[value.nodeAddress()]
-		//should anchor view at top left
-		var point = node.position - CGPoint(x: nodeWidth / 2, y: CGFloat(getHeight(nodeAddress: value.nodeAddress())) * gridSize / 2)
-		//starts at 1 to include the banner at top
-		var viewIndex: Int = 0
-		if value.valueIndex < node.outputs.count {
-			viewIndex += value.valueIndex + 1
-			point.x += nodeWidth
-		} else {
-			viewIndex += node.outputs.count
-			for c in 0...(value.valueIndex - node.outputs.count) {
-				if node.inputs[c].type == .float3 {
-					if c == (value.valueIndex - node.outputs.count) {
-						viewIndex += 2
+		if let node = self[value.nodeAddress()] {
+			//should anchor view at top left
+			var point = node.position - CGPoint(x: nodeWidth / 2, y: CGFloat(getHeight(nodeAddress: value.nodeAddress())) * gridSize / 2)
+			//starts at 1 to include the banner at top
+			var viewIndex: Int = 0
+			if value.valueIndex < node.outputs.count {
+				viewIndex += value.valueIndex + 1
+				point.x += nodeWidth
+			} else {
+				viewIndex += node.outputs.count
+				for c in 0...(value.valueIndex - node.outputs.count) {
+					if node.inputs[c].type == .float3 {
+						if c == (value.valueIndex - node.outputs.count) {
+							viewIndex += 2
+						} else {
+							viewIndex += 3
+						}
 					} else {
-						viewIndex += 3
+						viewIndex += 1
 					}
-				} else {
-					viewIndex += 1
 				}
 			}
+			point.y += CGFloat(viewIndex) * gridSize + gridSize / 2
+			
+			return point
+		} else {
+			printError("Incorrect address while getting node point")
+			return CGPoint()
 		}
-		point.y += CGFloat(viewIndex) * gridSize + gridSize / 2
-		
-		return point
 	}
 	
 	mutating func linkPath() {
@@ -171,7 +195,7 @@ struct NodeContainer {
 		return circleSize * 2 > activePath!.ending.distanceTo(point: getPosition(value: valueAddress))
 	}
 	
-	private func getIndex(address: NodeAddress) -> Int {
+	private func getIndex(address: NodeAddress) -> Int? {
 		if nodes.count > address.nodeIndex && nodes[address.nodeIndex].id == address.id {
 			return address.nodeIndex
 		} else {
@@ -179,7 +203,7 @@ struct NodeContainer {
 				node.id == address.id
 			}) else {
 				printError("could not find index")
-				return 0
+				return nil
 			}
 			return index
 		}
@@ -196,31 +220,42 @@ struct NodeContainer {
 		}
 	}
 	
-	subscript(address: NodeAddress) -> Node {
+	subscript(address: NodeAddress) -> Node? {
 		get {
-			nodes[getIndex(address: address)]
+			if let index = getIndex(address: address) {
+				return nodes[index]
+			} else {
+				return nil
+			}
 		}
 		set {
-			nodes[getIndex(address: address)] = newValue
+			if let index = getIndex(address: address) {
+				nodes[index] = newValue!
+			}
 		}
 	}
 	
-	subscript(address: NodeValueAddress) -> NodeValue {
+	subscript(address: NodeValueAddress) -> NodeValue? {
 		get {
-			let node = nodes[getIndex(address: address.nodeAddress())]
-			if node.outputs.count > address.valueIndex {
-				return node.outputs[address.valueIndex]
+			if let index = getIndex(address: address.nodeAddress()) {
+				let node = nodes[index]
+				if node.outputs.count > address.valueIndex {
+					return node.outputs[address.valueIndex]
+				} else {
+					return node.inputs[address.valueIndex - node.outputs.count]
+				}
 			} else {
-				return node.inputs[address.valueIndex - node.outputs.count]
+				return nil
 			}
 		}
 		
 		set {
-			let index = getIndex(address: address.nodeAddress())
-			if nodes[index].outputs.count > address.valueIndex {
-				nodes[index].outputs[address.valueIndex] = newValue
-			} else {
-				nodes[index].inputs[address.valueIndex - nodes[index].outputs.count] = newValue
+			if let index = getIndex(address: address.nodeAddress()),  newValue != nil {
+				if nodes[index].outputs.count > address.valueIndex {
+					nodes[index].outputs[address.valueIndex] = newValue!
+				} else {
+					nodes[index].inputs[address.valueIndex - nodes[index].outputs.count] = newValue!
+				}
 			}
 		}
 	}
@@ -262,6 +297,7 @@ extension NodeContainer {
 		//keeps track of a value and the number of observers
 		
 		//
+		constantsAddresses.removeAll()
 		var variables: [(observers: Int, value: NodeValueAddress, vectorIndex: Int)] = []
 		var history: [Node] = []
 		var depthDictionary: [NodeAddress: Int] = [:]
@@ -283,7 +319,7 @@ extension NodeContainer {
 			if node.inputs.count > 0 {
 				for valueIndex in node.outputs.count...node.outputs.count + node.inputs.count - 1 {
 					if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
-						let result = depthSort(node: self[path.beggining.nodeAddress()], previousDepth: currentDepth)
+						let result = depthSort(node: self[path.beggining.nodeAddress()]!, previousDepth: currentDepth)
 						if result == false {
 							return result
 						}
@@ -294,8 +330,13 @@ extension NodeContainer {
 							variables.append((-1, valueAddress, 0))
 							variables.append((-1, valueAddress, 1))
 							variables.append((-1, valueAddress, 2))
+							
+							constantsAddresses.append((valueAddress, 0))
+							constantsAddresses.append((valueAddress, 1))
+							constantsAddresses.append((valueAddress, 2))
 						} else {
 							variables.append((-1, valueAddress, 0))
+							constantsAddresses.append((valueAddress, 0))
 						}
 					}
 				}
@@ -304,7 +345,7 @@ extension NodeContainer {
 			return true
 		}
 		
-		depthSort(node: self[output!], previousDepth: -1)
+		depthSort(node: self[output!]!, previousDepth: -1)
 		
 		let constantsLength = variables.count
 		
@@ -317,7 +358,7 @@ extension NodeContainer {
 		
 		var layers: [[Node]] = Array.init(repeating: [], count: maxDepth + 1)
 		for key in depthDictionary.keys {
-			layers[depthDictionary[key]!].append(self[key])
+			layers[depthDictionary[key]!].append(self[key]!)
 		}
 		//all nodes starting from deepest layer
 		layers.reverse()
@@ -359,9 +400,7 @@ extension NodeContainer {
 			if index == -1 {
 				index = fallBack
 				fallBack = -2
-				if index == -1 {
-					return "error"
-				}
+				assert(index != -1)
 			}
 			
 			//is constant if observers is -1
@@ -387,6 +426,11 @@ extension NodeContainer {
 				tempCode.append(createVariable(info: (observors, address, 0)) + " = position.x;\n")
 				tempCode.append(createVariable(info: (observors, address, 1)) + " = position.y;\n")
 				tempCode.append(createVariable(info: (observors, address, 2)) + " = position.z;\n")
+				
+			case "orbit":
+				let address = createValueAddress(node: node, valueIndex: 0)
+				let observors = getPathsAt(address: address).count
+				tempCode.append(createVariable(info: (observors, address, 0)) + " = orbit;\n")
 				
 			case "material":
 				var address: NodeValueAddress!

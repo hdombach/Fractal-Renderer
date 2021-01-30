@@ -9,14 +9,13 @@
 import Foundation
 import SwiftUI
 
-let allNodes: [Node] = [CoordinateNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode()]
+let allNodes: [Node] = [CoordinateNode(), OrbitNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3()]
 let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
 protocol Node {
 	var name: String { get }
 	var functionName: String { get }
 	var color: Color { get }
-	var size: CGSize { get }
 	var id: UUID { get }
 	var position: CGPoint { get set }
 	

@@ -122,6 +122,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.channels, length: MemoryLayout<ChannelInfo>.stride * Engine.Settings.channels.count, index: 3)
+		renderCommandEncoder?.setFragmentBytes(Engine.Settings.nodeContainer.constants, length: MemoryLayout<Float>.stride * Engine.Settings.nodeContainer.constants.count, index: 4)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 

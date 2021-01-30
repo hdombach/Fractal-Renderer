@@ -42,6 +42,8 @@
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
 		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
+		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
+		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
@@ -119,6 +121,8 @@
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
 		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
+		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
+		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
@@ -274,6 +278,8 @@
 				DE85F0AC259CED8700FF475F /* Node.swift */,
 				DEC9120F259E47D5002158C9 /* IONodes.swift */,
 				DEC91213259E4871002158C9 /* MathNodes.swift */,
+				DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */,
+				DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */,
 				DEF0B2D225A007A9002BB7A1 /* NodePath.swift */,
 			);
 			path = Nodes;
@@ -468,6 +474,7 @@
 				DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */,
 				DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */,
 				DE627E84259290E600B2DA8F /* JuliaSetSettings.swift in Sources */,
+				DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */,
 				DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */,
 				DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */,
 				DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */,
@@ -494,6 +501,7 @@
 				DE212FF5258D59580050AC95 /* Number.swift in Sources */,
 				DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */,
 				DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */,
+				DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */,
 				DEA8931B24B20EB3008F5D78 /* Rendering.metal in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,

@@ -30,6 +30,26 @@ struct AddNode: Node {
 	}
 }
 
+struct SubtractNode: Node {
+	var name: String = "Subtract"
+	var functionName: String = "subtract"
+	var color: Color = .nodeMath
+	var id = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
+	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	var paths: [NodePath] = []
+	
+	mutating func update() {
+		return
+	}
+	
+	func new() -> Node {
+		SubtractNode()
+	}
+}
+
 struct MultiplyNode: Node {
 	var name: String = "Multiply"
 	var functionName: String = "multiply"
@@ -136,5 +156,81 @@ struct SeperateNode: Node {
 	
 	func new() -> Node {
 		SeperateNode()
+	}
+}
+
+struct ClampNode: Node {
+	var name: String = "Clamp"
+	var functionName: String = "nodeClamp"
+	var color: Color = .nodeMath
+	var id = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "min"), NodeFloat(0, name: "max")]
+	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		ClampNode()
+	}
+}
+
+struct SinNode: Node {
+	var name: String = "Sin"
+	var functionName: String = "nodeSin"
+	var color: Color = .nodeMath
+	var id: UUID = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		SinNode()
+	}
+}
+
+struct CosNode: Node {
+	var name: String = "Cos"
+	var functionName: String = "nodeCos"
+	var color: Color = .nodeMath
+	var id: UUID = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		CosNode()
+	}
+}
+
+struct AbsNode: Node {
+	var name: String = "Abs"
+	var functionName: String = "abs"
+	var color: Color = .nodeMath
+	var id: UUID = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		AbsNode()
 	}
 }

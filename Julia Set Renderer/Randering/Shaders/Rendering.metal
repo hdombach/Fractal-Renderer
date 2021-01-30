@@ -169,7 +169,7 @@ struct RayTracer {
 		return t;
 	}
     
-    SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings) {
+    SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings, constant float *constants) {
 		RayMarching rayMarcher;
 		
         Ray ray = rayIn;
@@ -205,7 +205,7 @@ struct RayTracer {
 		result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.deriction.xyz);
         
         Material material;
-        material.init(float3(bulbResut.orbitLife, 0, 0) / 3, settings);
+        material.init(ray.position.xyz, bulbResut.orbitLife, settings, constants);
         
         result.collision.surfaceMaterial = material;
         result.collision.position = ray.position.xyz;
@@ -214,7 +214,7 @@ struct RayTracer {
         return result;
     }
 
-	SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength, RayMarchingSettings settings) {
+	SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength, RayMarchingSettings settings, constant float *constants) {
 		MathContainer math;
 		RayMarching rayMarcher;
 		
@@ -247,7 +247,7 @@ struct RayTracer {
 		}
 
 		Material material;
-		material.init(float3(ray.position.x, ray.position.y, ray.position.z), settings);
+		material.init(ray.position.xyz, 0, settings, constants);
 
 		CollisionInfo collide;
 		collide.position = float3(ray.position.x, ray.position.y, ray.position.z);
@@ -272,7 +272,7 @@ struct RayTracer {
         
     }
 
-	Colors rayCast(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info) {
+	Colors rayCast(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *constants) {
 		MathContainer math;
 		
 		float skip = 0;
@@ -302,9 +302,9 @@ struct RayTracer {
 			while (bounces < bounceLimit) {
 				SingleResult result;
 				if (info.isJulia == 0) {
-					result = shootRay(ray, voxels, showVoxels, info.voxelsLength, info.rayMarchingSettings);
+					result = shootRay(ray, voxels, showVoxels, info.voxelsLength, info.rayMarchingSettings, constants);
 				} else {
-					result = mandelBulb(ray, info.randomSeed, 0.01, info.rayMarchingSettings);
+					result = mandelBulb(ray, info.randomSeed, 0.01, info.rayMarchingSettings, constants);
 				}
 				//return float4(result.collision.surfaceNormal, 1);
 				ray = result.ray;
@@ -329,15 +329,15 @@ struct RayTracer {
 		return ray.colors;
 	}
 
-	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info) {
+	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info, constant float *constants) {
 		Ray ray = camera.spawnRay(pos);
 		float3 originalDirection = normalize(ray.deriction.xyz);
 		
         SingleResult result;
         if (isJulia == 0) {
-            result = shootRay(ray, voxels, false, voxelsLength, settings);
+            result = shootRay(ray, voxels, false, voxelsLength, settings, constants);
         } else {
-            result = mandelBulb(ray, uint3(0, 0, 0), 0, settings);
+            result = mandelBulb(ray, uint3(0, 0, 0), 0, settings, constants);
             if (result.distance < 10000) {
                 ray.march(result.distance);
                 //return float4(bulb.normal(ray.position.xyz), 0);

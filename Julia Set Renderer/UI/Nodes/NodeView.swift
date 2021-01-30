@@ -28,7 +28,7 @@ struct NodeView: View, Equatable {
 	
 	var node: Node {
 		get {
-			nodeContainer[nodeAddress]
+			nodeContainer[nodeAddress]!
 		}
 		
 		set {
@@ -59,7 +59,7 @@ struct NodeView: View, Equatable {
 					nodeContainer.delete(path: path)
 					
 					let begginingNode = nodeContainer[path.beggining.nodeAddress()]
-					let draggable = DraggablePath(beggining: nodeContainer.createValueAddress(node: begginingNode, valueIndex: path.beggining.valueIndex), ending: nodeContainer.getPosition(value: path.ending))
+					let draggable = DraggablePath(beggining: nodeContainer.createValueAddress(node: begginingNode!, valueIndex: path.beggining.valueIndex), ending: nodeContainer.getPosition(value: path.ending))
 					
 					nodeContainer.activePath = draggable
 				}
@@ -95,8 +95,12 @@ struct NodeView: View, Equatable {
 						Circle()
 							.frame(width: dotSize, height: dotSize)
 							.gesture(deletePathGesture(valueIndex: c + node.outputs.count))
+						NodeValueView(value: Binding.init(get: {
+							node.inputs[c]
+						}, set: { (newValue) in
+							nodeContainer[nodeAddress]?.inputs[c] = newValue
+						}))
 						
-						NodeValueView(value: $nodeContainer[nodeAddress].inputs[c])
 						Spacer()
 					}.frame(height: gridSize * ((node.inputs[c].type == .float3) ? 3 : 1), alignment: .center)
 					
@@ -104,7 +108,7 @@ struct NodeView: View, Equatable {
 				Spacer()
 			}
 		}
-		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
 		.overlay(
 			RoundedRectangle(cornerRadius: 10)
 				.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
