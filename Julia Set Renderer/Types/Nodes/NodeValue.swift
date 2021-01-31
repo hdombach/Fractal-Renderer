@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum NodeValueType {
 	case float
 	case float3
 	case int
+	case color
 }
 
 /*class NodeValue: Equatable {
@@ -76,6 +78,35 @@ struct NodeFloat: NodeValue {
 	var int: Int {
 		get { Int(value) }
 		set { value = Float(newValue) }
+	}
+	
+	var name: String {
+		get { personalName ?? ""}
+	}
+}
+
+struct NodeColor: NodeValue {
+	var value: Float3
+	var position: CGPoint?
+	var type: NodeValueType = .color
+	private var personalName: String?
+	
+	init(_ value: Float3, name initName: String?) {
+		self.value = value
+		self.personalName = initName
+	}
+	
+	var float: Float {
+		get { value.x }
+		set { value = Float3(newValue, newValue, newValue )}
+	}
+	var float3: Float3 {
+		get { value }
+		set { value = newValue }
+	}
+	var int: Int {
+		get { Int(value.x) }
+		set { value = Float3(Float(newValue), Float(newValue), Float(newValue))}
 	}
 	
 	var name: String {

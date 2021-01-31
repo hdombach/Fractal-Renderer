@@ -48,20 +48,27 @@ class LibraryManager {
 	
 	func loadLibrary(material: String?, de: String?, completion: @escaping () -> ()) {
 		let url = Bundle.main.path(forResource: "RuntimeShaders", ofType: "txt")
-		var testCode = "Hi"
+		var code = "Hi"
 		do {
-			try testCode = String(contentsOfFile: url ?? "Error")
+			try code = String(contentsOfFile: url ?? "Error")
 		} catch {
 			print(error)
 		}
 		
 		if material != nil {
-			if let range = testCode.range(of: "//INSERT_MATERIAL//") {
-				testCode.insert(contentsOf: material!, at: range.lowerBound)
+			if let range = code.range(of: "//INSERT_MATERIAL//") {
+				code.insert(contentsOf: material!, at: range.lowerBound)
 			}
 		}
 		
-		Engine.Device.makeLibrary(source: testCode, options: nil) { (library, compileError) in
+		let testUrl = Bundle.main.path(forResource: "Types.metal", ofType: ".metal")
+		do {
+			try print(String(contentsOfFile: testUrl ?? "Error"))
+		} catch {
+			print(error)
+		}
+		
+		Engine.Device.makeLibrary(source: code, options: nil) { (library, compileError) in
 			if compileError != nil {
 				print(compileError!)
 			}

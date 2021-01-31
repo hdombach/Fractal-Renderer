@@ -18,14 +18,14 @@ struct MathContainer {
 		return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
 	}
 	
-	float2 getAngle(float3 normal) {
+	/*float2 getAngle(float3 normal) {
 		float2 angle;
 		angle.x = atan(normal.y / normal.z);
 		float distance = sqrt(normal.y * normal.y + normal.z * normal.z);
 		angle.y = atan(normal.x / distance);
 		
 		return angle;
-	}
+	}*/
 	
 	float3 getNormal(float2 angle) {
 		

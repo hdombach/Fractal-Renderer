@@ -18,6 +18,8 @@ struct NodeEditor: View {
 	
 	@State var zoom: CGFloat = 1
 	
+	@State var position: CGPoint = .init(x: 100, y: 100)
+	
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
@@ -43,12 +45,12 @@ struct NodeEditor: View {
 				if isShowingList {
 					ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: true, content: {
 						ForEach(allNodes, id: \.id) { node in
-							NodeMenuItem(nodes: $nodeContainer.nodes, node: node)
+							NodeMenuItem(nodes: $nodeContainer.nodes, position: position, node: node)
 						}
 					}).frame(width: 150)
 					.padding(.bottom)
 				}
-				NodeCanvas(nodeContainer: $nodeContainer, selected: $selected, zoom: $zoom)
+				NodeCanvas(nodeContainer: $nodeContainer, position: $position, selected: $selected, zoom: $zoom)
 					.padding([.bottom, .trailing])
 			}.padding(.leading)
 		}.onTapGesture {

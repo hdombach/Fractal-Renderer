@@ -57,7 +57,7 @@ struct MaterialNode: Node {
 	var id = UUID()
 	var position = CGPoint()
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0.5, 0.5, 0.5), name: "Surface Color")]
+	var inputs: [NodeValue] = [NodeColor(Float3(0.5, 0.5, 0.5), name: "Surface Color")]
 	var outputs: [NodeValue] = []
 	var paths: [NodePath] = []
 	
@@ -67,6 +67,25 @@ struct MaterialNode: Node {
 	
 	func new() -> Node {
 		MaterialNode()
+	}
+}
+
+struct ColorNode: Node {
+	var name: String = "Color"
+	var functionName: String = "color"
+	var color: Color = .nodeInput
+	var id: UUID = UUID()
+	var position: CGPoint = .init()
+	
+	var inputs: [NodeValue] = [NodeColor(Float3(0.5, 0.5, 0.5), name: "color")]
+	var outputs: [NodeValue] = [NodeColor(Float3(), name: "color")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		ColorNode()
 	}
 }
 

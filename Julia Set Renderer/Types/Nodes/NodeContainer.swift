@@ -326,7 +326,7 @@ extension NodeContainer {
 					} else {
 						let valueAddress = createValueAddress(node: node, valueIndex: valueIndex)
 						
-						if node[valueIndex].type == .float3 {
+						if node[valueIndex].type == .float3 || node[valueIndex].type == .color {
 							variables.append((-1, valueAddress, 0))
 							variables.append((-1, valueAddress, 1))
 							variables.append((-1, valueAddress, 2))
@@ -439,10 +439,8 @@ extension NodeContainer {
 				} else {
 					address = createValueAddress(node: node, valueIndex: 0)
 				}
-				
-				tempCode.append("rgbAbsorption.x = " + findVariable(value: address, vectorIndex: 0) + ";\n")
-				tempCode.append("rgbAbsorption.y = " + findVariable(value: address, vectorIndex: 1) + ";\n")
-				tempCode.append("rgbAbsorption.z = " + findVariable(value: address, vectorIndex: 2) + ";\n")
+				tempCode.append("rgbAbsorption.xyz = clamp(float3(\(findVariable(value: address, vectorIndex: 0)), \(findVariable(value: address, vectorIndex: 1)), \(findVariable(value: address, vectorIndex: 2))), float3(0), float3(1)); \n")
+				tempCode.append("rgbEmitted = float3(0, 0, 0); \n")
 				tempCode.append("return;\n")
 			case "de":
 				break;
@@ -455,7 +453,7 @@ extension NodeContainer {
 					let obsevors = getPathsAt(address: addresss).count
 					
 					if obsevors > 0 {
-						if output.type == .float3 {
+						if output.type == .float3 || output.type == .color{
 							tempCode += "&" + createVariable(info: (obsevors, addresss, 0)) + ", "
 							tempCode += "&" + createVariable(info: (obsevors, addresss, 1)) + ", "
 							tempCode += "&" + createVariable(info: (obsevors, addresss, 2)) + ", "
@@ -475,7 +473,7 @@ extension NodeContainer {
 						address = createValueAddress(node: node, valueIndex: valueIndex)
 					}
 					
-					if input.type == .float3 {
+					if input.type == .float3 || input.type == .color {
 						tempCode.append(findVariable(value: address, vectorIndex: 0) + ", ")
 						tempCode.append(findVariable(value: address, vectorIndex: 1) + ", ")
 						tempCode.append(findVariable(value: address, vectorIndex: 2) + ", ")

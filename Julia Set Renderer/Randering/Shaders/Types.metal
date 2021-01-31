@@ -159,6 +159,19 @@ struct NodeFunctions {
 		*outz = inz * scale;
 	}
 	
+	void color(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz) {
+		*outx = inx;
+		*outy = iny;
+		*outz = inz;
+	}
+	
+	void colorBlend(thread float *outx, thread float *outy, thread float *outz, float factor, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
+		float3 result = float3(in1x, in1y, in1z) * factor + float3(in2x, in2y, in2z) * (1 - factor);
+		*outx = result.x;
+		*outy = result.y;
+		*outz = result.z;
+	}
+	
 	//https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 	
 	void perlin(thread float *out, float x, float y, float z) {
@@ -329,11 +342,10 @@ struct Material {
 	void init(float3 position, float orbit, RayMarchingSettings settings, constant float *constants) {
 		NodeFunctions functions;
 		
+		
 		//INSERT_MATERIAL//
 		
-		rgbEmitted = float3(0, 0, 0);
 		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
-		//rgbAbsorption = float3(0.5, 0.5, 0.5);
 		if (rand(x * 12059812, y * 98213, z * 5091283) > 0.5) {
 			diffuse = 0.1;
 		} else {
@@ -558,75 +570,5 @@ struct Voxel {
 		
 
 		return getChild(newChild);
-	}
-};
-
-struct NodeReader {
-	float3 position;
-	constant int *code;
-	thread float *variables;
-	int index = 0;
-	float3 result;
-	
-	void update(int codeLength) {
-		for (int c = 0; codeLength > c; c++) {
-			switch (code[index]) {
-				case 1: //coordinate node
-					variables[code[index + 1]] = position.x;
-					variables[code[index + 2]] = position.y;
-					variables[code[index + 3]] = position.z;
-					index += 4;
-					break;
-					
-				case 2://Material Node
-					result.x = variables[code[index + 1]];
-					result.y = variables[code[index + 2]];
-					result.z = variables[code[index + 3]];
-					index += 4;
-					return;
-					
-				case 3://DE Node
-					result.x = variables[code[index + 1]];
-					index += 2;
-					break;
-					
-				case 4://Add Node
-					variables[code[index + 1]] = variables[code[index + 2]] + variables[code[index + 3]];
-					index += 4;
-					break;
-					
-				case 5://multiply
-					variables[code[index + 1]] = variables[code[index + 2]] * variables[code[index + 3]];
-					index += 4;
-					break;
-					
-				case 6://Divide
-					variables[code[index + 1]] = variables[code[index + 2]] / variables[code[index + 3]];
-					index += 4;
-					break;
-					
-				case 7://is greater
-					variables[code[index + 1]] = variables[code[index + 2]] > variables[code[index + 3]];
-					index += 4;
-					break;
-					
-				case 8://combine
-					variables[code[index + 1]] = variables[code[index + 4]];
-					variables[code[index + 2]] = variables[code[index + 5]];
-					variables[code[index + 3]] = variables[code[index + 6]];
-					index += 7;
-					break;
-					
-				case 9://seperate
-					variables[code[index + 1]] = variables[code[index + 4]];
-					variables[code[index + 2]] = variables[code[index + 5]];
-					variables[code[index + 3]] = variables[code[index + 6]];
-					index += 7;
-					break;
-					
-				default:
-					break;
-			}
-		}
 	}
 };

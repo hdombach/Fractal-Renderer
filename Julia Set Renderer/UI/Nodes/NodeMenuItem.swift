@@ -10,6 +10,7 @@ import SwiftUI
 
 struct NodeMenuItem: View {
 	@Binding var nodes: [Node]
+	var position: CGPoint
 	var node: Node
 	
     var body: some View {
@@ -17,13 +18,15 @@ struct NodeMenuItem: View {
 			node.color.opacity(0.5)
 			Text(node.name)
 		}.onTapGesture {
-			nodes.append(node.new())
+			var new = node.new()
+			new.position = position.scale(-1) + CGPoint(x: 100, y: 100)
+			nodes.append(new)
 		}.cornerRadius(5)
     }
 }
 
 struct NodeMenuItem_Previews: PreviewProvider {
     static var previews: some View {
-		NodeMenuItem(nodes: .constant([]), node: AddNode())
+		NodeMenuItem(nodes: .constant([]), position: .init(), node: AddNode())
     }
 }

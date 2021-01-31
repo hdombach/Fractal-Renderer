@@ -14,7 +14,7 @@ struct NodeCanvas: View {
 	
 	@State var dragOffset: CGPoint?
 	
-	@State var position: CGPoint = .init(x: 100, y: 100)
+	@Binding var position: CGPoint
 	
 	@Binding var selected: Node?
 	

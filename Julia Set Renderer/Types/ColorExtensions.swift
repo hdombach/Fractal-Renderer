@@ -17,4 +17,5 @@ extension Color {
 	static let nodeInput = Color.red
 	static let nodeVector = Color.purple
 	static let nodeTexture = Color.orange
+	static let nodeColor = Color.red
 }

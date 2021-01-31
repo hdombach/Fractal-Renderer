@@ -133,6 +133,8 @@ struct NodeValueView: View {
 			Tuple3FloatInput(value: $value.float3, name: value.name)
 		case .int:
 			NumberInput(value: $value.int.nsNumber, name: value.name)
+		case .color:
+			ColorInput(value: $value.float3, name: value.name)
 		}
 	}
 }

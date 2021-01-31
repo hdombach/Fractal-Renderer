@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-let allNodes: [Node] = [CoordinateNode(), OrbitNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3()]
+let allNodes: [Node] = [CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3(), ColorBlendNode()]
 let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
 protocol Node {
