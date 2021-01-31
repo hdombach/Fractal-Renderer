@@ -148,8 +148,8 @@ struct RayMarching {
 	RayMarchInfo SphereDE(float3 pos, float r, RayMarchingSettings settings) {
 		RayMarchInfo info;
 		float3 c = float3(0.5, 0.5, 0.5);
-		//info.d = length(pos - c) - r;
-		info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
+		info.d = length(pos - c) - r;
+		//info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
 		info.orbitLife = settings.iterations;
 		return info;
 	}
@@ -163,7 +163,8 @@ struct RayMarching {
 	
 	float3 DEnormal(float3 pos, RayMarchingSettings settings) {
 		//e is an abitrary number
-		float e = 0.000001;
+		//e can cause white specks to appear if chosen wrongly
+		float e = 0.0001;
 		float n = DE(pos, settings).d;
 		float dx = DE(pos + float3(e, 0, 0), settings).d - n;
 		float dy = DE(pos + float3(0, e, 0), settings).d - n;

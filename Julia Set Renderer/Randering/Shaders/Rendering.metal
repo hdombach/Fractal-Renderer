@@ -143,6 +143,7 @@ struct RayTracer {
 		seed *= int3(_seed);
 		
 		returnRay.deriction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
+		returnRay.deriction.w = 1;
 		return returnRay;
 	}
 	
