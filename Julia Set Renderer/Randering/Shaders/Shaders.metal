@@ -73,6 +73,17 @@ fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
 	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
 }
 
+fragment float4 preview_fragment_shader(RasterizerData rd [[ stage_in ]],
+									  constant ShaderInfo &shaderInfo [[buffer(0)]],
+									  device Voxel *voxels [[buffer(1)]],
+									  constant SkyBoxLight *lights [[buffer(2)]],
+									  constant float *constants [[buffer(4)]]) {
+	RayTracer yeet;
+	ShaderInfo info = shaderInfo;
+	return float4(yeet.preview(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, info, constants));
+	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
+}
+
 fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 									   constant ShaderInfo &shaderInfo [[buffer(0)]],
 									   device Voxel *voxels [[buffer(1)]],

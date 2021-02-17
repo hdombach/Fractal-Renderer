@@ -39,6 +39,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		
 
 		let commandBuffer = Engine.CommandQueue.makeCommandBuffer()
+		
+		Engine.RenderPass(commandBuffer: commandBuffer!)
 
 
 		//post compute commands
@@ -100,6 +102,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.preview])
 		case .rendering:
 			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
+		case .depth:
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.depth])
         default:
 			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
 		}
@@ -130,11 +134,6 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.present(drawable)
 		commandBuffer?.commit()
 		commandBuffer?.waitUntilCompleted()
-
-       
-
-		
-        Engine.RenderPass()
 
 		//Loading Pattern
 	}

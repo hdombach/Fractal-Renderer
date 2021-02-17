@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-let allNodes: [Node] = [CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3(), ColorBlendNode()]
+let allNodes: [Node] = [CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3(), ColorBlendNode(), ColorRampNode()]
 let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
 protocol Node {
@@ -25,9 +25,47 @@ protocol Node {
 	
 	mutating func update()
 	func new() -> Node
+	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String
+	
+	///Exposes normally hidden inputs as well
+	var inputRange: Range<Int> { get }
+	var outputRange: Range<Int> { get }
+	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView
+	subscript(valueIndex: Int) -> NodeValue { get set }
 }
 
 extension Node {
+	
+	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView {
+		return AnyView(NodeView(nodeAddress: container.wrappedValue.createNodeAddress(node: self), nodeContainer: container, selected: selected))
+	}
+	
+	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
+		var code = "functions." + functionName + "("
+		for output in outputs {
+			code += "&" + output + ", "
+		}
+		for input in inputs {
+			code += input + ", "
+		}
+		
+		code.removeLast(2)
+		code.append(");\n")
+		
+		return code
+	}
+	
+	var outputRange: Range<Int> {
+		get {
+			return 0..<outputs.count
+		}
+	}
+	
+	var inputRange: Range<Int> {
+		get {
+			return outputs.count..<outputs.count + inputs.count
+		}
+	}
 	
 	var command: Int32 {
 		get {

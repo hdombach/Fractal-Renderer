@@ -10,6 +10,7 @@ import MetalKit
 
 class LibraryManager {
 	private var previewRenderPipelineState: MTLRenderPipelineState!
+	private var depthRenderPipelineState: MTLRenderPipelineState!
 	private var mainRenderPipelineState: MTLRenderPipelineState!
 	
 	private var mainComputePipelineState: MTLComputePipelineState!
@@ -20,6 +21,7 @@ class LibraryManager {
 	enum RenderPipelineState {
 		case preview
 		case render
+		case depth
 	}
 	enum ComputePipelineState {
 		case render
@@ -33,6 +35,10 @@ class LibraryManager {
 			
 		case .render:
 			return mainRenderPipelineState
+		
+		case .depth:
+			return depthRenderPipelineState
+			
 		}
 	}
 	
@@ -50,7 +56,7 @@ class LibraryManager {
 		let url = Bundle.main.path(forResource: "RuntimeShaders", ofType: "txt")
 		var code = "Hi"
 		do {
-			try code = String(contentsOfFile: url ?? "Error")
+			try code = String(contentsOfFile: url!)
 		} catch {
 			print(error)
 		}
@@ -59,13 +65,6 @@ class LibraryManager {
 			if let range = code.range(of: "//INSERT_MATERIAL//") {
 				code.insert(contentsOf: material!, at: range.lowerBound)
 			}
-		}
-		
-		let testUrl = Bundle.main.path(forResource: "Types.metal", ofType: ".metal")
-		do {
-			try print(String(contentsOfFile: testUrl ?? "Error"))
-		} catch {
-			print(error)
 		}
 		
 		Engine.Device.makeLibrary(source: code, options: nil) { (library, compileError) in
@@ -102,7 +101,7 @@ class LibraryManager {
 		vertexDescriptor.layouts[0].stride = Vertex.stride
 		
 		//Create preview state
-		let previewFragmentShader = library?.makeFunction(name: "depth_fragment_shader")
+		let previewFragmentShader = library?.makeFunction(name: "preview_fragment_shader")
 		
 		let previewRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
 		
@@ -113,6 +112,22 @@ class LibraryManager {
 		
 		do {
 			previewRenderPipelineState = try Engine.Device.makeRenderPipelineState(descriptor: previewRenderPipelineDescriptor)
+		} catch {
+			print(error)
+		}
+		
+		//Create depth state
+		let depthFragmentShader = library?.makeFunction(name: "depth_fragment_shader")
+		
+		let depthRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
+		
+		depthRenderPipelineDescriptor.colorAttachments[0].pixelFormat = Engine.PixelFormat.0
+		depthRenderPipelineDescriptor.vertexFunction = vertexShader
+		depthRenderPipelineDescriptor.fragmentFunction = depthFragmentShader
+		depthRenderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+		
+		do {
+			depthRenderPipelineState = try Engine.Device.makeRenderPipelineState(descriptor: depthRenderPipelineDescriptor)
 		} catch {
 			print(error)
 		}

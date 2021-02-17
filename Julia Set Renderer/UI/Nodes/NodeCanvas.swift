@@ -33,7 +33,8 @@ struct NodeCanvas: View {
 					}
 					ForEach(nodeContainer.nodes, id: \.id) { node in
 						let c = nodeContainer.index(node.id)
-						NodeView(nodeAddress: nodeContainer.createNodeAddress(node: node), nodeContainer: $nodeContainer, selected: $selected, viewPosition: geometry.frame(in: .global).origin).gesture(
+						node.generateView(container: $nodeContainer, selected: $selected).gesture(
+						//NodeView(nodeAddress: nodeContainer.createNodeAddress(node: node), nodeContainer: $nodeContainer, selected: $selected).gesture(
 							DragGesture().onChanged({ (data) in
 								if dragOffset == nil {
 									dragOffset = data.location - node.position

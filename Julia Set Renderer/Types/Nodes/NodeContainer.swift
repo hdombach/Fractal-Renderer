@@ -239,11 +239,7 @@ struct NodeContainer {
 		get {
 			if let index = getIndex(address: address.nodeAddress()) {
 				let node = nodes[index]
-				if node.outputs.count > address.valueIndex {
-					return node.outputs[address.valueIndex]
-				} else {
-					return node.inputs[address.valueIndex - node.outputs.count]
-				}
+				return node[address.valueIndex]
 			} else {
 				return nil
 			}
@@ -251,11 +247,8 @@ struct NodeContainer {
 		
 		set {
 			if let index = getIndex(address: address.nodeAddress()),  newValue != nil {
-				if nodes[index].outputs.count > address.valueIndex {
-					nodes[index].outputs[address.valueIndex] = newValue!
-				} else {
-					nodes[index].inputs[address.valueIndex - nodes[index].outputs.count] = newValue!
-				}
+				nodes[index][address.valueIndex] = newValue!
+				return
 			}
 		}
 	}
@@ -317,7 +310,7 @@ extension NodeContainer {
 			}
 			
 			if node.inputs.count > 0 {
-				for valueIndex in node.outputs.count...node.outputs.count + node.inputs.count - 1 {
+				for valueIndex in node.inputRange {
 					if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
 						let result = depthSort(node: self[path.beggining.nodeAddress()]!, previousDepth: currentDepth)
 						if result == false {
@@ -418,74 +411,41 @@ extension NodeContainer {
 		}
 		
 		func compileNode(node: Node) {
-			let functionName = node.functionName
-			switch functionName {
-			case "coordinate":
-				let address = createValueAddress(node: node, valueIndex: 0)
+			var outputVariables: [String] = []
+			var inputVariables: [String] = []
+			for c in node.outputRange {
+				let output = node[c]
+				let address = createValueAddress(node: node, valueIndex: c)
 				let observors = getPathsAt(address: address).count
-				tempCode.append(createVariable(info: (observors, address, 0)) + " = position.x;\n")
-				tempCode.append(createVariable(info: (observors, address, 1)) + " = position.y;\n")
-				tempCode.append(createVariable(info: (observors, address, 2)) + " = position.z;\n")
 				
-			case "orbit":
-				let address = createValueAddress(node: node, valueIndex: 0)
-				let observors = getPathsAt(address: address).count
-				tempCode.append(createVariable(info: (observors, address, 0)) + " = orbit;\n")
+				if observors > 0 {
+					outputVariables.append(createVariable(info: (observors, address, 0)))
+					
+					if output.type == .float3 || output.type == .color {
+						outputVariables.append(createVariable(info: (observors, address, 1)))
+						outputVariables.append(createVariable(info: (observors, address, 2)))
+					}
+				}
+			}
+			for c in node.inputRange {
+				let address: NodeValueAddress!
+				let input = node[c]
 				
-			case "material":
-				var address: NodeValueAddress!
-				if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: 0)).first {
+				if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: c)).first {
 					address = path.beggining
 				} else {
-					address = createValueAddress(node: node, valueIndex: 0)
-				}
-				tempCode.append("rgbAbsorption.xyz = clamp(float3(\(findVariable(value: address, vectorIndex: 0)), \(findVariable(value: address, vectorIndex: 1)), \(findVariable(value: address, vectorIndex: 2))), float3(0), float3(1)); \n")
-				tempCode.append("rgbEmitted = float3(0, 0, 0); \n")
-				tempCode.append("return;\n")
-			case "de":
-				break;
-			default:
-				tempCode += "functions." + functionName + "("
-				var valueIndex = 0
-				
-				for output in node.outputs {
-					let addresss = createValueAddress(node: node, valueIndex: valueIndex)
-					let obsevors = getPathsAt(address: addresss).count
-					
-					if obsevors > 0 {
-						if output.type == .float3 || output.type == .color{
-							tempCode += "&" + createVariable(info: (obsevors, addresss, 0)) + ", "
-							tempCode += "&" + createVariable(info: (obsevors, addresss, 1)) + ", "
-							tempCode += "&" + createVariable(info: (obsevors, addresss, 2)) + ", "
-						} else {
-							tempCode += "&" + createVariable(info: (obsevors, addresss, 0)) + ", "
-						}
-					}
-					
-					valueIndex += 1
+					address = createValueAddress(node: node, valueIndex: c)
 				}
 				
-				for input in node.inputs {
-					var address: NodeValueAddress!
-					if let path = getPathsAt(address: createValueAddress(node: node, valueIndex: valueIndex)).first {
-						address = path.beggining
-					} else {
-						address = createValueAddress(node: node, valueIndex: valueIndex)
-					}
-					
-					if input.type == .float3 || input.type == .color {
-						tempCode.append(findVariable(value: address, vectorIndex: 0) + ", ")
-						tempCode.append(findVariable(value: address, vectorIndex: 1) + ", ")
-						tempCode.append(findVariable(value: address, vectorIndex: 2) + ", ")
-					} else {
-						tempCode.append(findVariable(value: address, vectorIndex: 0) + ", ")
-					}
-					
-					valueIndex += 1
+				inputVariables.append(findVariable(value: address, vectorIndex: 0))
+				
+				if input.type == .float3 || input.type == .color {
+					inputVariables.append(findVariable(value: address, vectorIndex: 1))
+					inputVariables.append(findVariable(value: address, vectorIndex: 2))
 				}
-				tempCode.removeLast(2)
-				tempCode.append(");\n")
 			}
+			tempCode.append(node.generateCommand(outputs: outputVariables, inputs: inputVariables, unique: "\(node.id)"))
+			
 		}
 		
 		for layer in layers {

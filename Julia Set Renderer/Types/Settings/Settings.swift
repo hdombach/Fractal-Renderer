@@ -52,8 +52,15 @@ class JoinedRenderSettings: ObservableObject {
 		//print(channels.count, "update")
 	}
 	
-	var window = WindowView.preview
+	@Published var window = WindowView.preview {
+		didSet {
+			update()
+			(Engine.View as? RenderView)?.updateRenderMode()
+		}
+	}
 	var exposure: Int = 1
+	
+	var isRendering: Bool = false
 	
 	@Published var imageSize: (Int, Int) = (1920, 1080)
 	
@@ -337,10 +344,12 @@ final class ObservedRenderSettings: ObservableObject {
 	}
 }*/
 
-enum WindowView {
+enum WindowView: String, CaseIterable, Identifiable {
 	case preview
+	case depth
 	case rendering
-    case paused
+	
+	var id: String { self.rawValue }
 }
 
 struct Settings_Previews: PreviewProvider {

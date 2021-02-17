@@ -25,6 +25,7 @@ struct VectorAddNode: Node {
 	func new() -> Node {
 		VectorAddNode()
 	}
+	
 }
 
 struct VectorLengthNode: Node {
@@ -44,6 +45,7 @@ struct VectorLengthNode: Node {
 	func new() -> Node {
 		VectorLengthNode()
 	}
+	
 }
 
 struct VectorScaleNode: Node {
@@ -63,5 +65,6 @@ struct VectorScaleNode: Node {
 	func new() -> Node {
 		VectorScaleNode()
 	}
+	
 }
 

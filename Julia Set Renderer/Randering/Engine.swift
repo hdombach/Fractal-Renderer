@@ -63,8 +63,74 @@ class Engine {
 		Settings.exposure = 1
 		Settings.samples = 0
 	}
+	
+	public static func RenderPass(commandBuffer: MTLCommandBuffer) {
+		if Engine.Settings.window != .rendering {
+			return;
+		}
+		if Engine.Settings.exposure >= Engine.Settings.samples && Engine.Settings.samples > 0 {
+			Engine.Settings.isRendering = false
+			(Engine.View as? RenderView)?.updateRenderMode()
+			return;
+		}
+		let groupSize = Engine.Settings.kernelSize.groupSize
+		let groups = Engine.Settings.kernelSize.groups
+		let computeCommandEncoder = commandBuffer.makeComputeCommandEncoder(dispatchType: .concurrent)
+		computeCommandEncoder?.setComputePipelineState(Library[LibraryManager.ComputePipelineState.render])
+		computeCommandEncoder?.setTexture(MainTexture.texture, index: 0)
+		computeCommandEncoder?.setTexture(MainTexture.texture, index: 1)
+		
+		let threadsPerThreadgroup = MTLSize(width: groupSize, height: 1, depth: 1)
+		let threadsPerGrid = MTLSize.init(width: groupSize * groups, height: 1, depth: 1)
+		
+		//let containerLength = MemoryLayout<VoxelContainer>.stride + MemoryLayout<Voxel>.stride * Container.voxels.count
+		
+		/**
+		x: starting index
+		y: image width
+		z: image height
+		w: stop index
+		*/
+		var stop = groupSize * groups + Settings.imageSize.0 * Settings.imageSize.1
+		if Settings.exposure + 1 >= Settings.samples {
+			stop = Settings.imageSize.0 * Settings.imageSize.1
+		}
+		
+		var shaderInfo = ShaderInfo()
+		shaderInfo.camera = Settings.camera
+		shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(computeIndex), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
+		shaderInfo.randomSeed = SIMD3<UInt32>.init(UInt32.random(in: 0...10000), UInt32.random(in: 0...10000), UInt32.random(in: 0...10000))
+		shaderInfo.voxelsLength = UInt32(Container.voxelCount)
+		shaderInfo.isJulia = Settings.renderMode.rawValue
+		shaderInfo.lightsLength = UInt32(Settings.skyBox.count)
+		shaderInfo.rayMarchingSettings = Settings.rayMarchingSettings
+		shaderInfo.channelsLength = UInt32(Settings.channels.count)
+		
+		computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
+		computeCommandEncoder?.setBuffer(Container.voxelBuffer, offset: 0, index: 1)
+		computeCommandEncoder?.setBytes(&Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Settings.skyBox.count, index: 2)
+		computeCommandEncoder?.setBytes(Engine.Settings.nodeContainer.constants, length: MemoryLayout<Float>.stride * Engine.Settings.nodeContainer.constants.count, index: 4)
+		computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+		
+		computeCommandEncoder?.endEncoding()
+		
+		computeIndex += groupSize * groups
+		while computeIndex > Settings.imageSize.0 * Settings.imageSize.1 {
+			Settings.exposure += 1
+			computeIndex -= Settings.imageSize.0 * Settings.imageSize.1
+		}
+		var progress: String = ""
+		if Engine.Settings.samples == 0 {
+			progress = "0%"
+		} else {
+			progress = "\(100 * Engine.Settings.exposure / Engine.Settings.samples)% (\(Engine.Settings.exposure) / \(Engine.Settings.samples))"
+		}
+		if progress != Engine.Settings.progress {
+			Engine.Settings.progress = progress
+		}
+	}
 
-	public static func RenderPass() {
+	public static func OldRenderPass() {
         if isRendering {
             return
         }
@@ -79,7 +145,7 @@ class Engine {
                     isRendering = false
                     return;
                 }
-                if Engine.Settings.window == .paused {
+                /*if Engine.Settings.window == .paused {
                     isRendering = false
                     return;
                 }
@@ -87,7 +153,7 @@ class Engine {
                     Engine.Settings.window = .paused
                     isRendering = false
                     return;
-                }
+                }*/
                 let groupSize = Engine.Settings.kernelSize.groupSize
                 let groups = Engine.Settings.kernelSize.groups
                 

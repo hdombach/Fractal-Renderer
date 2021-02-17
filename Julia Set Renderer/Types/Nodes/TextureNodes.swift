@@ -25,6 +25,7 @@ struct PerlinNode: Node {
 	func new() -> Node {
 		PerlinNode()
 	}
+	
 }
 
 struct PerlinNode3: Node {
@@ -44,4 +45,5 @@ struct PerlinNode3: Node {
 	func new() -> Node {
 		PerlinNode3()
 	}
+	
 }

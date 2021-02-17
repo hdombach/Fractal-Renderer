@@ -28,6 +28,7 @@ struct AddNode: Node {
 	func new() -> Node {
 		AddNode()
 	}
+	
 }
 
 struct SubtractNode: Node {
@@ -48,6 +49,7 @@ struct SubtractNode: Node {
 	func new() -> Node {
 		SubtractNode()
 	}
+	
 }
 
 struct MultiplyNode: Node {
@@ -69,6 +71,7 @@ struct MultiplyNode: Node {
 	func new() -> Node {
 		MultiplyNode()
 	}
+	
 }
 
 struct DivideNode: Node {
@@ -90,6 +93,7 @@ struct DivideNode: Node {
 	func new() -> Node {
 		DivideNode()
 	}
+	
 }
 
 struct IsGreaterNode: Node {
@@ -115,6 +119,7 @@ struct IsGreaterNode: Node {
 	func new() -> Node {
 		IsGreaterNode()
 	}
+	
 }
 
 struct CombineNode: Node {
@@ -157,6 +162,7 @@ struct SeperateNode: Node {
 	func new() -> Node {
 		SeperateNode()
 	}
+	
 }
 
 struct ClampNode: Node {
@@ -176,6 +182,7 @@ struct ClampNode: Node {
 	func new() -> Node {
 		ClampNode()
 	}
+	
 }
 
 struct SinNode: Node {
@@ -195,6 +202,7 @@ struct SinNode: Node {
 	func new() -> Node {
 		SinNode()
 	}
+	
 }
 
 struct CosNode: Node {
@@ -214,6 +222,7 @@ struct CosNode: Node {
 	func new() -> Node {
 		CosNode()
 	}
+	
 }
 
 struct AbsNode: Node {
@@ -233,4 +242,5 @@ struct AbsNode: Node {
 	func new() -> Node {
 		AbsNode()
 	}
+	
 }

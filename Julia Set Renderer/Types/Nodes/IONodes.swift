@@ -28,6 +28,19 @@ struct CoordinateNode: Node {
 	func new() -> Node {
 		CoordinateNode()
 	}
+	
+	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
+		
+		var code = ""
+		
+		code.append("\(outputs[0]) = position.x;\n")
+		code.append("\(outputs[1]) = position.y;\n")
+		code.append("\(outputs[2]) = position.z;\n")
+		
+		return code
+		
+	}
+	
 }
 
 struct OrbitNode: Node {
@@ -67,6 +80,13 @@ struct MaterialNode: Node {
 	
 	func new() -> Node {
 		MaterialNode()
+	}
+	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
+		var code: String = ""
+		code.append("rgbAbsorption.xyz = clamp(float3(\(inputs[0]), \(inputs[1]), \(inputs[2])), float3(0), float3(1));\n")
+		code.append("rgbEmitted = float3(0, 0, 0); \n")
+		code.append("return;\n")
+		return code
 	}
 }
 

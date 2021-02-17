@@ -16,10 +16,12 @@ struct RenderBox: View {
 		Engine.MainTexture.updateTexture()
 		Engine.Settings.samples += self.samples
 		Engine.Settings.window = .rendering
+		Engine.Settings.isRendering = true
 		if Engine.Settings.samples == Engine.Settings.exposure {
 			Engine.ResetRender()
 		}
 		Engine.Settings.update()
+		(Engine.View as? RenderView)?.updateRenderMode()
 		print("Started Rendering with camera: \(Engine.Settings.camera)")
 	}
 
@@ -37,8 +39,13 @@ struct RenderBox: View {
 					Text("Render")
 				}
 				Button(action: preview) {
-					Text("Pause")
+					Text("Stop")
 				}
+				Picker(selection: $settings.window, label: Text("")) {
+					Text("preview").tag(WindowView.preview)
+					Text("depth").tag(WindowView.depth)
+					Text("rendering").tag(WindowView.rendering)
+				}.pickerStyle(RadioGroupPickerStyle())
 				Text(Engine.Settings.progress)
 			}
 			Spacer()

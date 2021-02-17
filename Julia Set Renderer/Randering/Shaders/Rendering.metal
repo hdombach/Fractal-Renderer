@@ -143,6 +143,7 @@ struct RayTracer {
 		seed *= int3(_seed);
 		
 		returnRay.deriction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
+		returnRay.deriction.xyz = metal::reflect(returnRay.deriction.xyz, surfaceNormal);
 		returnRay.deriction.w = 1;
 		return returnRay;
 	}
@@ -329,8 +330,30 @@ struct RayTracer {
 		//return getSkyBox(ray, lights, info.lightsLength);
 		return ray.colors;
 	}
-
+	
 	float4 depthMap(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info, constant float *constants) {
+		Ray ray = camera.spawnRay(pos);
+		float3 originalDirection = normalize(ray.deriction.xyz);
+		
+		SingleResult result;
+		if (isJulia == 0) {
+			result = shootRay(ray, voxels, false, voxelsLength, settings, constants);
+		} else {
+			result = mandelBulb(ray, uint3(0, 0, 0), 0, settings, constants);
+			/*if (result.distance < 10000) {
+				ray.march(result.distance);
+				//return float4(bulb.normal(ray.position.xyz), 0);
+			}*/
+		}
+		
+		//return float4(result.collision.surfaceNormal, 1);
+		
+		//float4 color = float4(log(result.distance)) + 0.2;
+		float4 color = float4(log(result.distance + 1) / 5 - 0.05);
+		return color;
+	}
+
+	float4 preview(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info, constant float *constants) {
 		Ray ray = camera.spawnRay(pos);
 		float3 originalDirection = normalize(ray.deriction.xyz);
 		

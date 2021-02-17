@@ -16,10 +16,6 @@ struct NodeView: View, Equatable {
 	
 	@Binding var selected: Node?
 	
-	var viewPosition: CGPoint
-	
-	let dotSize: CGFloat = 8
-	
 	var gridSize: CGFloat {
 		get {
 			nodeContainer.gridSize
@@ -40,6 +36,180 @@ struct NodeView: View, Equatable {
 		return lhs.node.compare(to: rhs.node)
 	}
 	
+    var body: some View {
+		ZStack {
+			Color.controlBackgroundColor.opacity(0.6)
+			VStack(spacing: 0) {
+				
+				ZStack {
+					node.color.opacity(0.4)
+					Text(node.name)
+				}.frame(height: gridSize)
+				if node.outputs.count > 0 {
+					ForEach(0..<node.outputs.count) { c in
+						
+						NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
+						
+					}.frame(alignment: Alignment.leading)
+				}
+				
+				if node.inputs.count > 0 {
+					ForEach(0..<node.inputs.count) { c in
+						NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
+						
+					}
+				}
+				Spacer()
+			}
+		}
+		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
+		.overlay(
+			RoundedRectangle(cornerRadius: 10)
+				.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
+		)
+		.cornerRadius(10)
+		.shadow(radius: 5)
+		.position(node.position)
+		.onTapGesture {
+			selected = node
+		}
+    }
+}
+
+struct ColorRampNodeView: View, Equatable {
+	var nodeAddress: NodeAddress
+	
+	@Binding var nodeContainer: NodeContainer
+	
+	@Binding var selected: Node?
+	
+	var gridSize: CGFloat {
+		get {
+			nodeContainer.gridSize
+		}
+	}
+	
+	var node: ColorRampNode {
+		get {
+			nodeContainer[nodeAddress]! as! ColorRampNode
+		}
+		
+		set {
+			nodeContainer[nodeAddress] = newValue
+		}
+	}
+	
+	func dragGesture(index: Int, frameWidth: CGFloat) -> some Gesture {
+		DragGesture().onEnded { (data) in
+			var customNode: ColorRampNode {
+				get {
+					nodeContainer[nodeAddress]! as! ColorRampNode
+				}
+				
+				set {
+					nodeContainer[nodeAddress] = newValue
+				}
+			}
+			customNode.values[index].position += Float(data.translation.width / frameWidth)
+			let pos = customNode.values[index].position
+			if pos > 1 {
+				customNode.values[index].position = 1
+			} else if pos < 0 {
+				customNode.values[index].position = 0
+			}
+			
+		}
+	}
+	
+	static func == (lhs: ColorRampNodeView, rhs: ColorRampNodeView) -> Bool {
+		return lhs.node.compare(to: rhs.node)
+	}
+	
+	var body: some View {
+		ZStack {
+			Color.controlBackgroundColor.opacity(0.6)
+			VStack(spacing: 0) {
+				
+				ZStack {
+					node.color.opacity(0.4)
+					Text(node.name)
+				}.frame(height: gridSize)
+				if node.outputs.count > 0 {
+					ForEach(0..<node.outputs.count) { c in
+						
+						NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
+						
+					}.frame(alignment: Alignment.leading)
+				}
+				
+				if node.inputs.count > 0 {
+					ForEach(0..<node.inputs.count) { c in
+						NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
+						
+					}
+				}
+				HStack(alignment: .top) {
+					Button("+") {
+						//node.addValue()
+					}.buttonStyle(PlainButtonStyle())
+					Button("-") {
+						
+					}.buttonStyle(PlainButtonStyle())
+					Spacer()
+				}.padding(.horizontal).frame(height: gridSize)
+				ZStack {
+					GeometryReader { reader in
+						
+						RoundedRectangle(cornerRadius: 2)
+						HStack {
+							ForEach(0..<node.values.count) { c in
+								Circle().gesture(dragGesture(index: c, frameWidth: reader.frame(in: .local).width))
+							}
+						}
+					}
+				}
+				.padding(.horizontal)
+				.padding(.vertical, 5)
+				.frame(height: gridSize)
+				Spacer()
+					
+			}
+		}
+		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(6), alignment: .center)
+		.overlay(
+			RoundedRectangle(cornerRadius: 10)
+				.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
+		)
+		.cornerRadius(10)
+		.shadow(radius: 5)
+		.position(node.position)
+		.onTapGesture {
+			selected = node
+		}
+	}
+}
+
+struct NodeOutputView: View {
+	var valueAddress: NodeValueAddress
+	@Binding var nodeContainer: NodeContainer
+	var dotSize: CGFloat = 8
+	
+	var gridSize: CGFloat {
+		get {
+			nodeContainer.gridSize
+		}
+	}
+	
+	var node: Node {
+		get {
+			nodeContainer[valueAddress.nodeAddress()]!
+		}
+		
+		set {
+			nodeContainer[valueAddress.nodeAddress()] = newValue
+		}
+	}
+	
 	func createPathGesture(valueIndex: Int) -> some Gesture {
 		DragGesture().onChanged({ (data) in
 			if nodeContainer.activePath == nil {
@@ -50,6 +220,39 @@ struct NodeView: View, Equatable {
 		}).onEnded({ (data) in
 			nodeContainer.linkPath()
 		})
+	}
+	
+	var body: some View {
+		HStack {
+			Spacer()
+			Text(node.outputs[valueAddress.valueIndex].name)
+			
+			Circle()
+				.frame(width: dotSize, height: dotSize)
+				.gesture(createPathGesture(valueIndex: valueAddress.valueIndex))
+		}.frame(height: gridSize, alignment: .center)
+	}
+}
+
+struct NodeInputView: View {
+	var valueAddress: NodeValueAddress
+	@Binding var nodeContainer: NodeContainer
+	var dotSize: CGFloat = 8
+	
+	var gridSize: CGFloat {
+		get {
+			nodeContainer.gridSize
+		}
+	}
+	
+	var node: Node {
+		get {
+			nodeContainer[valueAddress.nodeAddress()]!
+		}
+		
+		set {
+			nodeContainer[valueAddress.nodeAddress()] = newValue
+		}
 	}
 	
 	func deletePathGesture(valueIndex: Int) -> some Gesture {
@@ -71,55 +274,23 @@ struct NodeView: View, Equatable {
 		}
 	}
 	
-    var body: some View {
-		ZStack {
-			Color.controlBackgroundColor.opacity(0.6)
-			VStack(spacing: 0) {
+	var body: some View {
+		HStack(alignment: .center) {
+			Circle()
+				.frame(width: dotSize, height: dotSize)
+				.gesture(deletePathGesture(valueIndex: valueAddress.valueIndex))
 				
-				ZStack {
-					node.color.opacity(0.4)
-					Text(node.name)
-				}.frame(height: gridSize)
-				ForEach(0..<node.outputs.count) { c in
-					HStack {
-						Spacer()
-						Text(node.outputs[c].name)
-						
-						Circle()
-							.frame(width: dotSize, height: dotSize).gesture(createPathGesture(valueIndex: c))
-					}.frame(height: gridSize, alignment: .center)
-				}.frame(alignment: Alignment.leading)
-				ForEach(0..<node.inputs.count) { c in
-					HStack(alignment: .center) {
-						
-						Circle()
-							.frame(width: dotSize, height: dotSize)
-							.gesture(deletePathGesture(valueIndex: c + node.outputs.count))
-						NodeValueView(value: Binding.init(get: {
-							node.inputs[c]
-						}, set: { (newValue) in
-							nodeContainer[nodeAddress]?.inputs[c] = newValue
-						}))
-						
-						Spacer()
-					}.frame(height: gridSize * ((node.inputs[c].type == .float3) ? 3 : 1), alignment: .center)
-					
-				}
-				Spacer()
-			}
-		}
-		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
-		.overlay(
-			RoundedRectangle(cornerRadius: 10)
-				.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
-		)
-		.cornerRadius(10)
-		.shadow(radius: 5)
-		.position(node.position)
-		.onTapGesture {
-			selected = node
-		}
-    }
+				
+			
+			NodeValueView(value: Binding.init(get: {
+				nodeContainer[valueAddress]!
+			}, set: { (newValue) in
+				nodeContainer[valueAddress] = newValue
+			}))
+			
+			Spacer()
+		}.frame(height: gridSize * ((nodeContainer[valueAddress]!.type == .float3) ? 3 : 1), alignment: .center)
+	}
 }
 
 struct NodeValueView: View {
@@ -141,8 +312,18 @@ struct NodeValueView: View {
 
 struct Node_Previews: PreviewProvider {
     static var previews: some View {
-		GroupBox(label: Text("Content"), content: {
-			Text("Hi")
-		})
+		ColorRampNodeView(nodeAddress: { () -> NodeAddress in
+			if Engine.Settings.nodeContainer.nodes.count == 0 {
+				var newNode = ColorRampNode()
+				newNode.position = CGPoint(x: 150, y: 100)
+				Engine.Settings.nodeContainer.nodes.append(newNode)
+			}
+			return Engine.Settings.nodeContainer.createNodeAddress(node: Engine.Settings.nodeContainer.nodes[0])
+			
+		}(), nodeContainer: .init(get: { () -> NodeContainer in
+			Engine.Settings.nodeContainer
+		}, set: { (new) in
+			Engine.Settings.nodeContainer = new
+		}), selected: .constant(nil))
     }
 }
