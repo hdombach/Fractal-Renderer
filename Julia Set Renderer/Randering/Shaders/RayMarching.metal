@@ -15,6 +15,7 @@ struct RayMarchInfo {
 	float orbitLife;
 };
 
+//Contains functions that are useful when calculation rayMarching distances
 struct RayMarching {
 	bool cubeContainsRay(Ray ray, device Voxel *voxel) {
 		Voxel cube = *voxel;

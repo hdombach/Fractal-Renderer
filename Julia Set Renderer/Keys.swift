@@ -8,6 +8,7 @@
 
 import Foundation
 
+//Class for remembering key presses
 class Keys {
 	public static var dictionary: [UInt16: Bool] = [
 		13: false,

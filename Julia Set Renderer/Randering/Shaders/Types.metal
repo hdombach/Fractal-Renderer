@@ -98,6 +98,7 @@ struct Channel {
 	float strength;
 };
 
+//Functions are called by the node compiler.
 struct NodeFunctions {
 	void add(thread float *out1, float in1, float in2) {
 		*out1 = in1 + in2;
@@ -170,6 +171,57 @@ struct NodeFunctions {
 		*outx = result.x;
 		*outy = result.y;
 		*outz = result.z;
+	}
+	
+	void map(thread float *out, float in, float fromMin, float fromMax, float toMin, float toMax) {
+		*out = (in - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+	}
+	
+	void vectorMap(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float fromMin, float fromMax, float toMin, float toMax) {
+		map(outx, inx, fromMin, fromMax, toMin, toMax);
+		map(outy, iny, fromMin, fromMax, toMin, toMax);
+		map(outz, inz, fromMin, fromMax, toMin, toMax);
+	}
+	
+	void dotProduct(thread float *out, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
+		*out = dot(float3(in1x, in1y, in1z), float3(in2x, in2y, in2z));
+	}
+	
+	void crossProduct(thread float *outx, thread float *outy, thread float *outz, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
+		float3 result = cross(float3(in1x, in1y, in1z), float3(in2x, in2y, in2z));
+		*outx = result.x;
+		*outy = result.y;
+		*outz = result.z;
+	}
+	
+	void vectorMultiply(thread float *outx, thread float *outy, thread float *outz, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
+		*outx = in1x * in2x;
+		*outy = in1y * in2y;
+		*outz = in1z * in2z;
+	}
+	
+	void vectorClamp(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float inMin, float inMax) {
+		if (inx < inMin) {
+			*outx = inMin;
+		} else if (inx > inMax) {
+			*outx = inMax;
+		} else {
+			*outx = inx;
+		}
+		if (iny < inMin) {
+			*outy = inMin;
+		} else if (iny > inMax) {
+			*outy = inMax;
+		} else {
+			*outy = inx;
+		}
+		if (inz < inMin) {
+			*outz = inMin;
+		} else if (inz > inMax) {
+			*outz = inMax;
+		} else {
+			*outz = inx;
+		}
 	}
 	
 	//https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
@@ -324,6 +376,7 @@ struct NodeFunctions {
 
 
 //MARK: Material
+//Contains information that is used when reflecting a ray.
 struct Material {
 	float3 rgbAbsorption, rgbEmitted;
 	float diffuse;
@@ -342,6 +395,7 @@ struct Material {
 	void init(float3 position, float orbit, RayMarchingSettings settings, constant float *constants) {
 		NodeFunctions functions;
 		
+		float empty;
 		
 		//INSERT_MATERIAL//
 		
@@ -435,12 +489,14 @@ struct VoxelInfo {
 	uint index;
 };
 
+//Informations when a ray collides
 struct CollisionInfo {
 	float3 position;
 	float3 surfaceNormal;
 	Material surfaceMaterial;
 };
 
+//Information for traveling rays
 struct DistanceInfo {
 	float distance;
 	Axis collisionAxis;

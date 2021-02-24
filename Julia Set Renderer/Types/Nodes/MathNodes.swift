@@ -244,3 +244,22 @@ struct AbsNode: Node {
 	}
 	
 }
+
+struct MapNode: Node {
+	var name: String = "Map"
+	var functionName: String = "map"
+	var color: Color = .nodeMath
+	var id: UUID = UUID()
+	var position: CGPoint = CGPoint()
+	
+	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(-1, name: "from min"), NodeFloat(1, name: "from max"), NodeFloat(0, name: "to min"), NodeFloat(1, name: "to max")]
+	var outputs: [NodeValue] = [NodeFloat(0.5, name: "value")]
+	
+	func update() {
+		return
+	}
+	
+	func new() -> Node {
+		MapNode()
+	}
+}

@@ -9,6 +9,7 @@
 import Cocoa
 import SwiftUI
 
+//Foundation which is mostly created automatically
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 	var test: NSView!

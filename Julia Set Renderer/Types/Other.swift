@@ -39,11 +39,28 @@ extension sizeable {
 		return MemoryLayout<Self>.stride * count
 	}
 }
-extension Float: sizeable { }
+extension Float: sizeable {
+	var double: Double {
+		get {
+			return Double(self)
+		}
+	}
+	
+	var cgFloat: CGFloat {
+		get {
+			return CGFloat(self)
+		}
+	}
+}
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
 typealias Float3 = SIMD3<Float>
+extension Float3 {
+	var color: Color {
+		return .init(red: x.double, green: y.double, blue: z.double)
+	}
+}
 
 extension CGPoint {
 	static func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {

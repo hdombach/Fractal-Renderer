@@ -8,6 +8,8 @@
 
 import MetalKit
 
+
+//Creates and manages all the states that are used when interacting with the gpu
 class LibraryManager {
 	private var previewRenderPipelineState: MTLRenderPipelineState!
 	private var depthRenderPipelineState: MTLRenderPipelineState!

@@ -89,40 +89,54 @@ struct ColorRampNodeView: View, Equatable {
 		}
 	}
 	
-	var node: ColorRampNode {
-		get {
-			nodeContainer[nodeAddress]! as! ColorRampNode
-		}
-		
-		set {
-			nodeContainer[nodeAddress] = newValue
-		}
-	}
+	@Binding var node: ColorRampNode
+	
+	@State private var startPosition: Float?
+	@State private var selectedPoint: Int?
 	
 	func dragGesture(index: Int, frameWidth: CGFloat) -> some Gesture {
 		DragGesture().onEnded { (data) in
-			var customNode: ColorRampNode {
-				get {
-					nodeContainer[nodeAddress]! as! ColorRampNode
-				}
-				
-				set {
-					nodeContainer[nodeAddress] = newValue
-				}
-			}
-			customNode.values[index].position += Float(data.translation.width / frameWidth)
-			let pos = customNode.values[index].position
+			let pos = startPosition! + Float(data.translation.width / frameWidth)
 			if pos > 1 {
-				customNode.values[index].position = 1
+				node.values[index].position = 1
 			} else if pos < 0 {
-				customNode.values[index].position = 0
+				node.values[index].position = 0
+			} else {
+				node.values[index].position = pos
+			}
+			node.sortValues()
+			startPosition = nil
+		}.onChanged { (data) in
+			if startPosition == nil {
+				startPosition = node.values[index].position
+			}
+			let pos = startPosition! + Float(data.translation.width / frameWidth)
+			print(pos, data.translation.width)
+			if pos > 1 {
+				node.values[index].position = 1
+			} else if pos < 0 {
+				node.values[index].position = 0
+			} else {
+				node.values[index].position = pos
 			}
 			
-		}
+		}.simultaneously(with: TapGesture().onEnded({ (data) in
+			selectedPoint = index
+		}))
 	}
 	
 	static func == (lhs: ColorRampNodeView, rhs: ColorRampNodeView) -> Bool {
 		return lhs.node.compare(to: rhs.node)
+	}
+	
+	private var gradient: Gradient {
+		get {
+			var stops: [Gradient.Stop] = []
+			for value in node.values {
+				stops.append(.init(color: value.color.color, location: value.position.cgFloat))
+			}
+			return Gradient(stops: stops)
+		}
 	}
 	
 	var body: some View {
@@ -150,20 +164,31 @@ struct ColorRampNodeView: View, Equatable {
 				}
 				HStack(alignment: .top) {
 					Button("+") {
-						//node.addValue()
+						node.addValue()
 					}.buttonStyle(PlainButtonStyle())
 					Button("-") {
-						
+						if let point = selectedPoint {
+							node.values.remove(at: point)
+							selectedPoint = nil
+						}
 					}.buttonStyle(PlainButtonStyle())
+					if let c = selectedPoint {
+						ColorInput(value: $node.values[c].color)
+					}
 					Spacer()
 				}.padding(.horizontal).frame(height: gridSize)
 				ZStack {
 					GeometryReader { reader in
 						
-						RoundedRectangle(cornerRadius: 2)
-						HStack {
-							ForEach(0..<node.values.count) { c in
-								Circle().gesture(dragGesture(index: c, frameWidth: reader.frame(in: .local).width))
+						LinearGradient(gradient: gradient, startPoint: .leading, endPoint: .trailing)
+						ZStack {
+							ForEach(0..<node.values.count, id: \.self) { c in
+								let frame = reader.frame(in: .local)
+								let position = CGPoint(x: frame.minX + CGFloat(node.values[c].position) * frame.width, y: frame.midY)
+								Circle()
+									.gesture(dragGesture(index: c, frameWidth: frame.width))
+									.position(position)
+									.overlay(Circle().stroke((selectedPoint ?? -1 == c) ? Color.blue : Color.controlBackgroundColor).position(position))
 							}
 						}
 					}
@@ -324,6 +349,6 @@ struct Node_Previews: PreviewProvider {
 			Engine.Settings.nodeContainer
 		}, set: { (new) in
 			Engine.Settings.nodeContainer = new
-		}), selected: .constant(nil))
+		}), selected: .constant(nil), node: .constant(ColorRampNode()))
     }
 }

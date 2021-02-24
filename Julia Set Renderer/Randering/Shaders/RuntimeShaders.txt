@@ -178,6 +178,16 @@ struct NodeFunctions {
 		*outz = result.z;
 	}
 	
+	void map(thread float *out, float in, float fromMin, float fromMax, float toMin, float toMax) {
+		*out = (in - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+	}
+	
+	void vectorMap(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float fromMin, float fromMax, float toMin, float toMax) {
+		map(outx, inx, fromMin, fromMax, toMin, toMax);
+		map(outy, iny, fromMin, fromMax, toMin, toMax);
+		map(outz, inz, fromMin, fromMax, toMin, toMax);
+	}
+	
 	//https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 	
 	void perlin(thread float *out, float x, float y, float z) {
@@ -347,6 +357,8 @@ struct Material {
 	
 	void init(float3 position, float orbit, RayMarchingSettings settings, constant float *constants) {
 		NodeFunctions functions;
+		
+		float empty;
 		
 		
 		//INSERT_MATERIAL//

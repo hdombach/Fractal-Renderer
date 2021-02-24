@@ -58,6 +58,12 @@ struct ColorRampNode: Node {
 		ColorRampNode()
 	}
 	
+	var inputRange: Range<Int> {
+		get {
+			return outputs.count ..< outputs.count + inputs.count + values.count * 2
+		}
+	}
+	
 	subscript(valueIndex: Int) -> NodeValue {
 		get {
 			if outputs.count > valueIndex {
@@ -95,6 +101,29 @@ struct ColorRampNode: Node {
 		}
 	}
 	
+	func compare(to node: Node) -> Bool {
+		if id != node.id {
+			return false
+		}
+		if position != node.position {
+			return false
+		}
+		if !compare(lhs: inputs, rhs: node.inputs) {
+			return false
+		}
+		if let colorRampNode = node as? ColorRampNode {
+			if values.count != colorRampNode.values.count {
+				return false
+			}
+			for index in 0..<values.count {
+				if values[index].color != colorRampNode.values[index].color || values[index].position != colorRampNode.values[index].position {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	
 	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
 		var code = ""
 		if values.count == 0 {
@@ -124,9 +153,9 @@ struct ColorRampNode: Node {
 				} else {
 					let greater = inputs[c * 4 + 1]
 					let lesser = inputs[c * 4 - 3]
-					code.append("} else if \(valueVariable) < \(greater) {\n")
-					//gradient = (value - lower) / (greater - lower)
-					code.append("float gradientValue\(unique) = (\(valueVariable) - \(lesser)) / (\(greater) - \(lesser));\n")
+					code.append("} else if (\(valueVariable) < \(greater)) {\n")
+					//gradient = 1 - (value - lower) / (greater - lower)
+					code.append("float gradientValue\(unique) = 1 - (\(valueVariable) - \(lesser)) / (\(greater) - \(lesser));\n")
 					code.append("float3 color\(unique) = float3(0);\n")
 					
 					//add lower color
@@ -145,4 +174,13 @@ struct ColorRampNode: Node {
 		return code
 	}
 	
+	
+	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView {
+		let address = container.wrappedValue.createNodeAddress(node: self)
+		return AnyView(ColorRampNodeView(nodeAddress: address, nodeContainer: container, selected: selected, node: Binding.init(get: {
+			container.wrappedValue[address]! as! ColorRampNode
+		}, set: { (newNode) in
+			container.wrappedValue[address] = newNode
+		})))
+	}
 }

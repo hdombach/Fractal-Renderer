@@ -8,6 +8,7 @@
 
 import MetalKit
 
+//Updates the render window.
 class Renderer: NSObject, MTKViewDelegate {
 
 	var imageRatio: Float = 16 / 9
@@ -40,6 +41,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
 		let commandBuffer = Engine.CommandQueue.makeCommandBuffer()
 		
+		//adds a compute pipeline that does the raymarching
 		Engine.RenderPass(commandBuffer: commandBuffer!)
 
 
@@ -51,6 +53,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
 		//print(Engine.SceneCamera.rotateMatrix)
 
+		
+		//move camera
 		var update = false
 		
 		var speed: Float = 0.01
@@ -134,8 +138,6 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.present(drawable)
 		commandBuffer?.commit()
 		commandBuffer?.waitUntilCompleted()
-
-		//Loading Pattern
 	}
 
 	func updateMesh() {

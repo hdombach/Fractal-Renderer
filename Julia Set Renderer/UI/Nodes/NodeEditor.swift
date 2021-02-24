@@ -49,6 +49,7 @@ struct NodeEditor: View {
 						}
 					}).frame(width: 150)
 					.padding(.bottom)
+					.zIndex(100)
 				}
 				NodeCanvas(nodeContainer: $nodeContainer, position: $position, selected: $selected, zoom: $zoom)
 					.padding([.bottom, .trailing])

@@ -9,8 +9,13 @@
 import Foundation
 import SwiftUI
 
-let allNodes: [Node] = [CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(), AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), VectorAddNode(), VectorLengthNode(), VectorScaleNode(), PerlinNode(), PerlinNode3(), ColorBlendNode(), ColorRampNode()]
-let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
+let allNodes: [Node] = [
+	CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(),
+	AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), MapNode(),
+	VectorAddNode(), VectorLengthNode(), VectorScaleNode(), VectorMapNode(), DotProductNode(), CrossProductNode(), VectorMultiplyNode(), VectorClampNode(),
+	PerlinNode(), PerlinNode3(),
+	ColorBlendNode(), ColorRampNode()]
+//let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
 protocol Node {
 	var name: String { get }
@@ -67,11 +72,11 @@ extension Node {
 		}
 	}
 	
-	var command: Int32 {
+	/*var command: Int32 {
 		get {
 			return commandDictionary[functionName] ?? -1
 		}
-	}
+	}*/
 	
 	subscript(valueIndex: Int) -> NodeValue {
 		get {

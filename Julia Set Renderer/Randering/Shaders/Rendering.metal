@@ -10,6 +10,7 @@
 #include "RayMarching.metal"
 using namespace metal;
 
+//Contains functions that are usefl
 struct RayTracer {
 	struct VectorPair {
 		float3 v1;
@@ -37,6 +38,7 @@ struct RayTracer {
 		MathContainer math;
 		float3 p;
 		int3 seed = randomSeed;
+		//randomly creates point on a hemisphere (not tilted)
 		do {
 			p.z = math.rand(seed.x, seed.y, seed.z);
 			p.x = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
@@ -46,6 +48,7 @@ struct RayTracer {
 		
 		p = normalize(p);
 		
+		//Transform random vector so it fits on hemisphere of the normal
 		VectorPair orthogonals = orthogonalVectors(n);
 		
 		p = p.x * orthogonals.v1 + p.y * orthogonals.v2 + p.z * n;
@@ -148,6 +151,7 @@ struct RayTracer {
 		return returnRay;
 	}
 	
+	//Function not being used right now
 	float rideRay(Ray primaryRay, Ray secondaryRay, RayMarchingSettings settings) {
 		RayMarching rayMarcher;
 		//float tempDot = dot(normalize(primaryRay.deriction.xyz), normalize(secondaryRay.deriction.xyz));
@@ -171,6 +175,7 @@ struct RayTracer {
 		return t;
 	}
     
+	//Single bounce using raytracing
     SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings, constant float *constants) {
 		RayMarching rayMarcher;
 		
@@ -216,6 +221,7 @@ struct RayTracer {
         return result;
     }
 
+	//single bounce using raytracing function
 	SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength, RayMarchingSettings settings, constant float *constants) {
 		MathContainer math;
 		RayMarching rayMarcher;
@@ -274,6 +280,7 @@ struct RayTracer {
         
     }
 
+	//main raycasating function
 	Colors rayCast(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *constants) {
 		MathContainer math;
 		

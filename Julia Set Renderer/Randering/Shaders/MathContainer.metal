@@ -10,6 +10,7 @@
 #include "Types.metal"
 using namespace metal;
 
+//Contains functions that are useful when calculation voxel intersections
 struct MathContainer {
 	// Generate a random float in the range [0.0f, 1.0f] using x, y, and z (based on the xor128 algorithm)
 	float rand(int x, int y, int z) {

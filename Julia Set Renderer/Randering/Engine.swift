@@ -64,7 +64,10 @@ class Engine {
 		Settings.samples = 0
 	}
 	
+	//The render pass creates a compute pipeline that does the ray marching.
 	public static func RenderPass(commandBuffer: MTLCommandBuffer) {
+		
+		//This function is called every frame so it has to return if it isn't supposed to be rendering.
 		if Engine.Settings.window != .rendering {
 			return;
 		}
@@ -73,6 +76,8 @@ class Engine {
 			(Engine.View as? RenderView)?.updateRenderMode()
 			return;
 		}
+		
+		//Sets up the compute encoder.
 		let groupSize = Engine.Settings.kernelSize.groupSize
 		let groups = Engine.Settings.kernelSize.groups
 		let computeCommandEncoder = commandBuffer.makeComputeCommandEncoder(dispatchType: .concurrent)
@@ -96,6 +101,7 @@ class Engine {
 			stop = Settings.imageSize.0 * Settings.imageSize.1
 		}
 		
+		//Info that is passed on to the compute encoder
 		var shaderInfo = ShaderInfo()
 		shaderInfo.camera = Settings.camera
 		shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(computeIndex), UInt32(Settings.imageSize.0), UInt32(Settings.imageSize.1), UInt32(stop))
@@ -119,6 +125,8 @@ class Engine {
 			Settings.exposure += 1
 			computeIndex -= Settings.imageSize.0 * Settings.imageSize.1
 		}
+		
+		//updates progress ui
 		var progress: String = ""
 		if Engine.Settings.samples == 0 {
 			progress = "0%"
@@ -130,6 +138,7 @@ class Engine {
 		}
 	}
 
+	//A render pass that is no longer used
 	public static func OldRenderPass() {
         if isRendering {
             return
@@ -223,6 +232,7 @@ class Engine {
         }
 	}
 
+	//Functions to interact with the voxel generation
 	public static func LoadJuliaSet(quality: Float) {
         Container.loadQuality = quality
 		Engine.Settings.savedCamera = Engine.Settings.camera

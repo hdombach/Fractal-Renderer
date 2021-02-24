@@ -13,6 +13,7 @@ enum NodeContainerType {
 	case DE
 }
 
+//Root node manager
 struct NodeContainer {
 	var nodes: [Node] = [] {
 		didSet {
@@ -26,6 +27,8 @@ struct NodeContainer {
 	
 	private var constantsAddresses: [(address: NodeValueAddress, vector: Int)] = []
 	private var oldConstants: [Float] = []
+	
+	//values that can be used to change the procedural texture without recalculating
 	var constants: [Float] {
 		var output: [Float] = []
 		for address in constantsAddresses {
@@ -110,6 +113,7 @@ struct NodeContainer {
 		}
 	}
 	
+	//returns the height of a node
 	func getHeight(nodeAddress: NodeAddress) -> Int {
 		if let node = self[nodeAddress] {
 			var height = node.outputs.count + 2
@@ -154,6 +158,10 @@ struct NodeContainer {
 			}
 			point.y += CGFloat(viewIndex) * gridSize + gridSize / 2
 			
+			if node is ColorRampNode {
+				point.y -= gridSize
+			}
+			
 			return point
 		} else {
 			printError("Incorrect address while getting node point")
@@ -161,6 +169,7 @@ struct NodeContainer {
 		}
 	}
 	
+	//ataches the active path to a node
 	mutating func linkPath() {
 		for nodeIndex in 0...nodes.count - 1 {
 			let node = nodes[nodeIndex]
@@ -188,6 +197,7 @@ struct NodeContainer {
 		activePath = nil
 	}
 	
+	//Tests if active path is near a value
 	private func testValue(valueAddress: NodeValueAddress) -> Bool {
 		if activePath == nil {
 			return false
@@ -358,6 +368,7 @@ extension NodeContainer {
 		
 		var tempCode: String = ""
 		var dealocatedVariables: [Int] = []
+		var unique: Int = 0
 		
 		//generate code from nodes
 		//Format: <command code> <outputs> <inputs>
@@ -401,7 +412,9 @@ extension NodeContainer {
 				return "constants[\(index)]"
 			} else {
 				if fallBack > -2 {
-					variables[index].observers -= 1
+					if fallBack > -2 {
+						variables[index].observers -= 1
+					}
 					if variables[index].observers <= 0 {
 						dealocatedVariables.append(index)
 					}
@@ -425,6 +438,12 @@ extension NodeContainer {
 						outputVariables.append(createVariable(info: (observors, address, 1)))
 						outputVariables.append(createVariable(info: (observors, address, 2)))
 					}
+				} else {
+					outputVariables.append("empty")
+					if output.type == .float3 || output.type == .color {
+						outputVariables.append("empty")
+						outputVariables.append("empty")
+					}
 				}
 			}
 			for c in node.inputRange {
@@ -444,7 +463,8 @@ extension NodeContainer {
 					inputVariables.append(findVariable(value: address, vectorIndex: 2))
 				}
 			}
-			tempCode.append(node.generateCommand(outputs: outputVariables, inputs: inputVariables, unique: "\(node.id)"))
+			tempCode.append(node.generateCommand(outputs: outputVariables, inputs: inputVariables, unique: "\(unique)"))
+			unique += 1
 			
 		}
 		
