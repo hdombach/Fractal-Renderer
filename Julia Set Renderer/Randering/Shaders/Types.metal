@@ -392,7 +392,7 @@ struct Material {
 		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));
 	}
 	
-	void init(float3 position, float orbit, RayMarchingSettings settings, constant float *constants) {
+	void init(float3 position, float3 orbit, float iterations, RayMarchingSettings settings, constant float *constants) {
 		NodeFunctions functions;
 		
 		float empty;

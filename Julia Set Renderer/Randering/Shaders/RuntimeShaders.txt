@@ -355,11 +355,10 @@ struct Material {
 		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));
 	}
 	
-	void init(float3 position, float orbit, RayMarchingSettings settings, constant float *constants) {
+	void init(float3 position, float3 orbit, float iterations, RayMarchingSettings settings, constant float *constants) {
 		NodeFunctions functions;
 		
 		float empty;
-		
 		
 		//INSERT_MATERIAL//
 		
@@ -777,6 +776,7 @@ struct MathContainer {
 struct RayMarchInfo {
 	float d;
 	float orbitLife;
+	float3 orbit;
 };
 
 struct RayMarching {
@@ -887,6 +887,7 @@ struct RayMarching {
 			z += pos;
 		}
 		info.d = 0.5 * log(r) * r / dr;
+		info.orbit = z;
 		return info;
 	}
 	
@@ -963,6 +964,7 @@ struct RayMarching {
 
 //MARK: Rendering.metal
 
+//Contains functions that are usefl
 struct RayTracer {
 	struct VectorPair {
 		float3 v1;
@@ -990,6 +992,7 @@ struct RayTracer {
 		MathContainer math;
 		float3 p;
 		int3 seed = randomSeed;
+		//randomly creates point on a hemisphere (not tilted)
 		do {
 			p.z = math.rand(seed.x, seed.y, seed.z);
 			p.x = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
@@ -999,6 +1002,7 @@ struct RayTracer {
 		
 		p = normalize(p);
 		
+		//Transform random vector so it fits on hemisphere of the normal
 		VectorPair orthogonals = orthogonalVectors(n);
 		
 		p = p.x * orthogonals.v1 + p.y * orthogonals.v2 + p.z * n;
@@ -1101,6 +1105,7 @@ struct RayTracer {
 		return returnRay;
 	}
 	
+	//Function not being used right now
 	float rideRay(Ray primaryRay, Ray secondaryRay, RayMarchingSettings settings) {
 		RayMarching rayMarcher;
 		//float tempDot = dot(normalize(primaryRay.deriction.xyz), normalize(secondaryRay.deriction.xyz));
@@ -1124,6 +1129,7 @@ struct RayTracer {
 		return t;
 	}
     
+	//Single bounce using raytracing
     SingleResult mandelBulb(Ray rayIn, uint3 seed, float fog, RayMarchingSettings settings, constant float *constants) {
 		RayMarching rayMarcher;
 		
@@ -1160,7 +1166,7 @@ struct RayTracer {
 		result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.deriction.xyz);
         
         Material material;
-        material.init(ray.position.xyz, bulbResut.orbitLife, settings, constants);
+        material.init(ray.position.xyz, bulbResut.orbit, bulbResut.orbitLife, settings, constants);
         
         result.collision.surfaceMaterial = material;
         result.collision.position = ray.position.xyz;
@@ -1169,6 +1175,7 @@ struct RayTracer {
         return result;
     }
 
+	//single bounce using raytracing function
 	SingleResult shootRay(Ray rayIn, device Voxel *voxels, bool showVoxels, int voxelsLength, RayMarchingSettings settings, constant float *constants) {
 		MathContainer math;
 		RayMarching rayMarcher;
@@ -1202,7 +1209,7 @@ struct RayTracer {
 		}
 
 		Material material;
-		material.init(ray.position.xyz, 0, settings, constants);
+		material.init(ray.position.xyz, float3(0), 0, settings, constants);
 
 		CollisionInfo collide;
 		collide.position = float3(ray.position.x, ray.position.y, ray.position.z);
@@ -1227,6 +1234,7 @@ struct RayTracer {
         
     }
 
+	//main raycasating function
 	Colors rayCast(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *constants) {
 		MathContainer math;
 		
@@ -1302,7 +1310,7 @@ struct RayTracer {
 		//return float4(result.collision.surfaceNormal, 1);
 		
 		//float4 color = float4(log(result.distance)) + 0.2;
-		float4 color = float4(1 / (1 + exp(result.distance * -0.1)) - 0.5);
+		float4 color = float4(log(result.distance + 1) / 5 - 0.05);
 		return color;
 	}
 
@@ -1340,6 +1348,7 @@ struct RayTracer {
 		return color;
 	}
 };
+
 
 
 

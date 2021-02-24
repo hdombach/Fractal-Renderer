@@ -212,7 +212,7 @@ struct RayTracer {
 		result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.deriction.xyz);
         
         Material material;
-        material.init(ray.position.xyz, bulbResut.orbitLife, settings, constants);
+        material.init(ray.position.xyz, bulbResut.orbit, bulbResut.orbitLife, settings, constants);
         
         result.collision.surfaceMaterial = material;
         result.collision.position = ray.position.xyz;
@@ -255,7 +255,7 @@ struct RayTracer {
 		}
 
 		Material material;
-		material.init(ray.position.xyz, 0, settings, constants);
+		material.init(ray.position.xyz, float3(0), 0, settings, constants);
 
 		CollisionInfo collide;
 		collide.position = float3(ray.position.x, ray.position.y, ray.position.z);

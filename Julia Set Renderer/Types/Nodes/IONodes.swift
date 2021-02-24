@@ -18,7 +18,7 @@ struct CoordinateNode: Node {
 	var position = CGPoint()
 	
 	var inputs: [NodeValue] = []
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "position")]
+	var outputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "position"), NodeFloat3(Float3(0, 0, 0), name: "orbit"), NodeFloat(0, name: "iterations")]
 	var paths: [NodePath] = []
 	
 	mutating func update() {
@@ -36,6 +36,10 @@ struct CoordinateNode: Node {
 		code.append("\(outputs[0]) = position.x;\n")
 		code.append("\(outputs[1]) = position.y;\n")
 		code.append("\(outputs[2]) = position.z;\n")
+		code.append("\(outputs[3]) = orbit.x;\n")
+		code.append("\(outputs[4]) = orbit.y;\n")
+		code.append("\(outputs[5]) = orbit.z;\n")
+		code.append("\(outputs[6]) = iterations;\n")
 		
 		return code
 		

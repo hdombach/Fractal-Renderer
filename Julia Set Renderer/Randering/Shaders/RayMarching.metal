@@ -13,6 +13,7 @@ using namespace metal;
 struct RayMarchInfo {
 	float d;
 	float orbitLife;
+	float3 orbit;
 };
 
 //Contains functions that are useful when calculation rayMarching distances
@@ -124,6 +125,7 @@ struct RayMarching {
 			z += pos;
 		}
 		info.d = 0.5 * log(r) * r / dr;
+		info.orbit = z;
 		return info;
 	}
 	
