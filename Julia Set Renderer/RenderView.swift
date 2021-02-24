@@ -8,6 +8,7 @@
 
 import MetalKit
 
+//The render window.
 class RenderView: MTKView {
 	var renderer: Renderer!
 
@@ -15,12 +16,20 @@ class RenderView: MTKView {
 
 	var isTracking: Bool = false
 	
+	var isSelected: Bool = false
+	
+	func updateRenderMode() {
+		changeRenderMode(isManual: !(isSelected || Engine.Settings.window == .rendering))
+	}
+	
 	func changeRenderMode(isManual: Bool) {
+		print("changed render mode", isManual)
 		self.isPaused = isManual
 		self.enableSetNeedsDisplay = isManual
 	}
 
 	required init(coder: NSCoder) {
+		//Initializes render pipelines and settings
 		super.init(coder: coder)
 
 		self.device = MTLCreateSystemDefaultDevice()
@@ -49,21 +58,24 @@ class RenderView: MTKView {
 
 	override var acceptsFirstResponder: Bool { return true }
 
+	//IO Events
 	override func mouseDown(with event: NSEvent) {
-		changeRenderMode(isManual: false)
+		isSelected = true
+		updateRenderMode()
 		Engine.Settings.isShowingUI = false
 		isTracking = true
-		CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: false))
+		CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: false)))
 		CGDisplayHideCursor(1)
 	}
 
 	override func keyDown(with event: NSEvent) {
 		Keys.update(key: event.keyCode, value: true)
 		if event.keyCode == 53 { // escape
-            changeRenderMode(isManual: true)
+			isSelected = false
+			updateRenderMode()
 			Engine.Settings.isShowingUI = true
 			isTracking = false
-			CGAssociateMouseAndMouseCursorPosition(UInt32(truncating: true))
+			CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: true)))
 			CGDisplayShowCursor(1)
 		}
 	}
@@ -98,6 +110,7 @@ class RenderView: MTKView {
 		}
 	}
 
+	//Need to update the tracking rectangle whenever screen is resized
 	override func setFrameSize(_ newSize: NSSize) {
 		super.setFrameSize(newSize)
 		trackingRect = NSTrackingArea.init(rect: self.frame, options: [NSTrackingArea.Options.mouseMoved, NSTrackingArea.Options.activeWhenFirstResponder], owner: self, userInfo: nil)

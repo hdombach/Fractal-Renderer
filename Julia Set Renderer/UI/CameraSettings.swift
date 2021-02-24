@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CameraSettings: View {
-    @ObservedObject var settings = Engine.Settings.observed
+    @ObservedObject var settings = Engine.Settings
 
     var body: some View {
         HStack(alignment: .top) {
@@ -51,6 +51,6 @@ struct CameraSettings: View {
 struct CameraSettings_Previews: PreviewProvider {
     static var previews: some View {
         CameraSettings()
-			.environmentObject(Engine.Settings.observed)
+			.environmentObject(Engine.Settings)
     }
 }

@@ -10,7 +10,8 @@ import SwiftUI
 
 struct ColorPickerPro: View {
 	@Binding var color: SIMD3<Float>
-	@State var tempColor: SIMD3<Float> = .init(1, 1, 1)
+	@State var tempColor: SIMD3<Float> = .init()
+	
     var body: some View {
 		HStack {
 			VStack {
@@ -36,16 +37,18 @@ struct ColorPickerPro: View {
 					color = tempColor
 				}
 			}
-		}
+		}.onAppear(perform: {
+			tempColor = color
+		})
     }
 }
 
 struct ColorPickerPro_Previews: PreviewProvider {
     static var previews: some View {
 		ColorPickerPro(color: Binding.init(get: {
-			Engine.Settings.observed.skyBox[0].color
+			Engine.Settings.skyBox[0].color
 		}, set: { (newColor) in
-			Engine.Settings.observed.skyBox[0].color = newColor
+			Engine.Settings.skyBox[0].color = newColor
 		}))
     }
 }

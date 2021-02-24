@@ -21,8 +21,98 @@ func generateID() -> UInt32 {
 	return globalId
 }
 
-class RenderSettings {
-    let delayTime = 5
+class JoinedRenderSettings: ObservableObject {
+	
+	init() {
+		savedCamera = camera
+	}
+	
+	func update() {
+		Engine.View.setNeedsDisplay(Engine.View.frame)
+	}
+	
+	func updateChannels() {
+		var max: UInt32 = 0
+		var min: UInt32 = UInt32.max
+		for light in skyBox {
+			if light.channel > max {
+				max = light.channel
+			}
+			if light.channel < min {
+				min = light.channel
+			}
+		}
+		print(max, min)
+		while max > channels.count - 1 {
+			channels.append(ChannelInfo.init(index: UInt32(channels.count), color: .init(1, 1, 1), strength: 1))
+		}
+		while max < channels.count - 1 {
+			channels.removeLast()
+		}
+		//print(channels.count, "update")
+	}
+	
+	@Published var window = WindowView.preview {
+		didSet {
+			update()
+			(Engine.View as? RenderView)?.updateRenderMode()
+		}
+	}
+	var exposure: Int = 1
+	
+	var isRendering: Bool = false
+	
+	@Published var imageSize: (Int, Int) = (1920, 1080)
+	
+	@Published var kernelSize: (groupSize: Int, groups: Int) = (200, 50)
+	
+	@Published var camera: Camera = Camera(position: SIMD4<Float>(0, 0.001, -2, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080)) {
+		didSet {
+			update()
+		}
+	}
+	
+	var savedCamera: Camera!
+	
+	@Published var progress: String = "0% (0 / 0)" {
+		didSet {
+			update()
+		}
+	}
+	
+	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] {
+		didSet {
+			updateChannels()
+			update()
+		}
+	}
+	
+	@Published var channels: [ChannelInfo] = [ChannelInfo.init(index: 0, color: .init(1, 1, 1), strength: 1)]
+	
+	//@Published var nodes: [Node] = []
+	@Published var nodeContainer = NodeContainer()
+	
+	var samples: Int = 0
+	
+	var renderMode: RenderMode = .Mandelbulb
+	
+	@Published var rayMarchingSettings: RayMarchingSettings = .init() {
+		didSet {
+			update()
+		}
+	}
+	
+	@Published var juliaSetSettings = JuliaSetSettings() {
+		didSet {
+			update()
+		}
+	}
+	
+	@Published var isShowingUI: Bool = true
+}
+
+/*class RenderSettings {
+    let delayTime = 0
 	var isReady = true
 
 	var observed: ObservedRenderSettings!
@@ -86,6 +176,9 @@ class RenderSettings {
 				if self.observed.channels != self.channels {
 					self.observed.channels = self.channels
 				}
+				//if self.observed.nodes != self.nodes {
+					self.observed.nodes = self.nodes
+				//}
                 
 				self.isReady = true
 			}
@@ -128,6 +221,12 @@ class RenderSettings {
 			delaySet()
 		}
 	}
+	
+	var nodes: [Node] = [AddNode()] {
+		didSet {
+			delaySet()
+		}
+	}
 
 	var samples: Int = 0
     
@@ -138,6 +237,7 @@ class RenderSettings {
 	var rayMarchingSettings: RayMarchingSettings = .init()
 	
 	var juliaSetSettings = JuliaSetSettings()
+	
 	
 	var isShowingUI: Bool = true {
 		didSet {
@@ -214,6 +314,13 @@ final class ObservedRenderSettings: ObservableObject {
 		}
 	}
 	
+	@Published var nodes: [Node] {
+		didSet {
+			sourceSettings.channels = self.channels
+			update()
+		}
+	}
+	
 	@Published var rayMarchingSettings: RayMarchingSettings {
 		didSet {
 			sourceSettings.rayMarchingSettings = self.rayMarchingSettings
@@ -233,13 +340,16 @@ final class ObservedRenderSettings: ObservableObject {
 		self.skyBox = source.skyBox
 		self.rayMarchingSettings = source.rayMarchingSettings
 		self.channels = source.channels
+		self.nodes = source.nodes
 	}
-}
+}*/
 
-enum WindowView {
+enum WindowView: String, CaseIterable, Identifiable {
 	case preview
+	case depth
 	case rendering
-    case paused
+	
+	var id: String { self.rawValue }
 }
 
 struct Settings_Previews: PreviewProvider {

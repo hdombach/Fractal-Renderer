@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ChannelSettings: View {
-	@ObservedObject var settings = Engine.Settings.observed
+	@ObservedObject var settings = Engine.Settings
 	@State var selected: ChannelInfo?
 	
 	func index(id: UInt32) -> Int {
@@ -20,11 +20,12 @@ struct ChannelSettings: View {
 	}
 	
     var body: some View {
-		GroupBox(label: Text("Channels")) {
+		VStack {
+			Text("Channels")
 			List(settings.channels, id: \.self, selection: $selected) { channel in
 				ChannelPicker(channel: $settings.channels[index(id: channel.index)])
-			}
-		}
+			}.cornerRadius(5)
+		}.padding([.leading, .bottom, .trailing])
     }
 }
 

@@ -38,7 +38,7 @@ class VoxelContainerThread {
 	
 	var voxelsMade: UInt = 0
 	
-	var isNewMethod: Bool = true
+	private var needsSetup: Bool = true
     
     
 	var containerThreads: Int
@@ -60,6 +60,7 @@ class VoxelContainerThread {
         self.rootVoxel = root
         activeAddress = root
 		self.shouldShrink = shouldShrink
+		self.needsSetup = true
 		//print(root)
 		
     }
@@ -83,7 +84,7 @@ class VoxelContainerThread {
     }*/
     
     func activateVoxel(position: SIMD3<Float>) {
-        if activatedVoxels.contains(ActiveItem(position: position)) {
+        if !activatedVoxels.contains(ActiveItem(position: position)) {
             activatedVoxels.append(ActiveItem(position: position))
         }
     }
@@ -105,13 +106,14 @@ class VoxelContainerThread {
     func pass(length: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Bool {
         for _ in 1...length {
 			if Engine.Settings.juliaSetSettings.quickMode {
-				if activatedVoxels.count == 0 {
-					
-				}
-				updateNeighbor(voxelBuffer: voxelBuffer)
-				if activatedVoxels.count == 0 {
-					isDone = true
-					return true
+				if needsSetup {
+					setUpNeighborMethod(voxelBuffer: voxelBuffer)
+				} else {
+					updateNeighbor(voxelBuffer: voxelBuffer)
+					if activatedVoxels.count == 0 {
+						isDone = true
+						return true
+					}
 				}
 			} else {
 				//old method
@@ -140,6 +142,15 @@ class VoxelContainerThread {
 	func setUpNeighborMethod(voxelBuffer: UnsafeMutableBufferPointer<Voxel>) {
 		let voxel = voxelBuffer[rootVoxel]
 		
+		func fillGrid(position: Float3, offset1: Float3, offset2: Float3, count: Float) {
+			for c1 in 0...Int(count) {
+				for c2  in 0...Int(count) {
+					activateVoxel(position: position + offset1 * Float(c1) + offset2 * Float(c2))
+				}
+			}
+		}
+		
+		///Fills all faces along a certain plane
 		func fillPlane(planeX: Bool, planeY: Bool, planeZ: Bool) {
 			var isCameraInside = true
 			let camera = Engine.Settings.savedCamera!
@@ -158,16 +169,53 @@ class VoxelContainerThread {
 					isCameraInside = false
 				}
 			}
-			var negativeSize: Float!
-			var positiviteSize: Float!
+			var negativeCount: Float!
+			var positiviteCount: Float!
+			let offset: Float3 = SIMD3<Float>.init(planeX ? voxel.width : 0, planeY ? voxel.width : 0, planeZ ? voxel.width : 0)
 			if isCameraInside {
 				var position = SIMD3<Float>.init(planeX ? voxel.position.x : camera.position.x, planeY ? voxel.position.y : camera.position.y, planeZ ? voxel.position.z : camera.position.z)
-				negativeSize = pow(Float(0.5), Float(layerDepth(position: position)))
-				position += SIMD3<Float>.init(planeX ? voxel.width : 0, planeY ? voxel.width : 0, planeZ ? voxel.width : 0)
-				positiviteSize = pow(Float(0.5), Float(layerDepth(position: position)))
+				negativeCount = pow(Float(2), Float(layerDepth(position: position)))
+				position += offset
+				positiviteCount = pow(Float(2), Float(layerDepth(position: position)))
 			} else {
+				var position = voxel.position
+				if !planeX {
+					if camera.position.x > position.x + voxel.width {
+						position.x += voxel.width
+					}
+				}
+				if !planeY {
+					if camera.position.y > position.y + voxel.width {
+						position.y += voxel.width
+					}
+				}
+				if !planeZ {
+					if camera.position.z > position.z + voxel.width {
+						position.z += voxel.width
+					}
+				}
 				
+				negativeCount = pow(Float(2), Float(layerDepth(position: position)))
+				position += offset
+				
+				positiviteCount = pow(Float(2), Float(layerDepth(position: position)))
 			}
+			
+			var offset1: Float3!
+			var offset2: Float3!
+			if planeX {
+				offset1 = Float3(0, 1, 0)
+				offset2 = Float3(0, 0, 1)
+			} else if planeY {
+				offset1 = Float3(1, 0, 0)
+				offset2 = Float3(0, 0, 1)
+			} else if planeZ {
+				offset1 = Float3(1, 0, 0)
+				offset2 = Float3(0, 1, 0)
+			}
+			
+			fillGrid(position: voxel.position, offset1: offset1, offset2: offset2, count: negativeCount)
+			fillGrid(position: voxel.position + offset, offset1: offset1, offset2: offset2, count: positiviteCount)
 		}
 		
 		fillPlane(planeX: true, planeY: false, planeZ: false)

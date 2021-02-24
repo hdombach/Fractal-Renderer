@@ -39,11 +39,62 @@ extension sizeable {
 		return MemoryLayout<Self>.stride * count
 	}
 }
-extension Float: sizeable { }
+extension Float: sizeable {
+	var double: Double {
+		get {
+			return Double(self)
+		}
+	}
+	
+	var cgFloat: CGFloat {
+		get {
+			return CGFloat(self)
+		}
+	}
+}
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
-typealias float3 = SIMD3<Float>
+typealias Float3 = SIMD3<Float>
+extension Float3 {
+	var color: Color {
+		return .init(red: x.double, green: y.double, blue: z.double)
+	}
+}
+
+extension CGPoint {
+	static func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+		return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+	}
+	static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+		return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+	}
+	func scale(_ factor: CGFloat) -> CGPoint {
+		return CGPoint(x: self.x * factor, y: self.y * factor)
+	}
+	func distanceTo(point: CGPoint) -> CGFloat {
+		return sqrt((point.x - x) * (point.x - x) + (point.y - y) * (point.y - y))
+	}
+}
+
+extension CGRect {
+	var midPoint: CGPoint {
+		get {
+			return CGPoint(x: self.midX, y: self.midY)
+		}
+	}
+}
+
+extension Int {
+	var int32: Int32 {
+		get {
+			return Int32(self)
+		}
+		set {
+			self = Int(newValue)
+		}
+	}
+}
 
 extension SIMD4 {
 	var xyz: SIMD3<Scalar> {

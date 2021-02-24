@@ -9,19 +9,19 @@
 import SwiftUI
 
 struct RenderBox: View {
-    @ObservedObject var settings = Engine.Settings.observed
+    @ObservedObject var settings = Engine.Settings
 	@State var samples: Int = 50
-	@State var groups: Int = 100
-	@State var groupSize: Int = 100
 
 	func render() {
 		Engine.MainTexture.updateTexture()
 		Engine.Settings.samples += self.samples
 		Engine.Settings.window = .rendering
+		Engine.Settings.isRendering = true
 		if Engine.Settings.samples == Engine.Settings.exposure {
 			Engine.ResetRender()
 		}
-		Engine.Settings.observed.update()
+		Engine.Settings.update()
+		(Engine.View as? RenderView)?.updateRenderMode()
 		print("Started Rendering with camera: \(Engine.Settings.camera)")
 	}
 
@@ -29,30 +29,34 @@ struct RenderBox: View {
 		Engine.Settings.window = .preview
 		Engine.Settings.exposure = 0
 		Engine.ResetTexture()
-		Engine.Settings.observed.update()
+		Engine.Settings.update()
 	}
 
     var body: some View {
-		GroupBox(label: Text("Render Time!")) {
-			HStack {
-				VStack(alignment: .leading) {
-					Button(action: render) {
-						Text("Render")
-					}
-					Button(action: preview) {
-						Text("Pause")
-					}
-					Text(Engine.Settings.progress)
+		HStack {
+			VStack(alignment: .leading) {
+				Button(action: render) {
+					Text("Render")
 				}
-				Spacer()
-				VStack {
-					NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
-					NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
-					NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
-                    //max: Engine.MaxThreadsPerGroup
+				Button(action: preview) {
+					Text("Stop")
 				}
+				Picker(selection: $settings.window, label: Text("")) {
+					Text("preview").tag(WindowView.preview)
+					Text("depth").tag(WindowView.depth)
+					Text("rendering").tag(WindowView.rendering)
+				}.pickerStyle(RadioGroupPickerStyle())
+				Text(Engine.Settings.progress)
+			}
+			Spacer()
+			VStack {
+				NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
+				NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
+				NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
+				//max: Engine.MaxThreadsPerGroup
 			}
 		}
+		.padding()
     }
 }
 

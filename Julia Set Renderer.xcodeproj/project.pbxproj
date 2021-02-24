@@ -14,6 +14,7 @@
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
 		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE360F1A25C1D52C004962BE /* RuntimeShaders.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE360F1925C1D52C004962BE /* RuntimeShaders.txt */; };
 		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
 		DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */; };
 		DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */; };
@@ -25,21 +26,32 @@
 		DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD352579C26D00E67351 /* ChannelPicker.swift */; };
 		DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD392579C3F300E67351 /* ChannelSettings.swift */; };
 		DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6435D024D8DF8300C97FB5 /* Settings.swift */; };
+		DE68A69B259D6F0900D66457 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69A259D6F0900D66457 /* ColorExtensions.swift */; };
+		DE68A69F259D7D2800D66457 /* NodeCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69E259D7D2800D66457 /* NodeCanvas.swift */; };
+		DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */; };
 		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
 		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
 		DE8237DB24AE217C000FA948 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DA24AE217C000FA948 /* Engine.swift */; };
-		DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DC24AE221B000FA948 /* Shaders.metal */; };
 		DE8237DF24AE8234000FA948 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DE24AE8234000FA948 /* Other.swift */; };
+		DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F096259CDDE300FF475F /* MaterialSettings.swift */; };
+		DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F09D259CDEB600FF475F /* NodeView.swift */; };
+		DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F0A6259CEA5600FF475F /* NodeValue.swift */; };
+		DE85F0AD259CED8700FF475F /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85F0AC259CED8700FF475F /* Node.swift */; };
+		DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */; };
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
 		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
+		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
+		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
+		DEA0347725C10D4200FA5B23 /* LibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0347625C10D4200FA5B23 /* LibraryManager.swift */; };
 		DEA8931924AFBDE9008F5D78 /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8931824AFBDE9008F5D78 /* sun.png */; };
 		DEA8931B24B20EB3008F5D78 /* Rendering.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEA8931A24B20EB3008F5D78 /* Rendering.metal */; };
 		DEAA8BC924FD12BE0080221B /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAA8BC824FD12BE0080221B /* Thread.swift */; };
 		DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEABF34625717E440036EB73 /* MandelbulbSettings.swift */; };
+		DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB9703625B4EC2E00386EEA /* NodeContainer.swift */; };
 		DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E0E254235CE0060FED0 /* BufferTests.swift */; };
 		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
 		DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */; };
@@ -50,9 +62,16 @@
 		DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDE524ADFC9E00DB5701 /* Main.storyboard */; };
 		DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */; };
 		DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */; };
+		DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91209259E2C74002158C9 /* NodeEditor.swift */; };
+		DEC91210259E47D5002158C9 /* IONodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC9120F259E47D5002158C9 /* IONodes.swift */; };
+		DEC91214259E4871002158C9 /* MathNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91213259E4871002158C9 /* MathNodes.swift */; };
+		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
+		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
+		DED8F78E25C652C300ABFBCC /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DC24AE221B000FA948 /* Shaders.metal */; };
 		DEDC34CC258CE66B009B47A0 /* Types.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEDC34CB258CE66B009B47A0 /* Types.metal */; };
 		DEDC34D0258CE6A2009B47A0 /* MathContainer.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */; };
 		DEDC34D6258CE77B009B47A0 /* RayMarching.metal in Sources */ = {isa = PBXBuildFile; fileRef = DEDC34D5258CE77B009B47A0 /* RayMarching.metal */; };
+		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +95,7 @@
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE360F1925C1D52C004962BE /* RuntimeShaders.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RuntimeShaders.txt; sourceTree = "<group>"; };
 		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
 		DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuple3FloatInput.swift; sourceTree = "<group>"; };
 		DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderInfo.swift; sourceTree = "<group>"; };
@@ -87,21 +107,33 @@
 		DE62BD352579C26D00E67351 /* ChannelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPicker.swift; sourceTree = "<group>"; };
 		DE62BD392579C3F300E67351 /* ChannelSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSettings.swift; sourceTree = "<group>"; };
 		DE6435D024D8DF8300C97FB5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		DE68A69A259D6F0900D66457 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
+		DE68A69E259D7D2800D66457 /* NodeCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCanvas.swift; sourceTree = "<group>"; };
+		DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeMenuItem.swift; sourceTree = "<group>"; };
 		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		DE8237DA24AE217C000FA948 /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
-		DE8237DC24AE221B000FA948 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		DE8237DC24AE221B000FA948 /* Shaders.metal */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		DE8237DE24AE8234000FA948 /* Other.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
+		DE85F096259CDDE300FF475F /* MaterialSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialSettings.swift; sourceTree = "<group>"; };
+		DE85F09D259CDEB600FF475F /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
+		DE85F0A6259CEA5600FF475F /* NodeValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeValue.swift; sourceTree = "<group>"; };
+		DE85F0AC259CED8700FF475F /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePathView.swift; sourceTree = "<group>"; };
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
 		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
+		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
+		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
+		DEA0347625C10D4200FA5B23 /* LibraryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryManager.swift; sourceTree = "<group>"; };
 		DEA8931824AFBDE9008F5D78 /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
 		DEA8931A24B20EB3008F5D78 /* Rendering.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Rendering.metal; sourceTree = "<group>"; };
 		DEAA8BC824FD12BE0080221B /* Thread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thread.swift; sourceTree = "<group>"; };
 		DEABF34625717E440036EB73 /* MandelbulbSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandelbulbSettings.swift; sourceTree = "<group>"; };
+		DEB9703625B4EC2E00386EEA /* NodeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainer.swift; sourceTree = "<group>"; };
 		DEBE4E0E254235CE0060FED0 /* BufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferTests.swift; sourceTree = "<group>"; };
 		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
 		DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Julia Set Renderer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,9 +147,15 @@
 		DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Julia_Set_Renderer.entitlements; sourceTree = "<group>"; };
 		DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderWindowController.swift; sourceTree = "<group>"; };
 		DEC8CDFC24AE1B8600DB5701 /* RenderWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenderWindowController.xib; sourceTree = "<group>"; };
+		DEC91209259E2C74002158C9 /* NodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditor.swift; sourceTree = "<group>"; };
+		DEC9120F259E47D5002158C9 /* IONodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONodes.swift; sourceTree = "<group>"; };
+		DEC91213259E4871002158C9 /* MathNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathNodes.swift; sourceTree = "<group>"; };
+		DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInput.swift; sourceTree = "<group>"; };
+		DED8F76025C631C900ABFBCC /* ColorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNodes.swift; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Types.metal; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MathContainer.metal; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayMarching.metal; sourceTree = "<group>"; };
+		DEF0B2D225A007A9002BB7A1 /* NodePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePath.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +190,7 @@
 		DE05618924EDDD190058925E /* Types */ = {
 			isa = PBXGroup;
 			children = (
+				DE85F0A5259CEA3800FF475F /* Nodes */,
 				DE9EF7FD259555AF007F2BA3 /* SwiftVoxel */,
 				DE627E80259290A700B2DA8F /* Settings */,
 				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
@@ -159,6 +198,7 @@
 				DE8237DE24AE8234000FA948 /* Other.swift */,
 				DE212FF4258D59580050AC95 /* Number.swift */,
 				DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */,
+				DE68A69A259D6F0900D66457 /* ColorExtensions.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -166,11 +206,13 @@
 		DE304FC724DB567600125844 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DE85F09C259CDE9A00FF475F /* Nodes */,
 				DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */,
 				DE8F06E524DB65E1004D2687 /* RenderBox.swift */,
 				DE304FC924DB574700125844 /* ImageSettings.swift */,
 				DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */,
 				DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */,
+				DE85F096259CDDE300FF475F /* MaterialSettings.swift */,
 				DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */,
 				DE62BD392579C3F300E67351 /* ChannelSettings.swift */,
 				DEABF34625717E440036EB73 /* MandelbulbSettings.swift */,
@@ -179,6 +221,7 @@
 				DE62BD352579C26D00E67351 /* ChannelPicker.swift */,
 				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
 				DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */,
+				DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -186,9 +229,10 @@
 		DE304FC824DB56A600125844 /* Randering */ = {
 			isa = PBXGroup;
 			children = (
-				DE4B1013258B830B00868327 /* Shaders */,
-				DE8237D824AE20BF000FA948 /* Renderer.swift */,
 				DE8237DA24AE217C000FA948 /* Engine.swift */,
+				DEA0347625C10D4200FA5B23 /* LibraryManager.swift */,
+				DE8237D824AE20BF000FA948 /* Renderer.swift */,
+				DE4B1013258B830B00868327 /* Shaders */,
 			);
 			path = Randering;
 			sourceTree = "<group>";
@@ -196,6 +240,7 @@
 		DE4B1013258B830B00868327 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				DE360F1925C1D52C004962BE /* RuntimeShaders.txt */,
 				DEDC34CB258CE66B009B47A0 /* Types.metal */,
 				DEDC34CF258CE6A2009B47A0 /* MathContainer.metal */,
 				DEDC34D5258CE77B009B47A0 /* RayMarching.metal */,
@@ -216,6 +261,34 @@
 				DE627E83259290E600B2DA8F /* JuliaSetSettings.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		DE85F09C259CDE9A00FF475F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				DE85F09D259CDEB600FF475F /* NodeView.swift */,
+				DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */,
+				DE68A69E259D7D2800D66457 /* NodeCanvas.swift */,
+				DEC91209259E2C74002158C9 /* NodeEditor.swift */,
+				DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
+		DE85F0A5259CEA3800FF475F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				DEB9703625B4EC2E00386EEA /* NodeContainer.swift */,
+				DE85F0A6259CEA5600FF475F /* NodeValue.swift */,
+				DE85F0AC259CED8700FF475F /* Node.swift */,
+				DEC9120F259E47D5002158C9 /* IONodes.swift */,
+				DEC91213259E4871002158C9 /* MathNodes.swift */,
+				DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */,
+				DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */,
+				DED8F76025C631C900ABFBCC /* ColorNodes.swift */,
+				DEF0B2D225A007A9002BB7A1 /* NodePath.swift */,
+			);
+			path = Nodes;
 			sourceTree = "<group>";
 		};
 		DE9EF7FD259555AF007F2BA3 /* SwiftVoxel */ = {
@@ -254,8 +327,8 @@
 				DE8237D624AE2023000FA948 /* RenderView.swift */,
 				DE1E40A624CB7FC5003B198F /* Keys.swift */,
 				DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */,
-				DE05618924EDDD190058925E /* Types */,
 				DE304FC824DB56A600125844 /* Randering */,
+				DE05618924EDDD190058925E /* Types */,
 				DE304FC724DB567600125844 /* UI */,
 				DEC8CDE024ADFC9E00DB5701 /* Assets.xcassets */,
 				DEA8931824AFBDE9008F5D78 /* sun.png */,
@@ -374,6 +447,7 @@
 				DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */,
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
+				DE360F1A25C1D52C004962BE /* RuntimeShaders.txt in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,43 +468,61 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DED8F78E25C652C300ABFBCC /* Shaders.metal in Sources */,
 				DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */,
 				DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */,
 				DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */,
+				DE85F0AD259CED8700FF475F /* Node.swift in Sources */,
 				DEDC34CC258CE66B009B47A0 /* Types.metal in Sources */,
+				DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */,
 				DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */,
-				DE8237DD24AE221B000FA948 /* Shaders.metal in Sources */,
 				DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */,
+				DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */,
+				DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */,
 				DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */,
 				DE627E84259290E600B2DA8F /* JuliaSetSettings.swift in Sources */,
+				DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */,
 				DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */,
 				DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */,
 				DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */,
+				DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */,
 				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
+				DEA0347725C10D4200FA5B23 /* LibraryManager.swift in Sources */,
 				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
+				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
+				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
+				DE68A69F259D7D2800D66457 /* NodeCanvas.swift in Sources */,
 				DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */,
 				DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */,
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
+				DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */,
 				DE62BD282579B66A00E67351 /* RayMarchingSettings.swift in Sources */,
+				DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */,
 				DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */,
+				DEC91214259E4871002158C9 /* MathNodes.swift in Sources */,
 				DE212FF5258D59580050AC95 /* Number.swift in Sources */,
+				DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */,
 				DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */,
+				DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */,
 				DEA8931B24B20EB3008F5D78 /* Rendering.metal in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
+				DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */,
 				DE62BD322579B6A900E67351 /* ChannelInfo.swift in Sources */,
+				DEC91210259E47D5002158C9 /* IONodes.swift in Sources */,
 				DE5C04BD257877E100F5DDCD /* SwiftRayMarcher.swift in Sources */,
 				DEDC34D0258CE6A2009B47A0 /* MathContainer.metal in Sources */,
 				DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */,
 				DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */,
+				DE68A69B259D6F0900D66457 /* ColorExtensions.swift in Sources */,
 				DEDC34D6258CE77B009B47A0 /* RayMarching.metal in Sources */,
 				DEAA8BC924FD12BE0080221B /* Thread.swift in Sources */,
 				DE8237DB24AE217C000FA948 /* Engine.swift in Sources */,
@@ -623,7 +715,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -633,6 +725,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTLLINKER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -650,7 +743,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Julia Set Renderer/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -660,6 +753,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTLLINKER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";

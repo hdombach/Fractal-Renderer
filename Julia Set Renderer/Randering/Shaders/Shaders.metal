@@ -65,24 +65,37 @@ fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
 fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
 									  constant ShaderInfo &shaderInfo [[buffer(0)]],
 									  device Voxel *voxels [[buffer(1)]],
-									  constant SkyBoxLight *lights [[buffer(2)]]) {
+									  constant SkyBoxLight *lights [[buffer(2)]],
+									  constant float *constants [[buffer(4)]]) {
 	RayTracer yeet;
 	ShaderInfo info = shaderInfo;
-	return float4(yeet.depthMap(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, info));
+	return float4(yeet.depthMap(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, info, constants));
+	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
+}
+
+fragment float4 preview_fragment_shader(RasterizerData rd [[ stage_in ]],
+									  constant ShaderInfo &shaderInfo [[buffer(0)]],
+									  device Voxel *voxels [[buffer(1)]],
+									  constant SkyBoxLight *lights [[buffer(2)]],
+									  constant float *constants [[buffer(4)]]) {
+	RayTracer yeet;
+	ShaderInfo info = shaderInfo;
+	return float4(yeet.preview(rd.texCoord, info.camera, voxels, info.voxelsLength, info.isJulia, lights, info.lightsLength, info.rayMarchingSettings, info, constants));
 	//return float4(yeet.rayCast(rd.texCoord, myCamera, 4, voxels));
 }
 
 fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 									   constant ShaderInfo &shaderInfo [[buffer(0)]],
 									   device Voxel *voxels [[buffer(1)]],
-									   constant SkyBoxLight *lights [[buffer(2)]]) {
+									   constant SkyBoxLight *lights [[buffer(2)]],
+									   constant float *constants [[buffer(4)]]) {
 	//MathContainer maths;
 	RayTracer rayShooter;
 
 	ShaderInfo info = shaderInfo;
 	info.rayMarchingSettings.bundleSize = 0;
 
-	return float4(rayShooter.rayCast(rd.texCoord, 2, voxels, false, lights, float2(0), info).channel(0), 1);
+	return float4(rayShooter.rayCast(rd.texCoord, 2, voxels, false, lights, float2(0), info, constants).channel(0), 1);
 }
 
 kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
@@ -90,7 +103,8 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 							   uint index [[ thread_position_in_grid ]],
 							   constant ShaderInfo &shaderInfo [[buffer(0)]],
 							   device Voxel *voxels [[buffer(1)]],
-							   constant SkyBoxLight *lights [[buffer(2)]]) {
+							   constant SkyBoxLight *lights [[buffer(2)]],
+							   constant float *constants [[buffer(4)]]) {
 	RayTracer rayShooter;
 	MathContainer math;
 	
@@ -125,7 +139,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 		color += rayShooter.rayCast(pos, myCamera, 10, voxels, randomSeed);
 	}
 	color = color / 10;*/
-	Colors colors = rayShooter.rayCast(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info);
+	Colors colors = rayShooter.rayCast(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, constants);
 	//float4 color = float4(pos.x + 0.00001, pos.y + 0.0000001, 0.5, 1) * 100;
 	for (uint c = 0; info.channelsLength > c; c++) {
 		float3 oldColor;
@@ -151,58 +165,3 @@ kernel void reset_compute_shader(texture2d_array<float, access::write> writeText
 	}
 	return;
 }
-
-
-
-
-/*kernel void blank_compute_shader(texture2d<float, access::read> readTexture [[texture(0)]],
-								 texture2d<float, access::write> writeTexture [[texture(1)]],
-								 uint2 index [[ thread_position_in_grid ]],
-								 constant Camera &camera [[buffer(0)]],
-								 constant VoxelContainer &containerIn [[buffer(1)]],
-								 constant uint2 &realIndex [[ buffer(2) ]]) {
-
-	uint2 iiindex = realIndex + index;
-	//iiindex.x = realIndex.y;
-
-	float c = 0;
-	while (c < iiindex.x * iiindex.y) {
-		c++;
-		if (c > 10000) {
-			break;
-		}
-	}
-	float4 color = float4(float(iiindex.x) / 1920, float(iiindex.y) / 1080, 0, 1);
-
-	writeTexture.write(color, iiindex);
-	return;
-}*/
-
-
-
-/*kernel void basic_compute_shader(texture2d<float, access::read> readTexture [[texture(0)]],
-								 texture2d<float, access::write> writeTexture [[texture(1)]],
-								 uint2 index [[ thread_position_in_grid ]],
-								 constant Camera &camera [[buffer(0)]],
-								 constant Voxel *voxels [[buffer(1)]],
-								 constant uint2 &offsetIndex [[ buffer(2)]]) {
-
-	uint2 realIndex = index + offsetIndex;
-	if (realIndex.x > readTexture.get_width() - 1 || realIndex.y > readTexture.get_height() - 1) {
-		writeTexture.write(float4(0, 1, 0, 1), realIndex);
-		return;
-	}
-	Camera myCamera = camera;
-	RayTracer yaboii;
-
-	float indexX = realIndex.x;
-	float indexY = realIndex.y;
-	indexX = indexX / myCamera.resolution.x * 2 - 1;
-	indexY = indexY / myCamera.resolution.y * 2 - 1;
-
-	float4 color = yaboii.depthMap(float2(indexX, indexY), myCamera, voxels);
-	//float4 color = yaboii.rayCast(float2(indexX, indexY), myCamera, 1, voxels);
-
-	writeTexture.write(color, realIndex);
-	return;
-}*/

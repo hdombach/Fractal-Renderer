@@ -8,6 +8,7 @@
 
 import MetalKit
 
+//Updates the render window.
 class Renderer: NSObject, MTKViewDelegate {
 
 	var imageRatio: Float = 16 / 9
@@ -39,6 +40,9 @@ class Renderer: NSObject, MTKViewDelegate {
 		
 
 		let commandBuffer = Engine.CommandQueue.makeCommandBuffer()
+		
+		//adds a compute pipeline that does the raymarching
+		Engine.RenderPass(commandBuffer: commandBuffer!)
 
 
 		//post compute commands
@@ -49,11 +53,13 @@ class Renderer: NSObject, MTKViewDelegate {
 
 		//print(Engine.SceneCamera.rotateMatrix)
 
+		
+		//move camera
 		var update = false
 		
 		var speed: Float = 0.01
 		
-		if Engine.Settings.renderMode == .Mandelbulb {
+		if Engine.Settings.renderMode == .Mandelbulb && false {
 			speed = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
 		}
 
@@ -97,16 +103,18 @@ class Renderer: NSObject, MTKViewDelegate {
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		switch Engine.Settings.window {
 		case .preview:
-			renderCommandEncoder?.setRenderPipelineState(Engine.PreviewPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.preview])
 		case .rendering:
-			renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
+		case .depth:
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.depth])
         default:
-            renderCommandEncoder?.setRenderPipelineState(Engine.RenderPipelineState)
+			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
 		}
 		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
 		renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
-		renderCommandEncoder?.setFragmentSamplerState(Engine.SamplerState, index: 0)
+		renderCommandEncoder?.setFragmentSamplerState(Engine.Library.samplerState, index: 0)
 		renderCommandEncoder?.setFragmentTexture(Engine.MainTexture.texture, index: 0)
 		
 		var info = ShaderInfo.init()
@@ -122,6 +130,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.channels, length: MemoryLayout<ChannelInfo>.stride * Engine.Settings.channels.count, index: 3)
+		renderCommandEncoder?.setFragmentBytes(Engine.Settings.nodeContainer.constants, length: MemoryLayout<Float>.stride * Engine.Settings.nodeContainer.constants.count, index: 4)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -129,13 +138,6 @@ class Renderer: NSObject, MTKViewDelegate {
 		commandBuffer?.present(drawable)
 		commandBuffer?.commit()
 		commandBuffer?.waitUntilCompleted()
-
-       
-
-		
-        Engine.RenderPass()
-
-		//Loading Pattern
 	}
 
 	func updateMesh() {
