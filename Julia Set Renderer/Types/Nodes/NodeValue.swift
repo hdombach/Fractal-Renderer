@@ -32,6 +32,7 @@ enum NodeValueType {
 				return 1
 			case .color:
 				return 3
+			}
 		}
 	}
 }
