@@ -14,6 +14,26 @@ enum NodeValueType {
 	case float3
 	case int
 	case color
+	
+	var isVector: Bool {
+		get {
+			self == .float3 || self == .color
+		}
+	}
+	
+	var length: Int {
+		get {
+			switch self {
+			case .float:
+				return 1
+			case .float3:
+				return 3
+			case .int:
+				return 1
+			case .color:
+				return 3
+		}
+	}
 }
 
 /*class NodeValue: Equatable {
