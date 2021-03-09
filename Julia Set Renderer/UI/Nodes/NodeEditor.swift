@@ -28,6 +28,7 @@ struct NodeEditor: View {
 				}.padding(.leading)
 				Button("Delete") {
 					nodeContainer.delete(node: selected)
+					selected = nil
 				}
 				Button("􀊬") {
 					zoom *= 1.1
@@ -36,7 +37,12 @@ struct NodeEditor: View {
 					zoom *= 0.9
 				}
 				Button("􀅈") {
-					nodeContainer.compile()
+					//nodeContainer.compile()
+					do {
+						try nodeContainer.newCompile()
+					} catch {
+						print(error)
+					}
 				}
 				
 				Text(nodeContainer.compilerMessage).foregroundColor(nodeContainer.compilerCompleted ? .green : .red).padding([.trailing, .leading])

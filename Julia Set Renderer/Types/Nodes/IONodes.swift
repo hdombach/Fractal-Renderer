@@ -33,13 +33,17 @@ struct CoordinateNode: Node {
 		
 		var code = ""
 		
-		code.append("\(outputs[0]) = position.x;\n")
+		/*code.append("\(outputs[0]) = position.x;\n")
 		code.append("\(outputs[1]) = position.y;\n")
 		code.append("\(outputs[2]) = position.z;\n")
 		code.append("\(outputs[3]) = orbit.x;\n")
 		code.append("\(outputs[4]) = orbit.y;\n")
 		code.append("\(outputs[5]) = orbit.z;\n")
-		code.append("\(outputs[6]) = iterations;\n")
+		code.append("\(outputs[6]) = iterations;\n")*/
+		
+		code.append("\(outputs[0]) = position;\n")
+		code.append("\(outputs[1]) = orbit;\n")
+		code.append("\(outputs[2]) = iterations;\n")
 		
 		return code
 		
@@ -87,7 +91,8 @@ struct MaterialNode: Node {
 	}
 	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
 		var code: String = ""
-		code.append("rgbAbsorption.xyz = clamp(float3(\(inputs[0]), \(inputs[1]), \(inputs[2])), float3(0), float3(1));\n")
+		//code.append("rgbAbsorption.xyz = clamp(float3(\(inputs[0]), \(inputs[1]), \(inputs[2])), float3(0), float3(1));\n")
+		code.append("rgbAbsorption.xyz = clamp(\(inputs[0]), float3(0), float3(1));\n")
 		code.append("rgbEmitted = float3(0, 0, 0); \n")
 		code.append("return;\n")
 		return code

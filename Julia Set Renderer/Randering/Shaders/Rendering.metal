@@ -43,7 +43,7 @@ struct RayTracer {
 			p.z = math.rand(seed.x, seed.y, seed.z);
 			p.x = math.rand(seed.y, seed.z, seed.x) * 2 - 1;
 			p.y = math.rand(seed.z, seed.x, seed.y) * 2 - 1;
-			seed += int3(512, 723, 152);
+			seed += int3(5102, 7203, 1520);
 		} while (p.x * p.x + p.y * p.y + p.z * p.z > 1);
 		
 		p = normalize(p);
@@ -145,9 +145,8 @@ struct RayTracer {
 		}
 		seed *= int3(_seed);
 		
-		returnRay.deriction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
-		returnRay.deriction.xyz = metal::reflect(returnRay.deriction.xyz, surfaceNormal);
-		returnRay.deriction.w = 1;
+		returnRay.deriction.xyz = sampleUniformHemisphere2(surfaceNormal, seed);
+		returnRay.deriction.w = 0;
 		return returnRay;
 	}
 	

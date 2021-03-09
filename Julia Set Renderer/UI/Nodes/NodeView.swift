@@ -22,9 +22,9 @@ struct NodeView: View, Equatable {
 		}
 	}
 	
-	var node: Node {
+	var node: Node? {
 		get {
-			nodeContainer[nodeAddress]!
+			nodeContainer[nodeAddress]
 		}
 		
 		set {
@@ -33,45 +33,51 @@ struct NodeView: View, Equatable {
 	}
 	
 	static func == (lhs: NodeView, rhs: NodeView) -> Bool {
-		return lhs.node.compare(to: rhs.node)
+		if let lnode = lhs.node, let rnode = rhs.node {
+			return lnode.compare(to: rnode)
+		} else {
+			return false
+		}
 	}
 	
     var body: some View {
-		ZStack {
-			Color.controlBackgroundColor.opacity(0.6)
-			VStack(spacing: 0) {
-				
-				ZStack {
-					node.color.opacity(0.4)
-					Text(node.name)
-				}.frame(height: gridSize)
-				if node.outputs.count > 0 {
-					ForEach(0..<node.outputs.count) { c in
-						
-						NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
-						
-					}.frame(alignment: Alignment.leading)
-				}
-				
-				if node.inputs.count > 0 {
-					ForEach(0..<node.inputs.count) { c in
-						NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
-						
+		if let node = node {
+			ZStack {
+				Color.controlBackgroundColor.opacity(0.6)
+				VStack(spacing: 0) {
+					
+					ZStack {
+						node.color.opacity(0.4)
+						Text(node.name)
+					}.frame(height: gridSize)
+					if node.outputs.count > 0 {
+						ForEach(0..<node.outputs.count) { c in
+							
+							NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
+							
+						}.frame(alignment: Alignment.leading)
 					}
+					
+					if node.inputs.count > 0 {
+						ForEach(0..<node.inputs.count) { c in
+							NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
+							
+						}
+					}
+					Spacer()
 				}
-				Spacer()
 			}
-		}
-		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
-		.overlay(
-			RoundedRectangle(cornerRadius: 10)
-				.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
-		)
-		.cornerRadius(10)
-		.shadow(radius: 5)
-		.position(node.position)
-		.onTapGesture {
-			selected = node
+			.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
+			.overlay(
+				RoundedRectangle(cornerRadius: 10)
+					.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
+			)
+			.cornerRadius(10)
+			.shadow(radius: 5)
+			.position(node.position)
+			.onTapGesture {
+				selected = node
+			}
 		}
     }
 }
@@ -94,7 +100,7 @@ struct ColorRampNodeView: View, Equatable {
 	@State private var startPosition: Float?
 	@State private var selectedPoint: Int?
 	
-	func dragGesture(index: Int, frameWidth: CGFloat) -> some Gesture {
+	private func dragGesture(index: Int, frameWidth: CGFloat) -> some Gesture {
 		DragGesture().onEnded { (data) in
 			let pos = startPosition! + Float(data.translation.width / frameWidth)
 			if pos > 1 {
@@ -111,7 +117,6 @@ struct ColorRampNodeView: View, Equatable {
 				startPosition = node.values[index].position
 			}
 			let pos = startPosition! + Float(data.translation.width / frameWidth)
-			print(pos, data.translation.width)
 			if pos > 1 {
 				node.values[index].position = 1
 			} else if pos < 0 {

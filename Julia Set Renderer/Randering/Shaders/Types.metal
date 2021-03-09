@@ -31,14 +31,14 @@ struct RayMarchingSettings {
 
 //MARK: Colors
 struct Colors {
-	float3 channel0;
-	float3 channel1;
-	float3 channel2;
-	float3 channel3;
-	float3 channel4;
-	float3 channel5;
-	float3 channel6;
-	float3 channel7;
+	float3 channel0 = float3(0);
+	float3 channel1 = float3(0);
+	float3 channel2 = float3(0);
+	float3 channel3 = float3(0);
+	float3 channel4 = float3(0);
+	float3 channel5 = float3(0);
+	float3 channel6 = float3(0);
+	float3 channel7 = float3(0);
 	
 	float3 channel(int index) {
 		switch (index) {
@@ -116,16 +116,14 @@ struct NodeFunctions {
 		*out1 = in1 > in2;
 	}
 	
-	void combine(thread float *out1, thread float *out2, thread float *out3, float in1, float in2, float in3) {
-		*out1 = in1;
-		*out2 = in2;
-		*out3 = in3;
+	void combine(thread float3 *out1, float in1, float in2, float in3) {
+		*out1 = float3(in1, in2, in3);
 	}
 	
-	void seperate(thread float *out1, thread float *out2, thread float *out3, float in1, float in2, float in3) {
-		*out1 = in1;
-		*out2 = in2;
-		*out3 = in3;
+	void seperate(thread float *out1, thread float *out2, thread float *out3, float3 in1) {
+		*out1 = in1.x;
+		*out2 = in1.y;
+		*out3 = in1.z;
 	}
 	
 	void nodeClamp(thread float *out1, float value, float rangeMin, float rangeMax) {
@@ -144,95 +142,69 @@ struct NodeFunctions {
 		*out = ::abs(in);
 	}
 	
-	void vectorAdd(thread float *outX, thread float *outY, thread float *outZ, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
-		*outX = in1x + in2x;
-		*outY = in1y + in2y;
-		*outZ = in1z + in2z;
+	void vectorAdd(thread float3 *out, float3 in1, float3 in2) {
+		*out = in1 + in2;
 	}
 	
-	void vectorLength(thread float *out, float inx, float iny, float inz) {
-		*out = length(float3(inx, iny, inz));
+	void vectorLength(thread float *out, float3 in) {
+		*out = length(in);
 	}
 	
-	void vectorScale(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float scale) {
-		*outx = inx * scale;
-		*outy = iny * scale;
-		*outz = inz * scale;
+	void vectorScale(thread float3 *out, float3 in, float scale) {
+		*out = in * scale;
 	}
 	
-	void color(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz) {
-		*outx = inx;
-		*outy = iny;
-		*outz = inz;
+	void color(thread float3 *out, float3 in) {
+		*out = in;
 	}
 	
-	void colorBlend(thread float *outx, thread float *outy, thread float *outz, float factor, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
-		float3 result = float3(in1x, in1y, in1z) * factor + float3(in2x, in2y, in2z) * (1 - factor);
-		*outx = result.x;
-		*outy = result.y;
-		*outz = result.z;
+	void colorBlend(thread float3 *out, float factor, float3 in1, float3 in2) {
+		*out = in1 * factor + in2 * (1 - factor);
 	}
 	
 	void map(thread float *out, float in, float fromMin, float fromMax, float toMin, float toMax) {
 		*out = (in - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
 	}
 	
-	void vectorMap(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float fromMin, float fromMax, float toMin, float toMax) {
-		map(outx, inx, fromMin, fromMax, toMin, toMax);
-		map(outy, iny, fromMin, fromMax, toMin, toMax);
-		map(outz, inz, fromMin, fromMax, toMin, toMax);
+	void vectorMap(thread float3 *out, float3 in, float fromMin, float fromMax, float toMin, float toMax) {
+		float x;
+		float y;
+		float z;
+		map(&x, in.x, fromMin, fromMax, toMin, toMax);
+		map(&y, in.y, fromMin, fromMax, toMin, toMax);
+		map(&z, in.z, fromMin, fromMax, toMin, toMax);
+		
+		*out = float3(x, y, z);
 	}
 	
-	void dotProduct(thread float *out, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
-		*out = dot(float3(in1x, in1y, in1z), float3(in2x, in2y, in2z));
+	void dotProduct(thread float *out, float3 in1, float3 in2) {
+		*out = dot(in1, in2);
 	}
 	
-	void crossProduct(thread float *outx, thread float *outy, thread float *outz, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
-		float3 result = cross(float3(in1x, in1y, in1z), float3(in2x, in2y, in2z));
-		*outx = result.x;
-		*outy = result.y;
-		*outz = result.z;
+	void crossProduct(thread float3 *out, float3 in1, float3 in2) {
+		*out = cross(in1, in2);
 	}
 	
-	void vectorMultiply(thread float *outx, thread float *outy, thread float *outz, float in1x, float in1y, float in1z, float in2x, float in2y, float in2z) {
-		*outx = in1x * in2x;
-		*outy = in1y * in2y;
-		*outz = in1z * in2z;
+	void vectorMultiply(thread float3 *out, float3 in1, float3 in2) {
+		*out = in1 * in2;
 	}
 	
-	void vectorClamp(thread float *outx, thread float *outy, thread float *outz, float inx, float iny, float inz, float inMin, float inMax) {
-		if (inx < inMin) {
-			*outx = inMin;
-		} else if (inx > inMax) {
-			*outx = inMax;
-		} else {
-			*outx = inx;
-		}
-		if (iny < inMin) {
-			*outy = inMin;
-		} else if (iny > inMax) {
-			*outy = inMax;
-		} else {
-			*outy = inx;
-		}
-		if (inz < inMin) {
-			*outz = inMin;
-		} else if (inz > inMax) {
-			*outz = inMax;
-		} else {
-			*outz = inx;
-		}
+	void vectorClamp(thread float3 *out, float3 in, float inMin, float inMax) {
+		*out = clamp(in, float3(inMin), float3(inMax));
 	}
 	
 	//https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
 	
-	void perlin(thread float *out, float x, float y, float z) {
-		*out = cnoise(float4(x, y, z, 0));
+	void perlin(thread float *out, float3 pos) {
+		*out = cnoise(float4(pos, 0));
 	}
-	void perlin3(thread float *out1, thread float *out2, thread float *out3, float x, float y, float z) {
-		*out1 = cnoise(float4(x, y, z, 0));
-		*out2 = cnoise(float4(10, x, y, z));
-		*out3 = cnoise(float4(z, 20, x, y));
+	void perlin3(thread float3 *out, float3 pos) {
+		float3 result;
+		result.x = cnoise(float4(pos, 0));
+		result.y = cnoise(float4(pos, 10));
+		result.z = cnoise(float4(pos, 20));
+		
+		*out = result;
 	}
 	
 	float4 permute(float4 x){return fmod(((x*34.0)+1.0)*x, 289.0);}
@@ -378,8 +350,8 @@ struct NodeFunctions {
 //MARK: Material
 //Contains information that is used when reflecting a ray.
 struct Material {
-	float3 rgbAbsorption, rgbEmitted;
-	float diffuse;
+	float3 rgbAbsorption = float3(0), rgbEmitted = float3(0);
+	float diffuse = 1;
 	
 	float rand(int x, int y, int z)
 	{
@@ -396,6 +368,8 @@ struct Material {
 		NodeFunctions functions;
 		
 		float empty;
+		float empty1;
+		float3 empty3;
 		
 		//INSERT_MATERIAL//
 		
@@ -457,7 +431,7 @@ struct Camera {
 	
 	//text coord is from -1 to 1
 	Ray spawnRay(float2 texCoord) {
-		float4 rayDeriction = normalize(float4((texCoord.x - 0.5) * resolution.x * zoom, (texCoord.y - 0.5) * resolution.y * zoom, 1, 1));
+		float4 rayDeriction = normalize(float4((texCoord.x - 0.5) * resolution.x * zoom, (texCoord.y - 0.5) * resolution.y * zoom, 1, 0));
 		rayDeriction *= rotateMatrix;
 		Ray ray;
 		ray.deriction = normalize(rayDeriction);

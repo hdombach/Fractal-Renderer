@@ -161,13 +161,14 @@ struct RayMarching {
 		//RayMarchInfo info;
 		//info.orbitLife = settings.iterations;
 		//info.d = TriangleDE(mirror(pos, float3(0, 1, 0)), settings);
+		//return SphereDE(pos, 1, settings);
 		return newBulbDE(pos, settings);
 	}
 	
 	float3 DEnormal(float3 pos, RayMarchingSettings settings) {
 		//e is an abitrary number
 		//e can cause white specks to appear if chosen wrongly
-		float e = 0.0001;
+		float e = 0.00001;
 		float n = DE(pos, settings).d;
 		float dx = DE(pos + float3(e, 0, 0), settings).d - n;
 		float dy = DE(pos + float3(0, e, 0), settings).d - n;

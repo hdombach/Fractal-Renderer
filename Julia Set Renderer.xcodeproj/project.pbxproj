@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05617724EDD2BB0058925E /* ComplexNumbers.swift */; };
 		DE05618224EDDB610058925E /* Julia_Set_RendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */; };
+		DE14D83625E715E600E443DB /* NodeCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE14D83525E715E600E443DB /* NodeCompiler.swift */; };
 		DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */; };
 		DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C47256B4A52009C37D8 /* LightPicker.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
@@ -90,6 +91,7 @@
 		DE05617F24EDDB610058925E /* Julia Set RendererTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Julia Set RendererTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE05618124EDDB610058925E /* Julia_Set_RendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Julia_Set_RendererTests.swift; sourceTree = "<group>"; };
 		DE05618324EDDB610058925E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE14D83525E715E600E443DB /* NodeCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCompiler.swift; sourceTree = "<group>"; };
 		DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyBoxSettings.swift; sourceTree = "<group>"; };
 		DE167C47256B4A52009C37D8 /* LightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightPicker.swift; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB9703625B4EC2E00386EEA /* NodeContainer.swift */,
+				DE14D83525E715E600E443DB /* NodeCompiler.swift */,
 				DE85F0A6259CEA5600FF475F /* NodeValue.swift */,
 				DE85F0AC259CED8700FF475F /* Node.swift */,
 				DEC9120F259E47D5002158C9 /* IONodes.swift */,
@@ -475,6 +478,7 @@
 				DE85F0AD259CED8700FF475F /* Node.swift in Sources */,
 				DEDC34CC258CE66B009B47A0 /* Types.metal in Sources */,
 				DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */,
+				DE14D83625E715E600E443DB /* NodeCompiler.swift in Sources */,
 				DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */,
 				DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */,
 				DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */,
