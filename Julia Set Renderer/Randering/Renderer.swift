@@ -59,7 +59,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		
 		var speed: Float = 0.01
 		
-		if Engine.Settings.renderMode == .Mandelbulb && false {
+		if Engine.Settings.renderMode == .Mandelbulb && true {
 			speed = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
 		}
 
@@ -125,6 +125,7 @@ class Renderer: NSObject, MTKViewDelegate {
 		info.exposure = UInt32(Engine.Settings.exposure)
 		info.rayMarchingSettings = Engine.Settings.rayMarchingSettings
 		info.channelsLength = UInt32(Engine.Settings.channels.count)
+		info.depthSettings = Engine.Settings.depthSettings
 
 		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)

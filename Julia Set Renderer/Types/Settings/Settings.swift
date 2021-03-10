@@ -109,6 +109,12 @@ class JoinedRenderSettings: ObservableObject {
 	}
 	
 	@Published var isShowingUI: Bool = true
+	
+	@Published var depthSettings: Float3 = .init(0, 0, 1) {
+		didSet {
+			update()
+		}
+	}
 }
 
 /*class RenderSettings {

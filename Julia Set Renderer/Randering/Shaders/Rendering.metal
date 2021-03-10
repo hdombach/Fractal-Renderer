@@ -355,8 +355,13 @@ struct RayTracer {
 		//return float4(result.collision.surfaceNormal, 1);
 		
 		//float4 color = float4(log(result.distance)) + 0.2;
-		float4 color = float4(log(result.distance + 1) / 5 - 0.05);
-		return color;
+		
+		float gray = (result.distance) * info.depthSettings.z;
+		if (info.depthSettings.x > 0) {
+			gray = 1.0 - 1.0 / exp(gray);
+		}
+		gray -= info.depthSettings.y;
+		return float4(gray);
 	}
 
 	float4 preview(float2 pos, Camera camera, device Voxel *voxels, int voxelsLength, int isJulia, constant SkyBoxLight *lights, int lightsLength, RayMarchingSettings settings, ShaderInfo info, constant float *constants) {

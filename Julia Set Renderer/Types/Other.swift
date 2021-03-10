@@ -115,30 +115,3 @@ struct Vertex: sizeable {
 	var color: SIMD4<Float>
 	var texCoord: SIMD2<Float>
 }
-
-struct Camera: Equatable {
-	var position: SIMD4<Float> = .init()
-	var deriction: SIMD4<Float>  = .init() {
-		didSet {
-			self.updateRotationMatrix()
-		}
-	}
-	///
-	var zoom: Float = .init()
-	var cameraDepth: Float = .init()
-	var rotateMatrix: matrix_float4x4 = .init()
-	var resolution: SIMD2<Float> = .init()
-
-	mutating func pointInDeriction(angle: SIMD4<Float>) {
-		deriction = angle
-		var transformMatrix = matrix_identity_float4x4
-		transformMatrix.rotate(angle: deriction)
-		rotateMatrix = transformMatrix
-	}
-
-	mutating func updateRotationMatrix() {
-		var transformMatrix = matrix_identity_float4x4
-		transformMatrix.rotate(angle: deriction)
-		rotateMatrix = transformMatrix
-	}
-}

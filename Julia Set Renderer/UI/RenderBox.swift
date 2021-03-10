@@ -33,7 +33,7 @@ struct RenderBox: View {
 	}
 
     var body: some View {
-		HStack {
+		HStack(alignment: .top) {
 			VStack(alignment: .leading) {
 				Button(action: render) {
 					Text("Render")
@@ -54,6 +54,9 @@ struct RenderBox: View {
 				NumberInput(value: $settings.kernelSize.1.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
 				NumberInput(value: $settings.kernelSize.0.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
 				//max: Engine.MaxThreadsPerGroup
+				if (settings.window == .depth) {
+					Tuple3FloatInput(value: $settings.depthSettings)
+				}
 			}
 		}
 		.padding()

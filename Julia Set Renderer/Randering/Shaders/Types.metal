@@ -428,6 +428,8 @@ struct Camera {
 	float depth;
 	float4x4 rotateMatrix;
 	float2 resolution;
+	float focusDist;
+	float apature;
 	
 	//text coord is from -1 to 1
 	Ray spawnRay(float2 texCoord) {
@@ -455,6 +457,11 @@ struct ShaderInfo {
 	uint lightsLength;
 	uint exposure;
 	uint channelsLength;
+	
+	//0: is linear
+	//1: starting depth;
+	//2: depth multiplier
+	float3 depthSettings;
 };
 
 struct VoxelInfo {

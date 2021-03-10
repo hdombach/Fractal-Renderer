@@ -18,4 +18,9 @@ struct ShaderInfo {
 	var lightsLength: UInt32 = .init()
 	var exposure: UInt32 = 0
 	var channelsLength: UInt32 = .init()
+	
+	//0: is linear
+	//1: starting depth;
+	//2: depth multiplier
+	var depthSettings: SIMD3<Float> = .init(0, 0, 1)
 }

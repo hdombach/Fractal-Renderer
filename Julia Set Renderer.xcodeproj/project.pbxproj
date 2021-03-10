@@ -42,6 +42,7 @@
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
 		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
+		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
@@ -125,6 +126,7 @@
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
 		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
+		DE942D2C25F968BA00CAF9CA /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				DE212FF4258D59580050AC95 /* Number.swift */,
 				DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */,
 				DE68A69A259D6F0900D66457 /* ColorExtensions.swift */,
+				DE942D2C25F968BA00CAF9CA /* Camera.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -527,6 +530,7 @@
 				DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */,
 				DEC8CDFD24AE1B8600DB5701 /* RenderWindowController.swift in Sources */,
 				DE68A69B259D6F0900D66457 /* ColorExtensions.swift in Sources */,
+				DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */,
 				DEDC34D6258CE77B009B47A0 /* RayMarching.metal in Sources */,
 				DEAA8BC924FD12BE0080221B /* Thread.swift in Sources */,
 				DE8237DB24AE217C000FA948 /* Engine.swift in Sources */,
