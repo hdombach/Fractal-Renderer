@@ -249,11 +249,12 @@ class Engine {
 		self.CommandQueue = device.makeCommandQueue()
 		self.ComputeQueue = device.makeCommandQueue()
 
-		let defaultLibrary = Device.makeDefaultLibrary()
+		//let defaultLibrary = Device.makeDefaultLibrary()
 
-		assert(defaultLibrary != nil, "could not get default library")
+		//assert(defaultLibrary != nil, "could not get default library")
 
-		Library.setUp(library: Device.makeDefaultLibrary())
+		Library.loadDefaultDibrary(completion: nil)
+		//Library.setUp(library: Device.makeDefaultLibrary())
 
 		Container = VoxelContainer()
 		ResetJuliaSet()

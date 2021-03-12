@@ -54,14 +54,61 @@ class LibraryManager {
 		}
 	}
 	
-	func loadLibrary(material: String?, de: String?, completion: @escaping () -> ()) {
-		let url = Bundle.main.path(forResource: "RuntimeShaders", ofType: "txt")
-		var code = "Hi"
+	func loadLibrary(material: String?, de: String?, completion: (() -> ())?) {
+		let url = Bundle.main.path(forResource: "Shaders", ofType: "txt")
+		var code: String;
 		do {
 			try code = String(contentsOfFile: url!)
 		} catch {
 			print(error)
+			return;
 		}
+		
+		//Manually do the #include commands
+		var imported: [String] = []
+		
+		while (true) {
+			if let range = code.range(of: "#include \"") {
+				let start = range.lowerBound
+				var lower = code.index(range.lowerBound, offsetBy: 10)
+				var upper = range.upperBound
+				while (code[upper] != ".") {
+					upper = code.index(after: upper)
+				}
+				
+				upper = code.index(before: upper)
+				
+				let fileName = String(code[lower...upper])
+				print(fileName)
+				
+				repeat {
+					upper = code.index(after: upper)
+				} while (code[upper] != "\"")
+				
+				code.removeSubrange(start...upper)
+				
+				if !imported.contains(fileName) {
+					var url = Bundle.main.path(forResource: fileName, ofType: "metal")
+					if url == nil {
+						url = Bundle.main.path(forResource: fileName, ofType: "txt")
+					}
+					
+					var file: String!
+					do {
+						try file = String(contentsOfFile: url!)
+					} catch {
+						print(error)
+						return;
+					}
+					code.insert(contentsOf: file, at: start)
+					imported.append(fileName)
+				}
+			} else {
+				break;
+			}
+		}
+		
+		
 		
 		if material != nil {
 			if let range = code.range(of: "//INSERT_MATERIAL//") {
@@ -69,13 +116,30 @@ class LibraryManager {
 			}
 		}
 		
-		Engine.Device.makeLibrary(source: code, options: nil) { (library, compileError) in
-			if compileError != nil {
-				print(compileError!)
+		if completion != nil {
+			
+			Engine.Device.makeLibrary(source: code, options: nil) { (library, compileError) in
+				if compileError != nil {
+					print(code)
+					print(compileError!)
+				} else {
+					
+				}
+				self.setUp(library: library)
+				completion!()
 			}
-			self.setUp(library: library)
-			completion()
+		} else {
+			do {
+				let library = try Engine.Device.makeLibrary(source: code, options: nil)
+				self.setUp(library: library)
+			} catch {
+				print(error)
+			}
 		}
+	}
+	
+	func loadDefaultDibrary(completion: (() -> ())?) {
+		loadLibrary(material: nil, de: nil, completion: completion)
 	}
 	
 	func setUp(library: MTLLibrary?) {
@@ -175,5 +239,7 @@ class LibraryManager {
 		} catch {
 			print(error)
 		}
+		
+		print("loaded library")
 	}
 }

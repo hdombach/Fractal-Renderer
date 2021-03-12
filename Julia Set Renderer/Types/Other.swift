@@ -56,6 +56,7 @@ extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
 typealias Float3 = SIMD3<Float>
+typealias Float4 = SIMD4<Float>
 extension Float3 {
 	var color: Color {
 		return .init(red: x.double, green: y.double, blue: z.double)

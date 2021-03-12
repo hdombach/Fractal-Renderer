@@ -20,16 +20,18 @@ struct CameraSettings: View {
                 }
                 Divider()
                 VStack(alignment: .leading) {
+					NumberInput(value: $settings.camera.vfov.nsNumber, name: "Vertical FOV")
+					NumberInput(value: $settings.camera.lensRadius.nsNumber, step: 0.01, name: "Lense Radius")
+					NumberInput(value: $settings.camera.focusDistance.nsNumber, step: 0.01, name: "Focus Distance")
 					
-					Tuple3FloatInput(value: $settings.camera.deriction.xyz, step: 0.01.nsNumber.0, name: "Dericiton")
+					//Tuple3FloatInput(value: $settings.camera.deriction.xyz, step: 0.01.nsNumber.0, name: "Dericiton")
                 }
             }
             Divider()
             VStack() {
                 Text("Other")
-
-				NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
-				NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
+				//NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
+				//NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
                 Spacer()
 				Button(action: {
 					Engine.Settings.savedCamera = Engine.Settings.camera

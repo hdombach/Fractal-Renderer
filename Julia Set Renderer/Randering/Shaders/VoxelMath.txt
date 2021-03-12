@@ -1,0 +1,164 @@
+#include "ResultInfo.txt"
+#include "Math.txt"
+#include "Ray.txt"
+
+
+DistanceInfo distanceToPlane(Ray ray, Plane plane) {
+	if (plane.axis == x) {
+		float xDistance = (plane.value - ray.position.x) / ray.direction.x;
+		if (xDistance > 0) {
+			return {xDistance, x};
+		} else {
+			return {FLT_MAX, x};
+		}
+	} else if (plane.axis == y) {
+		float yDistance =  (plane.value - ray.position.y) / ray.direction.y;
+		if (yDistance > 0) {
+			return {yDistance, y};
+		} else {
+			return {FLT_MAX, y};
+		}
+	} else if (plane.axis == z) {
+		float zDistance = (plane.value - ray.position.z) / ray.direction.z;
+		if (zDistance > 0) {
+			return {zDistance, z};
+		} else {
+			return {FLT_MAX, z};
+		}
+	}
+	return {FLT_MAX, na};
+}
+
+float4 intersectionOnPlane(Ray ray, Plane plane) {
+	return ray.position + distanceToPlane(ray, plane).distance * ray.direction;
+}
+
+//this function assumes the ray is already inside a voxel
+DistanceInfo distanceToVoxel(Ray ray, device Voxel *voxel) {
+	Voxel newVoxel = *voxel;
+	float3 planes;
+	if (ray.direction.x > 0) {
+		planes.x = newVoxel.position.x + newVoxel.width();
+	} else {
+		planes.x = newVoxel.position.x;
+	}
+	if (ray.direction.y > 0) {
+		planes.y = newVoxel.position.y + newVoxel.width();
+	} else {
+		planes.y = newVoxel.position.y;
+	}
+	if (ray.direction.z > 0) {
+		planes.z = newVoxel.position.z + newVoxel.width();
+	} else {
+		planes.z = newVoxel.position.z;
+	}
+	
+	DistanceInfo lengthX = distanceToPlane(ray, {x, planes.x});
+	DistanceInfo lengthY = distanceToPlane(ray, {y, planes.y});
+	DistanceInfo lengthZ = distanceToPlane(ray, {z, planes.z});
+	
+	if (lengthX.distance < lengthY.distance && lengthX.distance < lengthZ.distance) {
+		return lengthX;
+	} else if (lengthY.distance < lengthZ.distance) {
+		return lengthY;
+	} else {
+		return lengthZ;
+	}
+}
+
+//this function assumes ray is outside the voxel/cube
+DistanceInfo distanceToCube(Ray ray, device Voxel *voxel) {
+	Voxel cube = *voxel;
+	float3 planes;
+	if (ray.direction.x > 0) {
+		planes.x = cube.position.x;
+	} else {
+		planes.x = cube.position.x + cube.width();
+	}
+	if (ray.direction.y > 0) {
+		planes.y = cube.position.y;
+	} else {
+		planes.y = cube.position.y + cube.width();
+	}
+	if (ray.direction.z > 0) {
+		planes.z = cube.position.z;
+	} else {
+		planes.z = cube.position.z + cube.width();
+	}
+	
+	float3 intersectionX = intersectionOnPlane(ray, {x, planes.x}).xyz;
+	float3 intersectionY = intersectionOnPlane(ray, {y, planes.y}).xyz;
+	float3 intersectionZ = intersectionOnPlane(ray, {z, planes.z}).xyz;
+	
+	if (intersectionX.y > cube.position.y && intersectionX.y < cube.position.y + cube.width() && intersectionX.z > cube.position.z && intersectionX.z < cube.position.z + cube.width()) {
+		return distanceToPlane(ray, {x, planes.x});
+	}
+	if (intersectionY.x > cube.position.x && intersectionY.x < cube.position.x + cube.width() && intersectionY.z > cube.position.z && intersectionY.z < cube.position.z + cube.width()) {
+		return distanceToPlane(ray, {y, planes.y});
+	}
+	if (intersectionZ.x > cube.position.x && intersectionZ.x < cube.position.x + cube.width() && intersectionZ.y > cube.position.y && intersectionZ.y < cube.position.y + cube.width()) {
+		return distanceToPlane(ray, {z, planes.z});
+	}
+	return {FLT_MAX, na};
+}
+
+bool cubeContainsRay(Ray ray, device Voxel *voxel) {
+	Voxel cube = *voxel;
+	if (ray.position.x > cube.position.x && ray.position.x < cube.position.x + cube.width()) {
+		if (ray.position.y > cube.position.y && ray.position.y < cube.position.y + cube.width()) {
+			if (ray.position.z > cube.position.z && ray.position.z < cube.position.z + cube.width()) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+VoxelAddress getVoxelChild2(bool3 position, device Voxel *voxel) {
+	uint index = 0;
+	if (position.x) {
+		index += 1;
+	}
+	if (position.y) {
+		index += 2;
+	}
+	if (position.z) {
+		index += 4;
+	}
+	
+	Voxel v = *voxel;
+	return v.child(index);
+}
+VoxelAddress getVoxelChildAtRay(float4 rayPosition, device Voxel *voxel) {
+	bool3 newChild;
+	Voxel newVoxel = *voxel;
+	float width = newVoxel.width() / 2;
+	newChild.x = (rayPosition.x > newVoxel.position.x + width);
+	newChild.y = (rayPosition.y > newVoxel.position.y + width);
+	newChild.z = (rayPosition.z > newVoxel.position.z + width);
+	
+	return getVoxelChild2(newChild, voxel);
+}
+
+device Voxel * getVoxel(VoxelAddress voxelAddress, device Voxel *voxels, int voxelsLength) {
+	// VoxelContainer container;
+	return &voxels[voxelAddress.index];
+}
+
+device Voxel * getVoxel(Ray atRay, device Voxel *voxels, int voxelsLength) {
+	device Voxel *currentVoxel = &voxels[1];
+	
+	while (!currentVoxel->isEnd) {
+		VoxelAddress newAddress = getVoxelChildAtRay(atRay.position, currentVoxel);
+		if (newAddress.isDefault()) {
+			return currentVoxel;
+		}
+		currentVoxel = getVoxel(newAddress, voxels, voxelsLength);
+	}
+	
+	return currentVoxel;
+}
+
+DistanceInfo getVoxelRayStep(Ray ray, device Voxel *voxels, int voxelsLength) {
+	return distanceToVoxel(ray, getVoxel(ray, voxels, voxelsLength));
+}

@@ -109,10 +109,11 @@ class VoxelContainer {
 		} else {
 			uWidth = width!
 		}
-		var voxelSize = (Engine.Settings.savedCamera.cameraDepth * uWidth / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))) / Engine.Settings.savedCamera.zoom
+		var voxelSize = uWidth / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))
+		/*var voxelSize = (Engine.Settings.savedCamera.cameraDepth * uWidth / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))) / Engine.Settings.savedCamera.zoom
 		if 0 > dot(SIMD4<Float>(0, 0, 1, 0) * Engine.Settings.savedCamera.rotateMatrix, SIMD4<Float>(position, 0) - Engine.Settings.savedCamera.position) {
 			voxelSize = voxelSize / 4
-		}
+		}*/
 		
 		return voxelSize
 	}

@@ -1,0 +1,147 @@
+
+using namespace metal;
+
+#include "RayMarcher.txt"
+
+struct VertexIn {
+	float3 position [[ attribute(0) ]];
+	float4 color [[ attribute(1) ]];
+	float2 texCoord [[ attribute(2) ]];
+};
+
+struct RasterizerData {
+	float4 position [[ position ]];
+	float4 color;
+	float2 texCoord;
+};
+vertex RasterizerData basic_vertex_shader(const VertexIn vIn [[ stage_in ]],
+										  constant float &viewRatio [[ buffer(1) ]],
+										  constant float &imageRatio [[ buffer(2) ]]) {
+	RasterizerData rd;
+	if (imageRatio < viewRatio) {
+		rd.position = float4(vIn.position.x * imageRatio / viewRatio, vIn.position.y, vIn.position.z, 1);
+	} else {
+		rd.position = float4(vIn.position.x, vIn.position.y / imageRatio * viewRatio, vIn.position.z, 1);
+	}
+	//rd.position = float4(vIn.position.x / 2, vIn.position.y / 2, 0, 1);
+	rd.color = vIn.color;
+	rd.texCoord = vIn.texCoord;
+	
+	return rd;
+}
+
+fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
+									  sampler sampler2d [[ sampler(0) ]],
+									  texture2d_array<float> texture [[ texture(0) ]],
+									  constant ShaderInfo &info [[buffer(0)]],
+									  constant Channel *channels [[buffer(3)]]) {
+	float4 color = float4(0);
+	for (uint c = 0; info.channelsLength > c; c++) {
+		float3 channelColor;
+		Channel channel = channels[c];
+		channelColor.r = texture.sample(sampler2d, rd.texCoord, 0 + c * 3).x * channel.color.r;
+		channelColor.g = texture.sample(sampler2d, rd.texCoord, 1 + c * 3).x * channel.color.g;
+		channelColor.b = texture.sample(sampler2d, rd.texCoord, 2 + c * 3).x * channel.color.b;
+		
+		channelColor *= channel.strength;
+		
+		color.r += channelColor.r;
+		color.g += channelColor.g;
+		color.b += channelColor.b;
+	}
+	color.a = 1;
+	
+	return color / info.exposure;
+}
+
+
+
+fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
+									  constant ShaderInfo &shaderInfo [[buffer(0)]],
+									  device Voxel *voxels [[buffer(1)]],
+									  constant SkyBoxLight *lights [[buffer(2)]],
+									  constant float *constants [[buffer(4)]]) {
+	ShaderInfo info = shaderInfo;
+	return float4(depthMap(rd.texCoord, voxels, info, constants));
+}
+
+fragment float4 preview_fragment_shader(RasterizerData rd [[ stage_in ]],
+										constant ShaderInfo &shaderInfo [[buffer(0)]],
+										device Voxel *voxels [[buffer(1)]],
+										constant SkyBoxLight *lights [[buffer(2)]],
+										constant float *constants [[buffer(4)]]) {
+	ShaderInfo info = shaderInfo;
+	return preview(rd.texCoord, voxels, lights, info, constants);
+}
+
+fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
+									   constant ShaderInfo &shaderInfo [[buffer(0)]],
+									   device Voxel *voxels [[buffer(1)]],
+									   constant SkyBoxLight *lights [[buffer(2)]],
+									   constant float *constants [[buffer(4)]]) {
+	
+	ShaderInfo info = shaderInfo;
+	
+	return float4(1);
+}
+
+kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture [[texture(0)]],
+							   texture2d_array<float, access::write> writeTexture [[texture(1)]],
+							   uint index [[ thread_position_in_grid ]],
+							   constant ShaderInfo &shaderInfo [[buffer(0)]],
+							   device Voxel *voxels [[buffer(1)]],
+							   constant SkyBoxLight *lights [[buffer(2)]],
+							   constant float *constants [[buffer(4)]]) {
+	
+	ShaderInfo info = shaderInfo;
+	
+	float anIndex = info.realIndex.x + index;
+	
+	if (anIndex > info.realIndex.w) {
+		return;
+	}
+	anIndex = fmod(anIndex, info.realIndex.y * info.realIndex.z);
+	
+	float2 pos;
+	pos.x = floor(fmod(anIndex, float(info.realIndex.y * info.realIndex.z)) / float(info.realIndex.z));
+	pos.y = fmod(anIndex, float(info.realIndex.z));
+	uint2 textureIndex = uint2(pos.x, pos.y);
+	
+	uint3 seed = info.randomSeed;
+	seed.x += index * 402;
+	seed.y += index * 503;
+	seed.z += index * 305;
+	
+	
+	float2 randomOffset;
+	randomOffset.x = randomFloat(info.randomSeed.x, pos.x * 983414, anIndex * 33429);
+	randomOffset.y = randomFloat(info.randomSeed.y, pos.y * 754239, anIndex * 46523);
+	
+	pos.x = (pos.x + 0) / readTexture.get_width();
+	pos.y = (pos.y + 0) / readTexture.get_height();
+	
+	Colors colors = getPointColor(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, constants);
+	
+	for (uint c = 0; info.channelsLength > c; c++) {
+		float3 oldColor;
+		oldColor.x = readTexture.read(textureIndex, 3 * c).x;
+		oldColor.y = readTexture.read(textureIndex, 3 * c + 1).x;
+		oldColor.z = readTexture.read(textureIndex, 3 * c + 2).x;
+		
+		float3 color = colors.channel(c);
+		writeTexture.write(float4(oldColor.x + color.x, 0, 0, 0), textureIndex, 3 * c);
+		writeTexture.write(float4(oldColor.y + color.y, 0, 0, 0), textureIndex, 3 * c + 1);
+		writeTexture.write(float4(oldColor.z + color.z, 0, 0, 0), textureIndex, 3 * c + 2);
+	}
+	
+	return;
+}
+
+kernel void reset_compute_shader(texture2d_array<float, access::write> writeTexture [[texture(0)]],
+								 uint2 index [[ thread_position_in_grid]],
+								 constant ShaderInfo &info [[buffer(0)]]) {
+	for (int c = 0; c < info.channelsLength * 3; c++) {
+		writeTexture.write(float4(0, 0, 0, 0), index, c);
+	}
+	return;
+}

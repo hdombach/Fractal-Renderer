@@ -1,0 +1,25 @@
+
+#include "Math.txt"
+#include "Settings.txt"
+#include "NodeFunctions.txt"
+
+struct Material {
+	float3 rgbAbsorption = float3(0), rgbEmitted = float3(0);
+	float diffuse = 1;
+	
+	float3 sin(float3 value) {
+		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));
+	}
+	
+	void init(float3 position, float3 orbit, float iterations, RayMarchingSettings settings, constant float *constants) {
+		float empty;
+		float empty1;
+		float3 empty3;
+		
+		//INSERT_MATERIAL//
+		
+		float distanceFromCenter = distance(position, float3(0, 0, 0));
+		
+		rgbAbsorption = clamp(settings.colorBase + settings.colorVariation * sin(distanceFromCenter * settings.colorFrequency + settings.colorOffset), float3(0), float3(1));
+	}
+};

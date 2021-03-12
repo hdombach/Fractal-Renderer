@@ -1,0 +1,74 @@
+struct Colors {
+	float3 channel0 = float3(0);
+	float3 channel1 = float3(0);
+	float3 channel2 = float3(0);
+	float3 channel3 = float3(0);
+	float3 channel4 = float3(0);
+	float3 channel5 = float3(0);
+	float3 channel6 = float3(0);
+	float3 channel7 = float3(0);
+	
+	void change(Colors colors, float3 absorption) {
+		for (int c = 0; channels() > c; c++) {
+			setChannel(c, colors.channel(c) * absorption);
+		}
+	}
+	
+	float3 channel(int index) {
+		switch (index) {
+			case 0:
+				return channel0;
+			case 1:
+				return channel1;
+			case 2:
+				return channel2;
+			case 3:
+				return channel3;
+			case 4:
+				return channel4;
+			case 5:
+				return channel5;
+			case 6:
+				return channel6;
+			case 7:
+				return channel7;
+		}
+	}
+	
+	void setChannel(int index, float3 newColor) {
+		switch(index) {
+			case 0:
+				channel0 = newColor;
+			case 1:
+				channel1 = newColor;
+			case 2:
+				channel2 = newColor;
+			case 3:
+				channel3 = newColor;
+			case 4:
+				channel4 = newColor;
+			case 5:
+				channel5 = newColor;
+			case 6:
+				channel6 = newColor;
+			case 7:
+				channel7 = newColor;
+		}
+	}
+	
+	void changeChannel(int index, float3 offsetColor) {
+		float3 oldColor = channel(index);
+		setChannel(index, oldColor + offsetColor);
+	}
+	
+	uint channels() {
+		return 8;
+	}
+};
+
+
+struct Channel {
+	uint index;
+	float3 color;
+	float strength;
+};

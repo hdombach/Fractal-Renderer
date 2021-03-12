@@ -127,13 +127,9 @@ struct ColorRampNode: Node {
 	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
 		var code = ""
 		if values.count == 0 {
-			code.append(outputs[0] + " = 0;\n")
-			code.append(outputs[1] + " = 0;\n")
-			code.append(outputs[2] + " = 0;\n")
+			code.append(outputs[0] + " = float3(0);\n")
 		} else if values.count == 1 {
-			code.append(outputs[0] + " = " + inputs[2] + ";\n")
-			code.append(outputs[1] + " = " + inputs[3] + ";\n")
-			code.append(outputs[2] + " = " + inputs[4] + ";\n")
+			code.append("\(outputs[0]) = float3(\(inputs[2]), \(inputs[3]), \(inputs[4]));\n")
 		} else {
 			//---0---point(1-4)---1---point(5-8)---2---point(9-12)----3----
 			
@@ -141,14 +137,10 @@ struct ColorRampNode: Node {
 			for c in 0...values.count {
 				if c == 0 {
 					code.append("if (\(valueVariable) < \(inputs[1])) {\n")
-					code.append("\(outputs[0]) = \(inputs[2]);\n")
-					code.append("\(outputs[1]) = \(inputs[3]);\n")
-					code.append("\(outputs[2]) = \(inputs[4]);\n")
+					code.append("\(outputs[0]) = float3(\(inputs[2]), \(inputs[3]), \(inputs[4]));\n")
 				} else if c == values.count {
 					code.append("} else {\n")
-					code.append("\(outputs[0]) = \(inputs[c * 4 - 2]);\n")
-					code.append("\(outputs[1]) = \(inputs[c * 4 - 1]);\n")
-					code.append("\(outputs[2]) = \(inputs[c * 4]);\n")
+					code.append("\(outputs[0]) = float3(\(inputs[c * 4 - 2]), \(inputs[c * 4 - 1]), \(inputs[c * 4]));\n")
 					code.append("}\n")
 				} else {
 					let greater = inputs[c * 4 + 1]
@@ -165,9 +157,7 @@ struct ColorRampNode: Node {
 					code.append("color\(unique) += float3(\(inputs[c * 4 + 2]), \(inputs[c * 4  + 3]), \(inputs[c * 4 + 4])) * (1.0 - gradientValue\(unique));\n")
 					
 					//set outputs
-					code.append("\(outputs[0]) = color\(unique).x;\n")
-					code.append("\(outputs[1]) = color\(unique).y;\n")
-					code.append("\(outputs[2]) = color\(unique).z;\n")
+					code.append("\(outputs[0]) = color\(unique);\n")
 				}
 			}
 		}

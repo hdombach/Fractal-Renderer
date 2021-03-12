@@ -10,11 +10,11 @@ import Foundation
 
 struct ShaderInfo {
 	var rayMarchingSettings: RayMarchingSettings = .init()
-	var camera: Camera = .init()
+	var camera: Camera = Camera(setup: false)
 	var realIndex: SIMD4<UInt32> = .init()
 	var randomSeed: SIMD3<UInt32> = .init()
 	var voxelsLength: UInt32 = .init()
-	var isJulia: UInt32 = .init()
+	var isJulia: UInt32 = 2
 	var lightsLength: UInt32 = .init()
 	var exposure: UInt32 = 0
 	var channelsLength: UInt32 = .init()

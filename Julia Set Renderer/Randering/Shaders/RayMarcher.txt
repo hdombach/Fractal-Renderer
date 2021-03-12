@@ -1,0 +1,236 @@
+#include "ColorChannels.txt"
+#include "ResultInfo.txt"
+#include "Settings.txt"
+#include "DE.txt"
+#include "Material.txt"
+#include "Voxel.txt"
+#include "VoxelMath.txt"
+
+
+
+struct SkyBoxLight {
+	float3 color;
+	float strength;
+	float size;
+	float3 position;
+	uint channel;
+	uint id;
+	
+	float3 getColor(Ray ray) {
+		if (size < dot(normalize(ray.direction.xyz), normalize(position))) {
+			return color * strength;
+		}
+		return float3(0);
+	}
+};
+
+
+Colors getSkyBox(Ray ray, constant SkyBoxLight *lights, int lightsLength) {
+	Colors color;
+	for (uint c = 0; 8 > c; c++) {
+		
+		color.setChannel(c, float3(0, 0, 0));
+	}
+	
+	for (int c = 0; lightsLength > c; c++) {
+		SkyBoxLight light = lights[c];
+		
+		color.setChannel(light.channel, light.getColor(ray));
+	}
+	
+	return color;
+}
+
+Ray reflectRay(thread Ray rayIn, float3 surfaceNormal, Material surfaceMaterial, uint3 seed) {
+	Ray ray = rayIn;
+	
+	for (int c = 0; ray.colors.channels() > c; c++) {
+		ray.colors.changeChannel(c, ray.colorAbsorption * surfaceMaterial.rgbEmitted);
+	}
+	ray.colorAbsorption *= surfaceMaterial.rgbAbsorption;
+	
+	seed.x += abs(ray.position.x) * 128597;
+	seed.y += abs(ray.position.y) * 13258612;
+	seed.z += abs(ray.position.z) * 1325683;
+	
+	ray.direction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
+	ray.direction.w = 0;
+	
+	return ray;
+}
+
+SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, constant float *constants) {
+	Ray ray = rayIn;
+	
+	int steps = 0;
+	DistanceInfo d = {0, na};
+	RayMarchInfo bulbResult;
+	
+	while (100000 > d.distance) {
+		bulbResult = DE(ray.position.xyz, settings);
+		float step = bulbResult.d;
+		ray.march(step);
+		d.distance += step;
+		steps ++;
+		if (d.distance / settings.quality > step || 500 < steps) {
+			break;
+		}
+	}
+	ray.march(math::errorDifference * -1);
+	
+	SingleResult result;
+	result.distance = d.distance;
+	result.steps = steps;
+	result.collision.surfaceNormal = DEnormal(ray.position.xyz, settings);
+	result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.direction.xyz);
+	
+	Material material;
+	material.init(ray.position.xyz, bulbResult.orbit, bulbResult.orbitLife, settings, constants);
+	
+	result.collision.surfaceMaterial = material;
+	result.collision.position = ray.position.xyz;
+	
+	result.ray = ray;
+	return result;
+}
+
+SingleResult voxelRaytraceStep(Ray rayIn, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *constants) {
+	Ray ray = rayIn;
+	
+	device Voxel *rootVoxel = &voxels[1];
+	DistanceInfo d = {0, na};
+	int steps = 0;
+	
+	while (10000 > d.distance) {
+		DistanceInfo step = {0, na};
+		if (cubeContainsRay(ray, rootVoxel)) {
+			device Voxel *intersectedVoxel = getVoxel(ray, voxels, info.voxelsLength);
+			if (intersectedVoxel->opacity > 0.5) {
+				ray.march(math::errorDifference * -1);
+				break;
+			}
+			
+			if (showVoxels) {
+				ray.colorAbsorption *= float3(0.9);
+			}
+			
+			step = distanceToVoxel(ray, intersectedVoxel);
+		} else {
+			step = distanceToCube(ray, rootVoxel);
+		}
+		step.distance += math::errorDifference;
+		ray.march(step.distance);
+		d.distance += step.distance;
+		d.collisionAxis = step.collisionAxis;
+		steps++;
+	}
+	
+	Material material;
+	material.init(ray.position.xyz, float3(0), 0, info.rayMarchingSettings, constants);
+	
+	CollisionInfo collision;
+	collision.position = ray.position.xyz;
+	collision.surfaceMaterial = material;
+	collision.surfaceNormal = getNormalFromAxis(d.collisionAxis);
+	collision.surfaceNormal = correctNormal(collision.surfaceNormal, ray.direction.xyz);
+	
+	SingleResult result;
+	result.distance = d.distance;
+	result.ray = ray;
+	result.collision = collision;
+	result.steps = steps * 10;
+	
+	return result;
+}
+
+SingleResult step(Ray ray, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *constants) {
+	if (info.isJulia == 0) {
+		return voxelRaytraceStep(ray, voxels, showVoxels, info, constants);
+	} else {
+		return rayMarchStep(ray, 0, info.rayMarchingSettings, constants);
+	}
+}
+
+Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *constants) {
+	uint3 seed = info.randomSeed;
+	seed.x += pos.x * 2150;
+	seed.y += pos.y * 6350;
+	
+	pos += randomFloat2(seed.x, seed.y, seed.z) / textureSize;
+	Ray ray = info.camera.spawnRay(pos, seed);
+	
+	int bounces = 0;
+	while (bounces < bounceLimit) {
+		SingleResult result = step(ray, voxels, showVoxels, info, constants);
+		
+		ray = result.ray;
+		if (result.distance >= 10000) {
+			if (bounces > 0) {
+				//ray.colors.change(getSkyBox(ray, lights, info.lightsLength), ray.colorAbsorption);
+				
+				Colors colors = getSkyBox(ray, lights, info.lightsLength);
+				for (uint c = 0; c < info.channelsLength; c++) {
+					float3 oldColor = colors.channel(c);
+					ray.colors.setChannel(c, oldColor * ray.colorAbsorption);
+				}
+			}
+			break;
+		}
+		
+		ray = reflectRay(ray, result.collision.surfaceNormal, result.collision.surfaceMaterial, info.randomSeed);
+		bounces++;
+	}
+	
+	return ray.colors;
+	
+}
+
+float depthMap(float2 pos, device Voxel *voxels, ShaderInfo info, constant float *constants) {
+	uint3 seed = info.randomSeed;
+	seed.x += pos.x * 5150;
+	seed.y += pos.y * 5230;
+
+	Ray ray = info.camera.spawnRay(pos, seed);
+	
+	SingleResult result = step(ray, voxels, false, info, constants);
+	
+	float gray = result.distance * info.depthSettings.z;
+	
+	/*if (info.depthSettings.x > 0) {
+	 gray = 1.0 - 1.0 / exp(gray);
+	}*/
+	gray = (gray * (1 - info.depthSettings.x)) + info.depthSettings.x * (1.0 - 1.0 / exp(gray));
+	gray -= info.depthSettings.y;
+	return gray;
+}
+
+float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, ShaderInfo info, constant float *constants) {
+	uint3 seed = info.randomSeed;
+	seed.x += pos.x * 5041;
+	seed.y += pos.y * 5420;
+	
+	
+	Ray ray = info.camera.spawnRay(pos, seed);
+	float3 originalDirection = normalize(ray.direction.xyz);
+	
+	SingleResult result = step(ray, voxels, false, info, constants);
+	
+	//return float4();
+	
+	float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
+	//return float4(result.steps);
+	color *= pow(0.995, float(result.steps));
+	color *= abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal)));
+	if (result.distance > 100) {
+		float3 tempColor = float3(0);
+		Colors colors = getSkyBox(ray, lights, info.lightsLength);
+		for (uint c = 0; c < info.channelsLength; c++) {
+			tempColor += colors.channel(c);
+		}
+		color = float4(tempColor, 1);
+		return color;
+	}
+	//color = 1 - (color - 0.2) / color;
+	return color;
+	
+}

@@ -1,0 +1,41 @@
+
+#include "Ray.txt"
+#include "Math.txt"
+
+
+struct Camera {
+	float4 position;
+	float4 horizontal;
+	float4 vertical;
+	float4 u, v, w;
+	float lensRadius;
+	
+	//unused
+	float vfov;
+	float focusDistance;
+	float2 resolution;
+	float4 quat;
+	
+	
+	//tex coord is from 0 to 1
+	Ray spawnRay(float2 texCoord, uint3 seed) {
+		Ray ray;
+		
+		texCoord = texCoord * 2 - float2(1);
+		
+		float2 rand = randomInUnitDisk(seed.x, seed.y, seed.z) * lensRadius;
+		float4 offset = u * rand.x + v * rand.y;
+		
+		
+		ray.position = position + offset;
+		ray.direction = normalize(texCoord.x * horizontal + texCoord.y * vertical + focusDistance * w - offset);
+		
+		ray.colorAbsorption = float3(1);
+		
+		for (int c = 0; 8 > c; c++) {
+			ray.colors.setChannel(c, float3(0));
+		}
+		
+		return ray;
+	}
+};

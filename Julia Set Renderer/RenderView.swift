@@ -100,13 +100,7 @@ class RenderView: MTKView {
 		if Engine.Settings.window == .rendering {
 			printError("Tried to move camera while rendering.")
 		} else {
-			Engine.Settings.camera.deriction += SIMD4<Float>.init(Float(event.deltaY), Float(event.deltaX), 0, 0) / 1000
-			if (Engine.Settings.camera.deriction.x > Float.pi / 2) {
-				Engine.Settings.camera.deriction.x = Float.pi / 2
-			}
-			if Engine.Settings.camera.deriction.x < Float.pi / -2 {
-				Engine.Settings.camera.deriction.x = Float.pi / -2
-			}
+			Engine.Settings.camera.rotate(deltaX: Float(event.deltaX / 1000), deltaY: Float(event.deltaY / -1000))
 		}
 	}
 

@@ -90,7 +90,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			update = true
 		}
 		if update {
-			offset = offset * Engine.Settings.camera.rotateMatrix
+			offset = Engine.Settings.camera.transformMatrix * offset
+			//print(offset)
 			Engine.Settings.camera.position += offset
 		}
 
@@ -126,6 +127,9 @@ class Renderer: NSObject, MTKViewDelegate {
 		info.rayMarchingSettings = Engine.Settings.rayMarchingSettings
 		info.channelsLength = UInt32(Engine.Settings.channels.count)
 		info.depthSettings = Engine.Settings.depthSettings
+		info.randomSeed.x = UInt32.random(in: 0...10000)
+		info.randomSeed.y = UInt32.random(in: 0...10000)
+		info.randomSeed.z = UInt32.random(in: 0...10000)
 
 		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)

@@ -1,0 +1,125 @@
+
+struct VoxelAddress {
+	uint index;
+	bool isDefault() {
+		return (index == 0);
+	}
+};
+
+struct Voxel {
+	float opacity;
+	bool isEnd;
+	float3 position;
+	uint layer;
+	
+	float width() {
+		return pow(0.5, float(layer)) * 1;
+	}
+	
+	VoxelAddress _p;
+	VoxelAddress _0;
+	VoxelAddress _1;
+	VoxelAddress _2;
+	VoxelAddress _3;
+	VoxelAddress _4;
+	VoxelAddress _5;
+	VoxelAddress _6;
+	VoxelAddress _7;
+	
+	//uint children[8];
+	
+	VoxelAddress child(int number) {
+		switch(number) {
+			case 0:
+				return _0;
+			case 1:
+				return _1;
+			case 2:
+				return _2;
+			case 3:
+				return _3;
+			case 4:
+				return _4;
+			case 5:
+				return _5;
+			case 6:
+				return _6;
+			case 7:
+				return _7;
+			default:
+				return _p;
+		}
+	}
+	
+	void setChild(int number, VoxelAddress newAddress) {
+		switch(number) {
+			case 0:
+				_0 = newAddress;
+			case 1:
+				_1 = newAddress;
+			case 2:
+				_2 = newAddress;
+			case 3:
+				_3 = newAddress;
+			case 4:
+				_4 = newAddress;
+			case 5:
+				_5 = newAddress;
+			case 6:
+				_6 = newAddress;
+			case 7:
+				_7 = newAddress;
+			default:
+				_p = newAddress;
+		}
+	}
+	
+	void setChildIndex(int number, int newIndex) {
+		switch(number) {
+			case 0:
+				_0.index = newIndex;
+			case 1:
+				_1.index = newIndex;
+			case 2:
+				_2.index = newIndex;
+			case 3:
+				_3.index = newIndex;
+			case 4:
+				_4.index = newIndex;
+			case 5:
+				_5.index = newIndex;
+			case 6:
+				_6.index = newIndex;
+			case 7:
+				_7.index = newIndex;
+			default:
+				_p.index = newIndex;
+		}
+	}
+	
+	VoxelAddress getChild(bool3 position) {
+		uint index = 0;
+		if (position.x) {
+			index += 1;
+		}
+		if (position.y) {
+			index += 2;
+		}
+		if (position.z) {
+			index += 4;
+		}
+		
+		return child(index);
+	}
+	
+	VoxelAddress getChildRay(float4 rayPosition) {
+		bool3 newChild;
+		float selfWidth = width();
+		newChild.x = (rayPosition.x > position.x + selfWidth);
+		newChild.y = (rayPosition.y > position.y + selfWidth);
+		newChild.z = (rayPosition.z > position.z + selfWidth);
+		
+		
+		return getChild(newChild);
+	}
+};

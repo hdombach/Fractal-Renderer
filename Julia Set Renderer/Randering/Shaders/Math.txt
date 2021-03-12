@@ -1,0 +1,128 @@
+//const float errorDifference = 0.00001;
+
+namespace math {
+	constant float errorDifference = 0.00001;
+}
+
+enum Axis {x, y, z, na};
+
+float3 getNormalFromAxis(Axis axis) {
+	switch (axis) {
+		case x:
+			return float3(1, 0, 0);
+		case y:
+			return float3(0, 1, 0);
+		case z:
+			return float3(0, 0, 1);
+		case na:
+			return float3(0, 0, 0);
+	}
+}
+
+struct Plane {
+	Axis axis;
+	float value;
+};
+
+float randomFloat(int x, int y, int z) {
+	int seed = x + y * 57 + z * 241;
+	seed= (seed<< 13) ^ seed;
+	return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
+}
+
+float3 randomFloat3(int x, int y, int z) {
+	return float3(randomFloat(x, y, z), randomFloat(y, z, x), randomFloat(z, x, y));
+}
+
+float2 randomFloat2(int x, int y, int z) {
+	return float2(randomFloat(x, y, z), randomFloat(y, z, x));
+}
+	
+float3 correctNormal(float3 normal, float3 vector) {
+	if (dot(normal, vector) < 0) {
+		return normal;
+	} else {
+		return normal * -1;
+	}
+}
+
+float2 randomInUnitDisk(int x, int y, int z) {
+	float2 p;
+	do {
+		p = randomFloat2(x, y, z) * 2 - 1;
+		x += 5201;
+		y += 7123;
+		z += 2051;
+	} while ((p.x * p.x + p.y * p.y) > 1);
+	
+	return p;
+}
+
+float2 randomUnitDisk(int x, int y, int z) {
+	return normalize(randomInUnitDisk(x, y, z));
+}
+
+float3 randomInUnitSphere(int x, int y, int z) {
+	float3 p;
+	do {
+		p = randomFloat3(x, y, z) * 2 - 1;
+		x += 5102;
+		y += 5691;
+		z += 9512;
+	} while ((p.x * p.x + p.y * p.y + p.z * p.z) > 1);
+	
+	return p;
+}
+
+float3 randomUnitFloat3(int x, int y, int z) {
+	return normalize(randomInUnitSphere(x, y, z));
+}
+
+struct VectorPair {
+	float3 v1;
+	float3 v2;
+};
+
+VectorPair orthogonalVectors(float3 n) {
+	float3 axis;
+	if (abs(n.x) < abs(n.y) && abs(n.x) < abs(n.z)) {
+		axis = float3(1.0, 0.0, 0.0);
+	} else if (abs(n.y) < abs(n.z)) {
+		axis = float3(0.0, 1.0, 0.0);
+	} else {
+		axis = float3(0.0, 0.0, 1.0);
+	}
+	
+	VectorPair result;
+	result.v1 = normalize(cross(n, axis));
+	result.v2 = normalize(cross(n, result.v1));
+	
+	return result;
+}
+
+float3 projectToHemisphere(float2 p, float3 normal) {
+	float d = length(p);
+	float z = sqrt(1 - d * d);
+	
+	VectorPair orthogonals = orthogonalVectors(normal);
+	
+	return orthogonals.v1 * p.x + orthogonals.v2 * p.y + normal * z;
+}
+
+float3 sampleUniformHemisphere(float3 n, uint3 randomSeed) {
+	float3 p = randomUnitFloat3(randomSeed.x, randomSeed.y, randomSeed.z);
+	p.z = abs(p.z);
+	
+	//Transfrom random vector so it fits on hemispher of the normal
+	VectorPair orthogonals = orthogonalVectors(n);
+	
+	p = p.x * orthogonals.v1 + p.y * orthogonals.v2 + p.z * n;
+	return p;
+}
+
+float3 sampleLambertHemisphere(float3 n, uint3 randomSeed) {
+	float2 p = randomInUnitDisk(randomSeed.x, randomSeed.y, randomSeed.z);
+	return projectToHemisphere(p, n);
+}
+
+

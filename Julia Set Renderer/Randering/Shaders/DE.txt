@@ -1,0 +1,84 @@
+#include "Settings.txt"
+#include "ResultInfo.txt"
+
+RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
+	float3 z = pos;
+	float dr = 1;
+	float r = 0;
+	float power = settings.mandelbulbPower;
+	uint iterations = settings.iterations;
+	RayMarchInfo info;
+	info.orbitLife = iterations;
+	for (int i = 0; i < iterations; i++) {
+		r = length(z);
+		if (r > settings.bailout) {
+			info.orbitLife = i;
+			break;
+		}
+		
+		//convert to polar
+		float theta = acos(z.z / r);
+		float phi = atan(z.y / z.x);
+		dr = pow(r, power - 1) * power * dr + 1;
+		
+		//scale and rotate the point
+		float zr = pow(r, power);
+		theta = theta * power;
+		phi = phi * power;
+		
+		//convert back to cartesian
+		z = zr * float3(sin(theta) * cos(phi), sin(phi) * sin(theta), cos(theta));
+		z += pos;
+	}
+	info.d = 0.5 * log(r) * r / dr;
+	info.orbit = z;
+	return info;
+}
+
+float3 mirror(float3 p, float3 normal) {
+	return p - 2 * fmin(0, dot(p, normal)) * normal;
+}
+
+float TriangleDE(float3 z, RayMarchingSettings settings)
+{
+	float Scale = 2;
+	float Offset = 1;
+	int n = 0;
+	while (n < settings.iterations) {
+		if(z.x+z.y<0) z.xy = -z.yx; // fold 1
+		if(z.x+z.z<0) z.xz = -z.zx; // fold 2
+		if(z.y+z.z<0) z.zy = -z.yz; // fold 3
+		z = z*Scale - Offset*(Scale-1.0);
+		n++;
+	}
+	return (length(z) ) * pow(Scale, -float(n));
+}
+
+RayMarchInfo SphereDE(float3 pos, float r, RayMarchingSettings settings) {
+	RayMarchInfo info;
+	float3 c = float3(0.5, 0.5, 0.5);
+	info.d = length(pos - c) - r;
+	//info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
+	info.orbitLife = settings.iterations;
+	return info;
+}
+
+RayMarchInfo DE(float3 pos, RayMarchingSettings settings) {
+	//RayMarchInfo info;
+	//info.orbitLife = settings.iterations;
+	//info.d = TriangleDE(mirror(pos, float3(0, 1, 0)), settings);
+	//return SphereDE(pos, 1, settings);
+	return newBulbDE(pos, settings);
+}
+
+float3 DEnormal(float3 pos, RayMarchingSettings settings) {
+	//e is an abitrary number
+	//e can cause white specks to appear if chosen wrongly
+	float e = 0.00001;
+	float n = DE(pos, settings).d;
+	float dx = DE(pos + float3(e, 0, 0), settings).d - n;
+	float dy = DE(pos + float3(0, e, 0), settings).d - n;
+	float dz = DE(pos + float3(0, 0, e), settings).d - n;
+	
+	return normalize(float3(dx, dy, dz) * -1);
+}

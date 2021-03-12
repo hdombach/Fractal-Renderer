@@ -159,12 +159,10 @@ extension NodeContainer {
 		//functions for keeping track of variables
 		func createVarialbe(_ new: Variable) -> String {
 			
-			
-			if let variableIndex = dealocatedVariables.first(where: { (test) -> Bool in
-				//returns true when variable is correct type and succesfully updated
+			if let dealocatedIndex = dealocatedVariables.firstIndex(where: { (test) -> Bool in
 				variables[test].updateValue(variable: new)
 			}) {
-				return "v\(variableIndex - constantsLength)"
+				return "v\(dealocatedVariables.remove(at: dealocatedIndex) - constantsLength)"
 			} else {
 				variables.append(new)
 				return "v\(variables.count - 1 - constantsLength)"
@@ -196,6 +194,7 @@ extension NodeContainer {
 					variable.observers -= 1
 					if variable.observers <= 0 {
 						dealocatedVariables.append(index)
+						//print("dealocated variable", index - constantsLength)
 					}
 					
 					if variable.vectorLength != vectorLength {
@@ -218,6 +217,7 @@ extension NodeContainer {
 		
 		//generates names of variables node can use and calls a function that generates that appropiate code
 		func compileNode(node: Node) throws {
+			//print("compiling node\n", node)
 			var outputVariables: [String] = []
 			var inputVariables: [String] = []
 			for c in node.outputRange {
@@ -227,6 +227,7 @@ extension NodeContainer {
 				
 				if observors > 0 {
 					outputVariables.append(createVarialbe(Variable(value: address, observers: observors, vectorLength: output.type.length)))
+					//print("created variable", outputVariables.last, "for node", node)
 				} else {
 					outputVariables.append("empty\(output.type.length)")
 				}

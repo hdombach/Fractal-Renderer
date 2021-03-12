@@ -1,0 +1,612 @@
+//
+//  Types.metal
+//  Julia Set Renderer
+//
+//  Created by Hezekiah Dombach on 12/18/20.
+//  Copyright © 2020 Hezekiah Dombach. All rights reserved.
+//
+
+#include <metal_stdlib>
+using namespace metal;
+
+enum Axis {x, y, z, na};
+
+struct Plane {
+	Axis axis;
+	float value;
+};
+
+//MARK: RayMarcingSettings
+struct RayMarchingSettings {
+	float mandelbulbPower;
+	int bundleSize;
+	float quality;
+	uint iterations;
+	float bailout;
+	float3 colorBase;
+	float3 colorVariation;
+	float3 colorFrequency;
+	float3 colorOffset;
+};
+
+//MARK: Colors
+struct Colors {
+	float3 channel0 = float3(0);
+	float3 channel1 = float3(0);
+	float3 channel2 = float3(0);
+	float3 channel3 = float3(0);
+	float3 channel4 = float3(0);
+	float3 channel5 = float3(0);
+	float3 channel6 = float3(0);
+	float3 channel7 = float3(0);
+	
+	float3 channel(int index) {
+		switch (index) {
+			case 0:
+				return channel0;
+			case 1:
+				return channel1;
+			case 2:
+				return channel2;
+			case 3:
+				return channel3;
+			case 4:
+				return channel4;
+			case 5:
+				return channel5;
+			case 6:
+				return channel6;
+			case 7:
+				return channel7;
+		}
+	}
+	
+	void setChannel(int index, float3 newColor) {
+		switch(index) {
+			case 0:
+				channel0 = newColor;
+			case 1:
+				channel1 = newColor;
+			case 2:
+				channel2 = newColor;
+			case 3:
+				channel3 = newColor;
+			case 4:
+				channel4 = newColor;
+			case 5:
+				channel5 = newColor;
+			case 6:
+				channel6 = newColor;
+			case 7:
+				channel7 = newColor;
+		}
+	}
+	
+	void changeChannel(int index, float3 offsetColor) {
+		float3 oldColor = channel(index);
+		setChannel(index, oldColor + offsetColor);
+	}
+	
+	uint channels() {
+		return 8;
+	}
+};
+
+struct Channel {
+	uint index;
+	float3 color;
+	float strength;
+};
+
+//Functions are called by the node compiler.
+struct NodeFunctions {
+	void add(thread float *out1, float in1, float in2) {
+		*out1 = in1 + in2;
+	}
+	
+	void multiply(thread float *out1, float in1, float in2) {
+		*out1 = in1 * in2;
+	}
+	
+	void divide(thread float *out1, float in1, float in2) {
+		*out1 = in1 / in2;
+	}
+	
+	void isGreater(thread float *out1, float in1, float in2) {
+		*out1 = in1 > in2;
+	}
+	
+	void combine(thread float3 *out1, float in1, float in2, float in3) {
+		*out1 = float3(in1, in2, in3);
+	}
+	
+	void seperate(thread float *out1, thread float *out2, thread float *out3, float3 in1) {
+		*out1 = in1.x;
+		*out2 = in1.y;
+		*out3 = in1.z;
+	}
+	
+	void nodeClamp(thread float *out1, float value, float rangeMin, float rangeMax) {
+		*out1 =  clamp(value, rangeMin, rangeMax);
+	}
+	
+	void nodeSin(thread float *out1, float in) {
+		*out1 = sin(in);
+	}
+	
+	void nodeCos(thread float *out1, float in) {
+		*out1 = cos(in);
+	}
+	
+	void abs(thread float *out, float in) {
+		*out = ::abs(in);
+	}
+	
+	void vectorAdd(thread float3 *out, float3 in1, float3 in2) {
+		*out = in1 + in2;
+	}
+	
+	void vectorLength(thread float *out, float3 in) {
+		*out = length(in);
+	}
+	
+	void vectorScale(thread float3 *out, float3 in, float scale) {
+		*out = in * scale;
+	}
+	
+	void color(thread float3 *out, float3 in) {
+		*out = in;
+	}
+	
+	void colorBlend(thread float3 *out, float factor, float3 in1, float3 in2) {
+		*out = in1 * factor + in2 * (1 - factor);
+	}
+	
+	void map(thread float *out, float in, float fromMin, float fromMax, float toMin, float toMax) {
+		*out = (in - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+	}
+	
+	void vectorMap(thread float3 *out, float3 in, float fromMin, float fromMax, float toMin, float toMax) {
+		float x;
+		float y;
+		float z;
+		map(&x, in.x, fromMin, fromMax, toMin, toMax);
+		map(&y, in.y, fromMin, fromMax, toMin, toMax);
+		map(&z, in.z, fromMin, fromMax, toMin, toMax);
+		
+		*out = float3(x, y, z);
+	}
+	
+	void dotProduct(thread float *out, float3 in1, float3 in2) {
+		*out = dot(in1, in2);
+	}
+	
+	void crossProduct(thread float3 *out, float3 in1, float3 in2) {
+		*out = cross(in1, in2);
+	}
+	
+	void vectorMultiply(thread float3 *out, float3 in1, float3 in2) {
+		*out = in1 * in2;
+	}
+	
+	void vectorClamp(thread float3 *out, float3 in, float inMin, float inMax) {
+		*out = clamp(in, float3(inMin), float3(inMax));
+	}
+	
+	//https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+	
+	void perlin(thread float *out, float3 pos) {
+		*out = cnoise(float4(pos, 0));
+	}
+	void perlin3(thread float3 *out, float3 pos) {
+		float3 result;
+		result.x = cnoise(float4(pos, 0));
+		result.y = cnoise(float4(pos, 10));
+		result.z = cnoise(float4(pos, 20));
+		
+		*out = result;
+	}
+	
+	float4 permute(float4 x){return fmod(((x*34.0)+1.0)*x, 289.0);}
+	float4 taylorInvSqrt(float4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+	float4 fade(float4 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+	
+	float cnoise(float4 P){
+		float4 Pi0 = floor(P); // Integer part for indexing
+		float4 Pi1 = Pi0 + 1.0; // Integer part + 1
+		Pi0 = fmod(Pi0, 289.0);
+		Pi1 = fmod(Pi1, 289.0);
+		float4 Pf0 = fract(P); // Fractional part for interpolation
+		float4 Pf1 = Pf0 - 1.0; // Fractional part - 1.0
+		float4 ix = float4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+		float4 iy = float4(Pi0.yy, Pi1.yy);
+		float4 iz0 = float4(Pi0.zzzz);
+		float4 iz1 = float4(Pi1.zzzz);
+		float4 iw0 = float4(Pi0.wwww);
+		float4 iw1 = float4(Pi1.wwww);
+		
+		float4 ixy = permute(permute(ix) + iy);
+		float4 ixy0 = permute(ixy + iz0);
+		float4 ixy1 = permute(ixy + iz1);
+		float4 ixy00 = permute(ixy0 + iw0);
+		float4 ixy01 = permute(ixy0 + iw1);
+		float4 ixy10 = permute(ixy1 + iw0);
+		float4 ixy11 = permute(ixy1 + iw1);
+		
+		float4 gx00 = ixy00 / 7.0;
+		float4 gy00 = floor(gx00) / 7.0;
+		float4 gz00 = floor(gy00) / 6.0;
+		gx00 = fract(gx00) - 0.5;
+		gy00 = fract(gy00) - 0.5;
+		gz00 = fract(gz00) - 0.5;
+		float4 gw00 = float4(0.75) - ::abs(gx00) - ::abs(gy00) - ::abs(gz00);
+		float4 sw00 = step(gw00, float4(0.0));
+		gx00 -= sw00 * (step(0.0, gx00) - 0.5);
+		gy00 -= sw00 * (step(0.0, gy00) - 0.5);
+		
+		float4 gx01 = ixy01 / 7.0;
+		float4 gy01 = floor(gx01) / 7.0;
+		float4 gz01 = floor(gy01) / 6.0;
+		gx01 = fract(gx01) - 0.5;
+		gy01 = fract(gy01) - 0.5;
+		gz01 = fract(gz01) - 0.5;
+		float4 gw01 = float4(0.75) - ::abs(gx01) - ::abs(gy01) - ::abs(gz01);
+		float4 sw01 = step(gw01, float4(0.0));
+		gx01 -= sw01 * (step(0.0, gx01) - 0.5);
+		gy01 -= sw01 * (step(0.0, gy01) - 0.5);
+		
+		float4 gx10 = ixy10 / 7.0;
+		float4 gy10 = floor(gx10) / 7.0;
+		float4 gz10 = floor(gy10) / 6.0;
+		gx10 = fract(gx10) - 0.5;
+		gy10 = fract(gy10) - 0.5;
+		gz10 = fract(gz10) - 0.5;
+		float4 gw10 = float4(0.75) - ::abs(gx10) - ::abs(gy10) - ::abs(gz10);
+		float4 sw10 = step(gw10, float4(0.0));
+		gx10 -= sw10 * (step(0.0, gx10) - 0.5);
+		gy10 -= sw10 * (step(0.0, gy10) - 0.5);
+		
+		float4 gx11 = ixy11 / 7.0;
+		float4 gy11 = floor(gx11) / 7.0;
+		float4 gz11 = floor(gy11) / 6.0;
+		gx11 = fract(gx11) - 0.5;
+		gy11 = fract(gy11) - 0.5;
+		gz11 = fract(gz11) - 0.5;
+		float4 gw11 = float4(0.75) - ::abs(gx11) - ::abs(gy11) - ::abs(gz11);
+		float4 sw11 = step(gw11, float4(0.0));
+		gx11 -= sw11 * (step(0.0, gx11) - 0.5);
+		gy11 -= sw11 * (step(0.0, gy11) - 0.5);
+		
+		float4 g0000 = float4(gx00.x,gy00.x,gz00.x,gw00.x);
+		float4 g1000 = float4(gx00.y,gy00.y,gz00.y,gw00.y);
+		float4 g0100 = float4(gx00.z,gy00.z,gz00.z,gw00.z);
+		float4 g1100 = float4(gx00.w,gy00.w,gz00.w,gw00.w);
+		float4 g0010 = float4(gx10.x,gy10.x,gz10.x,gw10.x);
+		float4 g1010 = float4(gx10.y,gy10.y,gz10.y,gw10.y);
+		float4 g0110 = float4(gx10.z,gy10.z,gz10.z,gw10.z);
+		float4 g1110 = float4(gx10.w,gy10.w,gz10.w,gw10.w);
+		float4 g0001 = float4(gx01.x,gy01.x,gz01.x,gw01.x);
+		float4 g1001 = float4(gx01.y,gy01.y,gz01.y,gw01.y);
+		float4 g0101 = float4(gx01.z,gy01.z,gz01.z,gw01.z);
+		float4 g1101 = float4(gx01.w,gy01.w,gz01.w,gw01.w);
+		float4 g0011 = float4(gx11.x,gy11.x,gz11.x,gw11.x);
+		float4 g1011 = float4(gx11.y,gy11.y,gz11.y,gw11.y);
+		float4 g0111 = float4(gx11.z,gy11.z,gz11.z,gw11.z);
+		float4 g1111 = float4(gx11.w,gy11.w,gz11.w,gw11.w);
+		
+		float4 norm00 = taylorInvSqrt(float4(dot(g0000, g0000), dot(g0100, g0100), dot(g1000, g1000), dot(g1100, g1100)));
+		g0000 *= norm00.x;
+		g0100 *= norm00.y;
+		g1000 *= norm00.z;
+		g1100 *= norm00.w;
+		
+		float4 norm01 = taylorInvSqrt(float4(dot(g0001, g0001), dot(g0101, g0101), dot(g1001, g1001), dot(g1101, g1101)));
+		g0001 *= norm01.x;
+		g0101 *= norm01.y;
+		g1001 *= norm01.z;
+		g1101 *= norm01.w;
+		
+		float4 norm10 = taylorInvSqrt(float4(dot(g0010, g0010), dot(g0110, g0110), dot(g1010, g1010), dot(g1110, g1110)));
+		g0010 *= norm10.x;
+		g0110 *= norm10.y;
+		g1010 *= norm10.z;
+		g1110 *= norm10.w;
+		
+		float4 norm11 = taylorInvSqrt(float4(dot(g0011, g0011), dot(g0111, g0111), dot(g1011, g1011), dot(g1111, g1111)));
+		g0011 *= norm11.x;
+		g0111 *= norm11.y;
+		g1011 *= norm11.z;
+		g1111 *= norm11.w;
+		
+		float n0000 = dot(g0000, Pf0);
+		float n1000 = dot(g1000, float4(Pf1.x, Pf0.yzw));
+		float n0100 = dot(g0100, float4(Pf0.x, Pf1.y, Pf0.zw));
+		float n1100 = dot(g1100, float4(Pf1.xy, Pf0.zw));
+		float n0010 = dot(g0010, float4(Pf0.xy, Pf1.z, Pf0.w));
+		float n1010 = dot(g1010, float4(Pf1.x, Pf0.y, Pf1.z, Pf0.w));
+		float n0110 = dot(g0110, float4(Pf0.x, Pf1.yz, Pf0.w));
+		float n1110 = dot(g1110, float4(Pf1.xyz, Pf0.w));
+		float n0001 = dot(g0001, float4(Pf0.xyz, Pf1.w));
+		float n1001 = dot(g1001, float4(Pf1.x, Pf0.yz, Pf1.w));
+		float n0101 = dot(g0101, float4(Pf0.x, Pf1.y, Pf0.z, Pf1.w));
+		float n1101 = dot(g1101, float4(Pf1.xy, Pf0.z, Pf1.w));
+		float n0011 = dot(g0011, float4(Pf0.xy, Pf1.zw));
+		float n1011 = dot(g1011, float4(Pf1.x, Pf0.y, Pf1.zw));
+		float n0111 = dot(g0111, float4(Pf0.x, Pf1.yzw));
+		float n1111 = dot(g1111, Pf1);
+		
+		float4 fade_xyzw = fade(Pf0);
+		float4 n_0w = mix(float4(n0000, n1000, n0100, n1100), float4(n0001, n1001, n0101, n1101), fade_xyzw.w);
+		float4 n_1w = mix(float4(n0010, n1010, n0110, n1110), float4(n0011, n1011, n0111, n1111), fade_xyzw.w);
+		float4 n_zw = mix(n_0w, n_1w, fade_xyzw.z);
+		float2 n_yzw = mix(n_zw.xy, n_zw.zw, fade_xyzw.y);
+		float n_xyzw = mix(n_yzw.x, n_yzw.y, fade_xyzw.x);
+		return 2.2 * n_xyzw;
+	}
+
+};
+
+
+//MARK: Material
+//Contains information that is used when reflecting a ray.
+struct Material {
+	float3 rgbAbsorption = float3(0), rgbEmitted = float3(0);
+	float diffuse = 1;
+	
+	float rand(int x, int y, int z)
+	{
+		int seed = x + y * 57 + z * 241;
+		seed= (seed<< 13) ^ seed;
+		return (( 1.0 - ( (seed * (seed * seed * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0f) + 1.0f) / 2.0f;
+	}
+	
+	float3 sin(float3 value) {
+		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));
+	}
+	
+	void init(float3 position, float3 orbit, float iterations, RayMarchingSettings settings, constant float *constants) {
+		NodeFunctions functions;
+		
+		float empty;
+		float empty1;
+		float3 empty3;
+		
+		//INSERT_MATERIAL//
+		
+		//rgbAbsorption = float3(rand(position.x * 2.1, position.y * 2.31, position.z * 2.1), rand(position.x * 2.1, position.y * 3.1, position.z * 5.23), rand(position.x * 2.21, position.y * 1.24, position.z * 2.09));
+		if (rand(x * 12059812, y * 98213, z * 5091283) > 0.5) {
+			diffuse = 0.1;
+		} else {
+			diffuse = 0.9;
+		}
+		float distanceFromCenter = distance(position, float3(0, 0, 0));
+		
+		rgbAbsorption = clamp(settings.colorBase + settings.colorVariation * sin(distanceFromCenter * settings.colorFrequency + settings.colorOffset), float3(0), float3(1));
+		//rgbAbsorption = float3(0.4 + 0.4 * metal::precise::sin(distanceFromCenter * 100), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 40), 0.4 + 0.4 * metal::precise::cos(distanceFromCenter * 30));//(10 + 5 * sin(distanceFromCenter * 30));
+	}
+};
+
+//MARK: Ray
+struct Ray {
+	float4 position;
+	float4 deriction;
+	
+	float3 colorAbsorption;
+	Colors colors;
+	
+	void normalize() {
+		deriction = metal::normalize(deriction);
+	};
+	
+	void march(float distance) {
+		position += deriction * distance;
+	}
+};
+
+//MARK: SkyBoxLight
+struct SkyBoxLight {
+	float3 color;
+	float strength;
+	float size;
+	float3 position;
+	uint channel;
+	uint id;
+	
+	float3 getColor(Ray ray) {
+		if (size < dot(normalize(ray.deriction.xyz), normalize(position))) {
+			return color * strength;
+		}
+		return float3(0);
+	}
+};
+
+//MARK: Camera
+struct Camera {
+	float4 position;
+	float4 deriction;
+	float zoom;
+	float depth;
+	float4x4 rotateMatrix;
+	float2 resolution;
+	float focusDist;
+	float apature;
+	
+	//text coord is from -1 to 1
+	Ray spawnRay(float2 texCoord) {
+		float4 rayDeriction = normalize(float4((texCoord.x - 0.5) * resolution.x * zoom, (texCoord.y - 0.5) * resolution.y * zoom, 1, 0));
+		rayDeriction *= rotateMatrix;
+		Ray ray;
+		ray.deriction = normalize(rayDeriction);
+		ray.position = position;
+		ray.colorAbsorption = float3(1, 1, 1);
+		for (int c = 0; 8 > c; c++) {
+			ray.colors.setChannel(c, float3(0, 0, 0));
+		}
+		return ray;
+	}
+};
+
+//MARK: ShaderInfo
+struct ShaderInfo {
+	RayMarchingSettings rayMarchingSettings;
+	Camera camera;
+	uint4 realIndex;
+	uint3 randomSeed;
+	uint voxelsLength;
+	uint isJulia;
+	uint lightsLength;
+	uint exposure;
+	uint channelsLength;
+	
+	//0: is linear
+	//1: starting depth;
+	//2: depth multiplier
+	float3 depthSettings;
+};
+
+//Not used
+struct VoxelInfo {
+	float3 position;
+	float size;
+	uint index;
+};
+
+//Informations when a ray collides
+struct CollisionInfo {
+	float3 position;
+	float3 surfaceNormal;
+	Material surfaceMaterial;
+};
+
+//Information for traveling rays
+struct DistanceInfo {
+	float distance;
+	Axis collisionAxis;
+};
+
+//Int allows numbers from 0 to 4294967295(2^32)
+//MARK: Voxel
+struct VoxelAddress {
+	uint index;
+	bool isDefault() {
+		return (index == 0);
+	}
+};
+
+struct Voxel {
+	float opacity;
+	bool isEnd;
+	float3 position;
+	uint layer;
+	
+	float width() {
+		return pow(0.5, float(layer)) * 1;
+	}
+	
+	VoxelAddress _p;
+	VoxelAddress _0;
+	VoxelAddress _1;
+	VoxelAddress _2;
+	VoxelAddress _3;
+	VoxelAddress _4;
+	VoxelAddress _5;
+	VoxelAddress _6;
+	VoxelAddress _7;
+	
+	//uint children[8];
+	
+	VoxelAddress child(int number) {
+		switch(number) {
+			case 0:
+				return _0;
+			case 1:
+				return _1;
+			case 2:
+				return _2;
+			case 3:
+				return _3;
+			case 4:
+				return _4;
+			case 5:
+				return _5;
+			case 6:
+				return _6;
+			case 7:
+				return _7;
+			default:
+				return _p;
+		}
+	}
+	
+	void setChild(int number, VoxelAddress newAddress) {
+		switch(number) {
+			case 0:
+				_0 = newAddress;
+			case 1:
+				_1 = newAddress;
+			case 2:
+				_2 = newAddress;
+			case 3:
+				_3 = newAddress;
+			case 4:
+				_4 = newAddress;
+			case 5:
+				_5 = newAddress;
+			case 6:
+				_6 = newAddress;
+			case 7:
+				_7 = newAddress;
+			default:
+				_p = newAddress;
+		}
+	}
+	
+	void setChildIndex(int number, int newIndex) {
+		switch(number) {
+			case 0:
+				_0.index = newIndex;
+			case 1:
+				_1.index = newIndex;
+			case 2:
+				_2.index = newIndex;
+			case 3:
+				_3.index = newIndex;
+			case 4:
+				_4.index = newIndex;
+			case 5:
+				_5.index = newIndex;
+			case 6:
+				_6.index = newIndex;
+			case 7:
+				_7.index = newIndex;
+			default:
+				_p.index = newIndex;
+		}
+	}
+	
+	VoxelAddress getChild(bool3 position) {
+		uint index = 0;
+		if (position.x) {
+			index += 1;
+		}
+		if (position.y) {
+			index += 2;
+		}
+		if (position.z) {
+			index += 4;
+		}
+		
+		return child(index);
+	}
+	
+	VoxelAddress getChildRay(float4 rayPosition) {
+		bool3 newChild;
+		float selfWidth = width();
+		newChild.x = (rayPosition.x > position.x + selfWidth);
+		newChild.y = (rayPosition.y > position.y + selfWidth);
+		newChild.z = (rayPosition.z > position.z + selfWidth);
+		
+
+		return getChild(newChild);
+	}
+};

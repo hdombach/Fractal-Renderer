@@ -1,0 +1,30 @@
+#include "Camera.txt"
+
+struct RayMarchingSettings {
+	float mandelbulbPower;
+	int bundleSize;
+	float quality;
+	uint iterations;
+	float bailout;
+	float3 colorBase;
+	float3 colorVariation;
+	float3 colorFrequency;
+	float3 colorOffset;
+};
+
+struct ShaderInfo {
+	RayMarchingSettings rayMarchingSettings;
+	Camera camera;
+	uint4 realIndex;
+	uint3 randomSeed;
+	uint voxelsLength;
+	uint isJulia;
+	uint lightsLength;
+	uint exposure;
+	uint channelsLength;
+	
+	//0: is linear
+	//1: starting depth;
+	//2: depth multiplier
+	float3 depthSettings;
+};

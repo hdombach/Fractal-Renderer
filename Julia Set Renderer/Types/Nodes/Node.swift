@@ -46,7 +46,7 @@ extension Node {
 	}
 	
 	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
-		var code = "functions." + functionName + "("
+		var code = "node::" + functionName + "("
 		for output in outputs {
 			code += "&" + output + ", "
 		}

@@ -1,0 +1,27 @@
+#include "Material.txt"
+#include "Math.txt"
+#include "Ray.txt"
+
+struct CollisionInfo {
+	float3 position;
+	float3 surfaceNormal;
+	Material surfaceMaterial;
+};
+
+struct DistanceInfo {
+	float distance;
+	Axis collisionAxis;
+};
+
+struct SingleResult {
+	Ray ray;
+	float distance;
+	CollisionInfo collision;
+	int steps;
+};
+
+struct RayMarchInfo {
+	float d;
+	float orbitLife;
+	float3 orbit;
+};
