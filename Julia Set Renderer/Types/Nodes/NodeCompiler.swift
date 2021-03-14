@@ -172,7 +172,7 @@ extension NodeContainer {
 		
 		func findVariable(value: NodeValueAddress, vectorLength: Int) throws -> String {
 			if let index = variables.firstIndex(where: { (test) -> Bool in
-				test.value == value
+				test.value.id == value.id && test.value.valueIndex == value.valueIndex
 			}) {
 				var variable: Variable {
 					get { variables[index] }
@@ -296,7 +296,14 @@ extension NodeContainer {
 		})
 	}
 	
-	mutating func compile() {
+}
+
+
+
+//MARK: Old Compiler
+extension NodeContainer {
+	
+	mutating func oldCompile() {
 		print(nodes)
 		//Find all outputs nodes if there is more than one, throw error.
 		var output: NodeAddress? = nil

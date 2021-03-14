@@ -129,32 +129,35 @@ struct ColorRampNode: Node {
 		if values.count == 0 {
 			code.append(outputs[0] + " = float3(0);\n")
 		} else if values.count == 1 {
-			code.append("\(outputs[0]) = float3(\(inputs[2]), \(inputs[3]), \(inputs[4]));\n")
+			code.append("\(outputs[0]) = \(inputs[2]);\n")
 		} else {
+			//0 is value input
+			//1-end is colors and indexes
 			//---0---point(1-4)---1---point(5-8)---2---point(9-12)----3----
+			//---0---point(1-2)---1---point(3-4)---2---point(5-6)----3
 			
 			let valueVariable = inputs[0]
 			for c in 0...values.count {
 				if c == 0 {
 					code.append("if (\(valueVariable) < \(inputs[1])) {\n")
-					code.append("\(outputs[0]) = float3(\(inputs[2]), \(inputs[3]), \(inputs[4]));\n")
+					code.append("\(outputs[0]) = \(inputs[2]);\n")
 				} else if c == values.count {
 					code.append("} else {\n")
-					code.append("\(outputs[0]) = float3(\(inputs[c * 4 - 2]), \(inputs[c * 4 - 1]), \(inputs[c * 4]));\n")
+					code.append("\(outputs[0]) = \(inputs[c * 2]);\n")
 					code.append("}\n")
 				} else {
-					let greater = inputs[c * 4 + 1]
-					let lesser = inputs[c * 4 - 3]
+					let greater = inputs[c * 2 + 1]
+					let lesser = inputs[c * 2 - 1]
 					code.append("} else if (\(valueVariable) < \(greater)) {\n")
 					//gradient = 1 - (value - lower) / (greater - lower)
 					code.append("float gradientValue\(unique) = 1 - (\(valueVariable) - \(lesser)) / (\(greater) - \(lesser));\n")
 					code.append("float3 color\(unique) = float3(0);\n")
 					
 					//add lower color
-					code.append("color\(unique) += float3(\(inputs[c * 4 - 2]), \(inputs[c * 4 - 1]), \(inputs[c * 4])) * gradientValue\(unique);\n")
+					code.append("color\(unique) += \(inputs[c * 2]) * gradientValue\(unique);\n")
 					
 					//add uper color
-					code.append("color\(unique) += float3(\(inputs[c * 4 + 2]), \(inputs[c * 4  + 3]), \(inputs[c * 4 + 4])) * (1.0 - gradientValue\(unique));\n")
+					code.append("color\(unique) += \(inputs[c * 2 + 2]) * (1.0 - gradientValue\(unique));\n")
 					
 					//set outputs
 					code.append("\(outputs[0]) = color\(unique);\n")

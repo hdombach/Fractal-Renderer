@@ -42,6 +42,7 @@ struct NodeContainer {
 				output.append(0)
 			}
 		}
+		output.append(0)
 		return output
 	}
 	
