@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct JuliaSetSettings {
+struct JuliaSetSettings: Codable {
 	var realSlope: Float = 1
 	var realIntercept: Float = 0
 	var imaginarySlope: Float = 1

@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct ChannelInfo: Hashable {
+struct ChannelInfo: Hashable, Codable {
 	var index: UInt32
 	var color: SIMD3<Float>
 	var strength: Float

@@ -50,8 +50,8 @@ struct NodeEditor: View {
 			HStack {
 				if isShowingList {
 					ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: true, content: {
-						ForEach(allNodes, id: \.id) { node in
-							NodeMenuItem(nodes: $nodeContainer.nodes, position: position, node: node)
+						ForEach(Array(NodeType.allCases), id: \.self) { type in
+							NodeMenuItem(nodes: $nodeContainer.nodes, position: position, node: Node(type))
 						}
 					}).frame(width: 150)
 					.padding(.bottom)

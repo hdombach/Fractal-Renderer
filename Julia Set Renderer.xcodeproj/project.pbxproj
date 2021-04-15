@@ -14,8 +14,11 @@
 		DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C47256B4A52009C37D8 /* LightPicker.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
 		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
+		DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE263C6F26277DA700CA346C /* RenderPassManager.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE4523D22613917300125AE6 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4523D12613917300125AE6 /* Document.swift */; };
 		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
+		DE528A582626761600F88EC3 /* Graphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE528A572626761600F88EC3 /* Graphics.swift */; };
 		DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */; };
 		DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */; };
 		DE5C04BD257877E100F5DDCD /* SwiftRayMarcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */; };
@@ -29,6 +32,7 @@
 		DE68A69B259D6F0900D66457 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69A259D6F0900D66457 /* ColorExtensions.swift */; };
 		DE68A69F259D7D2800D66457 /* NodeCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69E259D7D2800D66457 /* NodeCanvas.swift */; };
 		DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */; };
+		DE778479261408C000DA1E5F /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE778478261408C000DA1E5F /* Content.swift */; };
 		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
 		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
 		DE8237DB24AE217C000FA948 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DA24AE217C000FA948 /* Engine.swift */; };
@@ -44,6 +48,9 @@
 		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
+		DE9E7E8126116ADE00E3CC05 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9E7E8026116ADE00E3CC05 /* Application.swift */; };
+		DE9E7E8626116B3F00E3CC05 /* Mouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9E7E8526116B3F00E3CC05 /* Mouse.swift */; };
+		DE9E7E8D26116CE900E3CC05 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9E7E8C26116CE900E3CC05 /* File.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
@@ -67,6 +74,7 @@
 		DEC91214259E4871002158C9 /* MathNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91213259E4871002158C9 /* MathNodes.swift */; };
 		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
 		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
+		DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEC532E2626127B001F7A76 /* ViewState.swift */; };
 		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
 		DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE942D5D25F9874000CAF9CA /* Ray.txt */; };
@@ -104,8 +112,11 @@
 		DE167C47256B4A52009C37D8 /* LightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightPicker.swift; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
+		DE263C6F26277DA700CA346C /* RenderPassManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPassManager.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE4523D12613917300125AE6 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
+		DE528A572626761600F88EC3 /* Graphics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphics.swift; sourceTree = "<group>"; };
 		DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuple3FloatInput.swift; sourceTree = "<group>"; };
 		DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderInfo.swift; sourceTree = "<group>"; };
 		DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftRayMarcher.swift; sourceTree = "<group>"; };
@@ -119,6 +130,7 @@
 		DE68A69A259D6F0900D66457 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		DE68A69E259D7D2800D66457 /* NodeCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCanvas.swift; sourceTree = "<group>"; };
 		DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeMenuItem.swift; sourceTree = "<group>"; };
+		DE778478261408C000DA1E5F /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
 		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		DE8237DA24AE217C000FA948 /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
@@ -136,6 +148,9 @@
 		DE942D5D25F9874000CAF9CA /* Ray.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ray.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
+		DE9E7E8026116ADE00E3CC05 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
+		DE9E7E8526116B3F00E3CC05 /* Mouse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mouse.swift; sourceTree = "<group>"; };
+		DE9E7E8C26116CE900E3CC05 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
@@ -166,6 +181,7 @@
 		DEDC34CB258CE66B009B47A0 /* Types.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Types.txt; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = MathContainer.txt; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = RayMarching.txt; sourceTree = "<group>"; };
+		DEEC532E2626127B001F7A76 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		DEF0B2D225A007A9002BB7A1 /* NodePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePath.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
 		DEF9F04425F98BA600D89043 /* ColorChannels.txt */ = {isa = PBXFileReference; explicitFileType = text; path = ColorChannels.txt; sourceTree = "<group>"; };
@@ -254,8 +270,10 @@
 			isa = PBXGroup;
 			children = (
 				DE8237DA24AE217C000FA948 /* Engine.swift */,
+				DE528A572626761600F88EC3 /* Graphics.swift */,
 				DEA0347625C10D4200FA5B23 /* LibraryManager.swift */,
 				DE8237D824AE20BF000FA948 /* Renderer.swift */,
+				DE263C6F26277DA700CA346C /* RenderPassManager.swift */,
 				DE4B1013258B830B00868327 /* Shaders */,
 			);
 			path = Randering;
@@ -332,6 +350,26 @@
 			path = Types;
 			sourceTree = "<group>";
 		};
+		DE9E7E8426116B3200E3CC05 /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				DE1E40A624CB7FC5003B198F /* Keys.swift */,
+				DE9E7E8526116B3F00E3CC05 /* Mouse.swift */,
+			);
+			path = Input;
+			sourceTree = "<group>";
+		};
+		DE9E7E8B26116CD600E3CC05 /* File */ = {
+			isa = PBXGroup;
+			children = (
+				DE4523D12613917300125AE6 /* Document.swift */,
+				DE778478261408C000DA1E5F /* Content.swift */,
+				DE9E7E8C26116CE900E3CC05 /* File.swift */,
+				DEEC532E2626127B001F7A76 /* ViewState.swift */,
+			);
+			path = File;
+			sourceTree = "<group>";
+		};
 		DE9EF7FD259555AF007F2BA3 /* SwiftVoxel */ = {
 			isa = PBXGroup;
 			children = (
@@ -365,8 +403,10 @@
 			isa = PBXGroup;
 			children = (
 				DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */,
+				DE9E7E8026116ADE00E3CC05 /* Application.swift */,
+				DE9E7E8B26116CD600E3CC05 /* File */,
+				DE9E7E8426116B3200E3CC05 /* Input */,
 				DE8237D624AE2023000FA948 /* RenderView.swift */,
-				DE1E40A624CB7FC5003B198F /* Keys.swift */,
 				DEC8CDFB24AE1B8600DB5701 /* RenderWindowController.swift */,
 				DE304FC824DB56A600125844 /* Randering */,
 				DE05618924EDDD190058925E /* Types */,
@@ -538,9 +578,11 @@
 				DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */,
 				DE85F0AD259CED8700FF475F /* Node.swift in Sources */,
 				DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */,
+				DE9E7E8D26116CE900E3CC05 /* File.swift in Sources */,
 				DE14D83625E715E600E443DB /* NodeCompiler.swift in Sources */,
 				DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */,
 				DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */,
+				DE9E7E8126116ADE00E3CC05 /* Application.swift in Sources */,
 				DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */,
 				DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */,
 				DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */,
@@ -549,10 +591,14 @@
 				DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */,
 				DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */,
 				DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */,
+				DE4523D22613917300125AE6 /* Document.swift in Sources */,
 				DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */,
 				DE8237D724AE2023000FA948 /* RenderView.swift in Sources */,
 				DEA0347725C10D4200FA5B23 /* LibraryManager.swift in Sources */,
 				DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */,
+				DE778479261408C000DA1E5F /* Content.swift in Sources */,
+				DE528A582626761600F88EC3 /* Graphics.swift in Sources */,
+				DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
 				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
 				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
@@ -563,6 +609,7 @@
 				DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */,
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
+				DE9E7E8626116B3F00E3CC05 /* Mouse.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
 				DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */,
@@ -577,6 +624,7 @@
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
 				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */,
+				DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
 				DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */,
 				DE62BD322579B6A900E67351 /* ChannelInfo.swift in Sources */,

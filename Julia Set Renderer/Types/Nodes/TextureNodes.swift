@@ -8,42 +8,28 @@
 
 import SwiftUI
 
-struct PerlinNode: Node {
-	var name: String = "Perlin"
-	var functionName: String = "perlin"
-	var color: Color = .nodeTexture
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func PerlinNode() -> Node {
+	var result = Node()
+	result.type = .perlin
+	result.name = "Perlin"
+	result.functionName = "perlin"
+	result.color = .nodeTexture
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(), name: "position")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "position")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		PerlinNode()
-	}
-	
+	return result
 }
 
-struct PerlinNode3: Node {
-	var name: String = "Color Perlin"
-	var functionName: String = "perlin3"
-	var color: Color = .nodeTexture
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func Perlin3Node() -> Node {
+	var result = Node()
+	result.type = .perlin3
+	result.name = "Color Perlin"
+	result.functionName = "perlin3"
+	result.color = .nodeTexture
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(), name: "position")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(), name: "color")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "position")]
+	result.outputs = [NodeFloat(0, name: "color")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		PerlinNode3()
-	}
-	
+	return result
 }

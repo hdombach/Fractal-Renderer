@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct NodeAddress: Equatable, Hashable {
+struct NodeAddress: Equatable, Hashable, Codable {
 	var nodeIndex: Int
 	 
 	///Identifies the node it is pointing to
@@ -19,7 +19,7 @@ struct NodeAddress: Equatable, Hashable {
 	}
 }
 
-struct NodeValueAddress: Equatable, Hashable {
+struct NodeValueAddress: Equatable, Hashable, Codable {
 	var nodeIndex: Int
 	var valueIndex: Int
 	
@@ -31,7 +31,7 @@ struct NodeValueAddress: Equatable, Hashable {
 	}
 }
 
-struct DraggablePath {
+struct DraggablePath: Codable {
 	var id = UUID()
 	
 	var beggining: NodeValueAddress
@@ -39,7 +39,7 @@ struct DraggablePath {
 }
 
 //will be stored in end node
-struct NodePath: Equatable, Identifiable {
+struct NodePath: Equatable, Identifiable, Codable {
 	///Identifies the path
 	var id = UUID()
 	

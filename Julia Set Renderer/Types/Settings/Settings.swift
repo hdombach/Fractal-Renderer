@@ -10,16 +10,6 @@ import MetalKit
 import Combine
 import SwiftUI
 
-enum RenderMode: UInt32 {
-    case JuliaSet = 0
-    case Mandelbulb = 1
-}
-
-var globalId: UInt32 = 0
-func generateID() -> UInt32 {
-	globalId += 1
-	return globalId
-}
 
 class JoinedRenderSettings: ObservableObject {
 	
@@ -52,7 +42,7 @@ class JoinedRenderSettings: ObservableObject {
 		//print(channels.count, "update")
 	}
 	
-	@Published var window = WindowView.preview {
+	@Published var window = ViewportMode.preview {
 		didSet {
 			update()
 			(Engine.View as? RenderView)?.updateRenderMode()
@@ -350,13 +340,6 @@ final class ObservedRenderSettings: ObservableObject {
 	}
 }*/
 
-enum WindowView: String, CaseIterable, Identifiable {
-	case preview
-	case depth
-	case rendering
-	
-	var id: String { self.rawValue }
-}
 
 struct Settings_Previews: PreviewProvider {
 	static var previews: some View {

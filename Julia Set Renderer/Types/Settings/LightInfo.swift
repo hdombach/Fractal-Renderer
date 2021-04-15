@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct LightInfo: Hashable, Identifiable {
+struct LightInfo: Hashable, Identifiable, Codable {
 	var color: SIMD3<Float>
 	var strength: Float
 	var size: Float

@@ -9,161 +9,239 @@
 import Foundation
 import SwiftUI
 
-let allNodes: [Node] = [
-	CoordinateNode(), OrbitNode(), ColorNode(), MaterialNode(), DENode(),
-	AddNode(), MultiplyNode(), DivideNode(), IsGreaterNode(), CombineNode(), SeperateNode(), ClampNode(), SinNode(), CosNode(), AbsNode(), MapNode(),
-	VectorAddNode(), VectorLengthNode(), VectorScaleNode(), VectorMapNode(), DotProductNode(), CrossProductNode(), VectorMultiplyNode(), VectorClampNode(),
-	PerlinNode(), PerlinNode3(),
-	ColorBlendNode(), ColorRampNode()]
 //let commandDictionary: [String: Int32] = ["Error Node": 0, "Coordinate Node": 1, "Material Node": 2, "DE Node": 3, "Add Node": 4, "Multiply Node": 5, "Divide Node": 6, "Is Greater Node": 7, "Combine Node": 8, "Seperate Node": 9]
 
-protocol Node {
-	var name: String { get }
-	var functionName: String { get }
-	var color: Color { get }
-	var id: UUID { get }
-	var position: CGPoint { get set }
+enum NodeType: String, Codable, CaseIterable {
+	//io nodes
+	case coordinate
+	case orbit
+	case color
+	case material
+	case de
 	
-	var inputs: [NodeValue] { get set }
-	var outputs: [NodeValue] { get set }
-	//var paths: [NodePath] { get set }
+	//math nodes
+	case add
+	case subtract
+	case multiply
+	case divide
+	case isGreater
+	case combine
+	case seperate
+	case clamp
+	case sin
+	case cos
+	case abs
+	case map
 	
-	mutating func update()
-	func new() -> Node
-	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String
+	//vector nodes
+	case vectorAdd
+	case vectorLength
+	case vectorScale
+	case vectorMap
+	case dotProduct
+	case crossProduct
+	case vectorMultiply
+	case vectorClamp
 	
-	///Exposes normally hidden inputs as well
-	var inputRange: Range<Int> { get }
-	var outputRange: Range<Int> { get }
-	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView
-	subscript(valueIndex: Int) -> NodeValue { get set }
+	//Texture Nodes
+	case perlin
+	case perlin3
+	
+	//color
+	case colorBlend
+	case colorRamp
 }
 
-extension Node {
+let allNodes: [NodeType: () -> Node] = [
+	.coordinate: CoordinateNode,
+	.orbit: OrbitNode,
+	.material: MaterialNode,
+	.color: ColorNode,
+	.de: DENode,
+	.add: AddNode,
+	.subtract: SubtractNode,
+	.multiply: MultiplyNode,
+	.divide: DivideNode,
+	.isGreater: IsGreaterNode,
+	.combine: CombineNode,
+	.seperate: SeperateNode,
+	.clamp: ClampNode,
+	.sin: SinNode,
+	.cos: CosNode,
+	.abs: AbsNode,
+	.map: MapNode,
+	.vectorAdd: VectorAddNode,
+	.vectorLength: VectorLengthNode,
+	.vectorScale: VectorScaleNode,
+	.vectorMap: VectorMapNode,
+	.dotProduct: DotProductNode,
+	.crossProduct: CrossProductNode,
+	.vectorMultiply: VectorMultiplyNode,
+	.vectorClamp: VectorClampNode,
+	.perlin: PerlinNode,
+	.perlin3: Perlin3Node,
+	.colorBlend: ColorBlendNode,
+	.colorRamp: ColorRampNode
+]
+
+
+
+struct Node: Codable, Equatable {
 	
-	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView {
-		return AnyView(NodeView(nodeAddress: container.wrappedValue.createNodeAddress(node: self), nodeContainer: container, selected: selected))
+	var name: String = "Error"
+	var functionName = "error"
+	var color = Color.red
+	var id = UUID()
+	var position = CGPoint()
+	
+	var type: NodeType = .coordinate
+	
+	var inputs: [NodeValue] = []
+	var outputs: [NodeValue] = []
+	
+	var values: Any?
+	
+	init() {}
+	init(_ type: NodeType) {
+		self = allNodes[type]!()
 	}
 	
-	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
-		var code = "node::" + functionName + "("
+	// Methods
+	var _generateCommand: ([String], [String], String, Node) -> String = {outputs, inputs, unique, node in
+		var code = "node::" + node.functionName + "("
 		for output in outputs {
 			code += "&" + output + ", "
 		}
 		for input in inputs {
 			code += input + ", "
 		}
-		
 		code.removeLast(2)
 		code.append(");\n")
 		
 		return code
 	}
-	
-	var outputRange: Range<Int> {
-		get {
-			return 0..<outputs.count
-		}
+	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
+		_generateCommand(outputs, inputs, unique, self)
 	}
 	
-	var inputRange: Range<Int> {
-		get {
-			return outputs.count..<outputs.count + inputs.count
-		}
+	var _generateView: (Binding<NodeContainer>, Binding<Node?>, Node) -> AnyView = {container, selected, node in
+		return AnyView(NodeView(nodeAddress: container.wrappedValue.createNodeAddress(node: node), nodeContainer: container, selected: selected))
+	}
+	func generateView(container: Binding<NodeContainer>, selected: Binding<Node?>) -> AnyView {
+		_generateView(container, selected, self)
 	}
 	
-	/*var command: Int32 {
-		get {
-			return commandDictionary[functionName] ?? -1
-		}
-	}*/
+	var _outputRange: (Node) -> Range<Int> = { node in
+		return 0..<node.outputs.count
+	}
+	var outputRange: Range<Int> { _outputRange(self) }
 	
+	var _inputRange: (Node) -> Range<Int> = { node in
+		return node.outputs.count..<node.outputs.count + node.inputs.count
+	}
+	var inputRange: Range<Int> { _inputRange(self) }
+	
+	var _getSubscript: (Int, Node) -> NodeValue = {valueIndex, node in
+		if node.outputs.count > valueIndex {
+			return node.outputs[valueIndex]
+		} else {
+			return node.inputs[valueIndex - node.outputs.count]
+		}
+	}
+	var _setSubscript: (Int, NodeValue, inout Node) -> Void = {valueIndex, newValue, node in
+		if node.outputs.count > valueIndex {
+			node.outputs[valueIndex] = newValue
+		} else {
+			node.inputs[valueIndex - node.outputs.count] = newValue
+		}
+	}
 	subscript(valueIndex: Int) -> NodeValue {
-		get {
-			if outputs.count > valueIndex {
-				return outputs[valueIndex]
-			} else {
-				return inputs[valueIndex - outputs.count]
-			}
-		}
-		
-		set {
-			if outputs.count > valueIndex {
-				outputs[valueIndex] = newValue
-			} else {
-				return inputs[valueIndex - outputs.count] = newValue
-			}
-		}
+		get { _getSubscript(valueIndex, self) }
+		set { _setSubscript(valueIndex, newValue, &self) }
 	}
 	
-	func getHeight() -> Int {
+	var _getHeight: (Node) -> Int = { node in
 		var height: Int = 2
-		for value in inputs {
-			if value.type == .float3 {
+		for value in node.inputs {
+			if (value.type == .float3) {
 				height += 3
 			} else {
 				height += 1
 			}
 		}
 		
-		height += outputs.count
+		height += node.outputs.count
 		return height
 	}
+	func getHeight() -> Int { _getHeight(self) }
 	
-	func compare(to node: Node) -> Bool {
-		if id != node.id {
-			return false
-		}
-		if position != node.position {
-			return false
-		}
-		if !compare(lhs: inputs, rhs: node.inputs) {
-			return false
-		}
-		return true
+	var _compareValues: (Node, Node) -> Bool = {_, _ in true }
+	
+	var _compare: (Node, Node) -> Bool = { lhs, rhs in
+		let id = lhs.id == rhs.id
+		let pos = lhs.position == rhs.position
+		let inputs = lhs.inputs == rhs.inputs
+		let comp = lhs._compareValues(lhs, rhs)
+		return id && pos && inputs && comp
+		//return ((lhs.id == rhs.id) && (lhs.position == rhs.position)) && ((lhs.inputs == rhs.inputs) && lhs._compareValues(lhs, rhs))
+	}
+	
+	static func == (lhs: Node, rhs: Node) -> Bool {
+		return lhs._compare(lhs, rhs)
 	}
 	
 	
-	func compare(lhs: [NodeValue], rhs: [NodeValue]) -> Bool {
-		if lhs.count != rhs.count {
-			return false
-		}
-		if lhs.count == 0 && rhs.count == 0 {
-			return true
-		}
-		for c in 0...lhs.count - 1 {
-			if lhs[c].float3 != rhs[c].float3 {
-				return false
-			}
-		}
-		return true
+	var _decode: (KeyedDecodingContainer<CodingKeys>, inout Node) throws -> Void = {_,_ in }
+	var _encode: (inout KeyedEncodingContainer<CodingKeys>, Node) throws -> Void = {_,_ in }
+	
+	//Loading from json
+	enum CodingKeys: String, CodingKey {
+		case name
+		case functionName
+		case color
+		case id
+		case position
+		case inputs
+		case outputs
+		case type
+		case values
+	}
+	init(from decoder: Decoder) throws {
+		let values = try decoder.container(keyedBy: CodingKeys.self)
+		
+		type = try values.decode(NodeType.self, forKey: .type)
+		
+		self = allNodes[type]!()
+		
+		
+		id = try values.decode(UUID.self, forKey: .id)
+		position = try values.decode(CGPoint.self, forKey: .position)
+		inputs = try values.decode([NodeValue].self, forKey: .inputs)
+		outputs = try values.decode([NodeValue].self, forKey: .outputs)
+		
+		try _decode(values, &self)
+	}
+	func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(type, forKey: .type)
+		try container.encode(id, forKey: .id)
+		try container.encode(position, forKey: .position)
+		try container.encode(inputs, forKey: .inputs)
+		try container.encode(outputs, forKey: .outputs)
+		
+		try _encode(&container, self)
 	}
 }
 
-struct ErrorNode: Node {
-	var name: String = "Error"
-	var functionName: String = "error"
-	var color = Color.clear
-	var size: CGSize = .init()
-	var id = UUID()
-	var position: CGPoint = CGPoint()
-	
-	var inputs: [NodeValue] = []
-	var outputs: [NodeValue] = []
-	
-	init() {
-		printError("Error node created")
-	}
-	
-	mutating func update() {
-		return
-	}
-	func new() -> Node {
-		ErrorNode()
-	}
+enum NodeCodingKeys: String, CodingKey {
+	case name
+	case functionName
+	case color
+	case id
+	case position
+	case inputs
+	case outputs
 }
-
-typealias PreviewedNode = DENode
 
 struct NodeCustom_Previews: PreviewProvider {
 	static var previews: some View {

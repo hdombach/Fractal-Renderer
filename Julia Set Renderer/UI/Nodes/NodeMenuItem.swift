@@ -18,7 +18,7 @@ struct NodeMenuItem: View {
 			node.color.opacity(0.5)
 			Text(node.name)
 		}.onTapGesture {
-			var new = node.new()
+			var new = Node(node.type)
 			new.position = position.scale(-1) + CGPoint(x: 100, y: 100)
 			nodes.append(new)
 		}.cornerRadius(5)

@@ -42,9 +42,9 @@ struct RenderBox: View {
 					Text("Stop")
 				}
 				Picker(selection: $settings.window, label: Text("")) {
-					Text("preview").tag(WindowView.preview)
-					Text("depth").tag(WindowView.depth)
-					Text("rendering").tag(WindowView.rendering)
+					Text("preview").tag(ViewportMode.preview)
+					Text("depth").tag(ViewportMode.depth)
+					Text("rendering").tag(ViewportMode.rendering)
 				}.pickerStyle(RadioGroupPickerStyle())
 				Text(Engine.Settings.progress)
 			}

@@ -10,7 +10,7 @@ import simd
 import Foundation
 import SwiftUI
 
-struct Camera: Equatable {
+struct Camera: Equatable, Codable {
 	var position: SIMD4<Float>
 	var horizontal: SIMD4<Float> = .init()
 	var vertical: SIMD4<Float> = .init()
@@ -30,7 +30,16 @@ struct Camera: Equatable {
 		}
 	}
 	var resolution: SIMD2<Float>
-	var quaternion: simd_quatf = .init(angle: 0, axis: Float3(0, 1, 0))
+	var quaternionVec: SIMD4<Float> = simd_quatf(angle: 0, axis: Float3(0, 1, 0)).vector
+	var quaternion: simd_quatf {
+		get {
+			return simd_quatf(vector: quaternionVec)
+		}
+		
+		set {
+			quaternionVec = newValue.vector
+		}
+	}
 	
 	init(position: Float4 = .init(0, 0.0001, -2, 0), lensRadius: Float = 0, vfov: Float = 30, focusDistance: Float = 1, resolution: SIMD2<Float> = .init(1920, 1080), setup: Bool = true) {
 		self.position = position

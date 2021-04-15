@@ -8,157 +8,106 @@
 
 import SwiftUI
 
-struct VectorAddNode: Node {
-	var name: String = "Vector Add"
-	var functionName: String = "vectorAdd"
-	var color: Color = .nodeVector
-	var id = UUID()
-	var position: CGPoint = .init()
+func VectorAddNode() -> Node {
+	var result = Node()
+	result.type = .vectorAdd
+	result.name = "Vector Add"
+	result.functionName = "vectorAdd"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(.init(0, 0, 0), name: "value"), NodeFloat3(.init(0, 0, 0), name: "value")]
-	var outputs: [NodeValue] = [NodeFloat3(.init(0, 0, 0), name: "value")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "float3"), NodeFloat3(0, 0, 0, name: "float3")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "float3")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorAddNode()
-	}
-	
+	return result
 }
 
-struct VectorLengthNode: Node {
-	var name: String = "Vector Length"
-	var functionName: String = "vectorLength"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func VectorLengthNode() -> Node {
+	var result = Node()
+	result.type = .vectorLength
+	result.name = "Vector Length"
+	result.functionName = "vectorLength"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(.init(0, 0, 0), name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "float3")]
+	result.outputs = [NodeFloat(0, name: "length")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorLengthNode()
-	}
-	
+	return result
 }
 
-struct VectorScaleNode: Node {
-	var name: String = "Vector Scale"
-	var functionName: String = "vectorScale"
-	var color: Color = .nodeVector
-	var id = UUID()
-	var position: CGPoint = .init()
+func VectorScaleNode() -> Node {
+	var result = Node()
+	result.type = .vectorScale
+	result.name = "Vector Scale"
+	result.functionName = "vectorScale"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "vector"), NodeFloat(1, name: "scalar")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "vector")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "float3"), NodeFloat(1, name: "scale")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "float3")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorScaleNode()
-	}
-	
+	return result
 }
 
-struct VectorMapNode: Node {
-	var name: String = "Vector Map"
-	var functionName: String = "vectorMap"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func VectorMapNode() -> Node {
+	var result = Node()
+	result.type = .vectorMap
+	result.name = "Vector Map"
+	result.functionName = "vectorMap"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0), name: "value"), NodeFloat(-1, name: "from min"), NodeFloat(1, name: "from max"), NodeFloat(0, name: "to min"), NodeFloat(1, name: "to max")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0.5), name: "value")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "vector"), NodeFloat(-1, name: "from min"), NodeFloat(1, name: "from max"), NodeFloat(0, name: "to min"), NodeFloat(1, name: "to max")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "vector")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorMapNode()
-	}
+	return result
 }
 
-struct DotProductNode: Node {
-	var name: String  = "Dot Product"
-	var functionName: String = "dotProduct"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func DotProductNode() -> Node {
+	var result = Node()
+	result.type = .dotProduct
+	result.name = "Dot Product"
+	result.functionName = "dotProduct"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector"), NodeFloat3(Float3(0), name: "vector")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "vector"), NodeFloat3(0, 0, 0, name: "vector")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		DotProductNode()
-	}
+	return result
 }
 
-struct CrossProductNode: Node {
-	var name: String = "Cross Product"
-	var functionName: String = "crossProduct"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func CrossProductNode() -> Node {
+	var result = Node()
+	result.type = .crossProduct
+	result.name = "Cross Product"
+	result.functionName = "crossProduct"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector"), NodeFloat3(Float3(0), name: "vector")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "vector"), NodeFloat3(0, 0, 0, name: "vector")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "vector")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		CrossProductNode()
-	}
+	return result
 }
 
-struct VectorMultiplyNode: Node {
-	var name: String = "Vector Multiply Node"
-	var functionName: String = "vectorMultiply"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func VectorMultiplyNode() -> Node {
+	var result = Node()
+	result.type = .vectorMultiply
+	result.name = "Vector Multiply Node"
+	result.functionName = "vectorMultiply"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector"), NodeFloat3(Float3(0), name: "vector")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "vector"), NodeFloat3(0, 0, 0, name: "vector")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "vector")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorMultiplyNode()
-	}
+	return result
 }
 
-struct VectorClampNode: Node {
-	var name: String = "Vector Clamp Node"
-	var functionName: String = "vectorClamp"
-	var color: Color = .nodeVector
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func VectorClampNode() -> Node {
+	var result = Node()
+	result.type = .vectorClamp
+	result.name = "Vector Clamp Node"
+	result.functionName = "vectorClamp"
+	result.color = .nodeVector
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(), name: "vector"), NodeFloat(0, name: "min"), NodeFloat(1, name: "max")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0), name: "vector")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "vector"), NodeFloat(0, name: "min"), NodeFloat(1, name: "max")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "vector")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		VectorClampNode()
-	}
+	return result
 }

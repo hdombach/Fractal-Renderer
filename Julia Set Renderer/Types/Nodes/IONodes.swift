@@ -9,131 +9,84 @@
 import Foundation
 import SwiftUI
 
-struct CoordinateNode: Node {
-	var name = "Coordinate"
-	var functionName: String = "coordinate"
-	var color: Color = .nodeInput
-	var size: CGSize = CGSize(width: 200, height: 100)
-	var id = UUID()
-	var position = CGPoint()
+func CoordinateNode() -> Node {
+	var result = Node()
+	result.type = .coordinate
+	result.name = "Coordinate"
+	result.functionName = "coordinate"
+	result.color = .nodeInput
 	
-	var inputs: [NodeValue] = []
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "position"), NodeFloat3(Float3(0, 0, 0), name: "orbit"), NodeFloat(0, name: "iterations")]
-	var paths: [NodePath] = []
+	result.outputs = [NodeFloat3(Float3(0), name: "position"), NodeFloat3(0, 0, 0, name: "orbit"), NodeFloat(0, name: "iterations")]
 	
-	mutating func update() {
-		return
-	}
-	
-	func new() -> Node {
-		CoordinateNode()
-	}
-	
-	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
-		
+	result._generateCommand = {outputs, inputs, unique, node in
 		var code = ""
-		
-		/*code.append("\(outputs[0]) = position.x;\n")
-		code.append("\(outputs[1]) = position.y;\n")
-		code.append("\(outputs[2]) = position.z;\n")
-		code.append("\(outputs[3]) = orbit.x;\n")
-		code.append("\(outputs[4]) = orbit.y;\n")
-		code.append("\(outputs[5]) = orbit.z;\n")
-		code.append("\(outputs[6]) = iterations;\n")*/
 		
 		code.append("\(outputs[0]) = position;\n")
 		code.append("\(outputs[1]) = orbit;\n")
 		code.append("\(outputs[2]) = iterations;\n")
 		
 		return code
-		
 	}
 	
+	return result
 }
 
-struct OrbitNode: Node {
-	var name: String = "Orbit"
-	var functionName: String = "orbit"
-	var color: Color = .nodeInput
-	var id = UUID()
-	var position: CGPoint = CGPoint()
+func OrbitNode() -> Node {
+	var result = Node()
+	result.type = .orbit
+	result.name = "Orbit"
+	result.functionName = "orbit"
+	result.color = .nodeInput
 	
-	var inputs: [NodeValue] = []
-	var outputs: [NodeValue] = [NodeFloat(0, name: "orbit")]
+	result.outputs = [NodeFloat(0, name: "orbit")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		OrbitNode()
-	}
+	return result
 }
 
-struct MaterialNode: Node {
-	var name: String = "Material"
-	var functionName: String = "material"
-	var color: Color = .nodeOutput
-	var size: CGSize = CGSize(width: 200, height: 150)
-	var id = UUID()
-	var position = CGPoint()
+func MaterialNode() -> Node {
+	var result = Node()
+	result.type = .material
+	result.name = "Material"
+	result.functionName = "material"
+	result.color = .nodeOutput
 	
-	var inputs: [NodeValue] = [NodeColor(Float3(0.5, 0.5, 0.5), name: "Surface Color")]
-	var outputs: [NodeValue] = []
-	var paths: [NodePath] = []
+	result.inputs = [NodeColor(Float3(0.5), name: "Surface Color")]
 	
-	mutating func update() {
-		return
-	}
-	
-	func new() -> Node {
-		MaterialNode()
-	}
-	func generateCommand(outputs: [String], inputs: [String], unique: String) -> String {
+	result._generateCommand = {outputs, inputs, unique, node in
 		var code: String = ""
-		//code.append("rgbAbsorption.xyz = clamp(float3(\(inputs[0]), \(inputs[1]), \(inputs[2])), float3(0), float3(1));\n")
-		code.append("rgbAbsorption.xyz = clamp(\(inputs[0]), float3(0), float3(1));\n")
-		code.append("rgbEmitted = float3(0, 0, 0); \n")
-		code.append("return;\n")
+		
+		code += "rgbAbsorption.xyz = clamp(\(inputs[0]), float3(0), float3(1));\n"
+		code += "rgbEmitted = float3(0, 0, 0); \n"
+		code += "return;\n"
+		
 		return code
 	}
+	
+	return result
 }
 
-struct ColorNode: Node {
-	var name: String = "Color"
-	var functionName: String = "color"
-	var color: Color = .nodeInput
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func ColorNode() -> Node {
+	var result = Node()
 	
-	var inputs: [NodeValue] = [NodeColor(Float3(0.5, 0.5, 0.5), name: "color")]
-	var outputs: [NodeValue] = [NodeColor(Float3(), name: "color")]
+	result.type = .color
+	result.name = "Color"
+	result.functionName = "color"
+	result.color = .nodeInput
 	
-	func update() {
-		return
-	}
+	result.inputs = [NodeColor(Float3(0.5), name: "color")]
+	result.outputs = [NodeColor(Float3(0.5), name: "color")]
 	
-	func new() -> Node {
-		ColorNode()
-	}
+	return result
 }
 
-struct DENode: Node {
-	var name: String = "DE"
-	var functionName: String = "de"
-	var color: Color = .nodeOutput
-	var size: CGSize = CGSize(width: 200, height: 100)
-	var id = UUID()
-	var position: CGPoint = CGPoint()
+func DENode() -> Node {
+	var result = Node()
 	
-	var inputs: [NodeValue] = [NodeFloat(1, name: "Distance")]
-	var outputs: [NodeValue] = []
-	var paths: [NodePath] = []
-	mutating func update() {
-		return
-	}
+	result.type = .de
+	result.name = "DE"
+	result.functionName = "de"
+	result.color = .nodeOutput
+	result.inputs = [NodeFloat(1, name: "Distance")]
 	
-	func new() -> Node {
-		DENode()
-	}
+	return result
 }

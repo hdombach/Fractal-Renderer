@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum NodeValueType {
+enum NodeValueType: String, Codable {
 	case float
 	case float3
 	case int
@@ -37,36 +37,63 @@ enum NodeValueType {
 	}
 }
 
-/*class NodeValue: Equatable {
-	static func == (lhs: NodeValue, rhs: NodeValue) -> Bool {
-		false
-	}
+struct NodeValue: Codable, Equatable {
+	private var value = Float3(repeating: 0)
+	var position: CGPoint?
+	var type: NodeValueType = .float3
+	var name = ""
 	
 	var float: Float {
-		get { 0 }
-		set { }
+		get { value.x }
+		set { value = Float3(newValue, newValue, newValue )}
 	}
-	
 	var float3: Float3 {
-		get { .init() }
-		set { }
+		get { value }
+		set { value = newValue }
 	}
-	
 	var int: Int {
-		get { 0 }
-		set { }
+		get { Int(value.x) }
+		set { value = Float3(Float(newValue), Float(newValue), Float(newValue))}
 	}
-	
-	var name: String { "" }
-	
-	var type: NodeValueType { .float }
-	
-	var position: CGPoint = .init()
-}*/
+}
 
+func NodeFloat(_ value: Float, name initName: String?) -> NodeValue {
+	var result =  NodeValue()
+	result.float = value
+	result.type = .float
+	result.name = initName ?? ""
+	
+	return result
+}
+func NodeFloat3(_ value: Float3, name initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.float3 = value
+	result.type = .float3
+	result.name = initName ?? ""
+	
+	return result
+}
+func NodeFloat3(_ value1: Float, _ value2: Float, _ value3: Float, name initName: String?) -> NodeValue {
+	return NodeFloat3(Float3(value1, value2, value3), name: initName)
+}
+func NodeColor(_ value: Float3, name initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.float3 = value
+	result.type = .color
+	result.name = initName ?? ""
+	
+	return result
+}
+func NodeInt(_ value: Int, name initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.int = value
+	result.type = .int
+	result.name = initName ?? ""
+	
+	return result
+}
 
-
-protocol NodeValue {
+protocol _NodeValue: Codable {
 	var float: Float { get set }
 	var float3: Float3 { get set }
 	var int: Int { get set }
@@ -77,7 +104,7 @@ protocol NodeValue {
 	var type: NodeValueType { get set }
 }
 
-struct NodeFloat: NodeValue {
+struct _NodeFloat: _NodeValue {
 	var value: Float
 	var position: CGPoint?
 	var type: NodeValueType = .float
@@ -106,7 +133,7 @@ struct NodeFloat: NodeValue {
 	}
 }
 
-struct NodeColor: NodeValue {
+struct _NodeColor: _NodeValue {
 	var value: Float3
 	var position: CGPoint?
 	var type: NodeValueType = .color
@@ -135,7 +162,7 @@ struct NodeColor: NodeValue {
 	}
 }
 
-struct NodeFloat3: NodeValue {
+struct _NodeFloat3: _NodeValue {
 	var value: Float3
 	var position: CGPoint?
 	var type: NodeValueType = .float3
@@ -164,7 +191,7 @@ struct NodeFloat3: NodeValue {
 	}
 }
 
-struct NodeInt: NodeValue {
+struct _NodeInt: _NodeValue {
 	var value: Int
 	var position: CGPoint?
 	var type: NodeValueType = .int

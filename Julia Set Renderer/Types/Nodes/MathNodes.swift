@@ -9,257 +9,159 @@
 import Foundation
 import SwiftUI
 
-struct AddNode: Node {
-	var name: String = "Add"
-	var functionName: String = "add"
-	var color: Color = .nodeMath
-	var size: CGSize = CGSize(width: 200, height: 150)
-	var id = UUID()
-	var position: CGPoint = .init()
+
+func AddNode() -> Node {
+	var result = Node()
+	result.type = .add
+	result.name = "Add"
+	result.functionName = "add"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	mutating func update() {
-		outputs[0].float = inputs[0].float + inputs[1].float
-	}
-	
-	func new() -> Node {
-		AddNode()
-	}
-	
+	return result
 }
 
-struct SubtractNode: Node {
-	var name: String = "Subtract"
-	var functionName: String = "subtract"
-	var color: Color = .nodeMath
-	var id = UUID()
-	var position: CGPoint = .init()
+func SubtractNode() -> Node {
+	var result = Node()
+	result.type = .subtract
+	result.name = "Subtract"
+	result.functionName = "subtract"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	mutating func update() {
-		return
-	}
-	
-	func new() -> Node {
-		SubtractNode()
-	}
-	
+	return result
 }
 
-struct MultiplyNode: Node {
-	var name: String = "Multiply"
-	var functionName: String = "multiply"
-	var color: Color = .nodeMath
-	var size: CGSize = CGSize(width: 200, height: 150)
-	var id = UUID()
-	var position = CGPoint()
+func MultiplyNode() -> Node {
+	var result = Node()
+	result.type = .multiply
+	result.name = "Multiply"
+	result.functionName = "multiply"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(0, name: "value"), NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	mutating func update() {
-		outputs[0].float = inputs[0].float * inputs[1].float
-	}
-	
-	func new() -> Node {
-		MultiplyNode()
-	}
-	
+	return result
 }
 
-struct DivideNode: Node {
-	var name: String = "Divide"
-	var functionName: String = "divide"
-	var color: Color = .nodeMath
-	var size: CGSize = CGSize(width: 200, height: 150)
-	var id = UUID()
-	var position = CGPoint()
+func DivideNode() -> Node {
+	var result = Node()
+	result.type = .divide
+	result.name = "Divide"
+	result.functionName = "divide"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(1, name: "Numerator"), NodeFloat(1, name: "Denominator")]
-	var outputs: [NodeValue] = [NodeFloat(1, name: "value")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(1, name: "numberator"), NodeFloat(1, name: "denominator")]
+	result.outputs = [NodeFloat(1, name: "value")]
 	
-	mutating func update() {
-		outputs[0].float = inputs[0].float / inputs[1].float
-	}
-	
-	func new() -> Node {
-		DivideNode()
-	}
-	
+	return result
 }
 
-struct IsGreaterNode: Node {
-	var name: String = "Is Greater"
-	var functionName: String = "isGreater"
-	var color: Color = .nodeMath
-	var size = CGSize(width: 200, height: 150)
-	var id = UUID()
-	var position = CGPoint()
+func IsGreaterNode() -> Node {
+	var result = Node()
+	result.type = .isGreater
+	result.name = "Is Greater"
+	result.functionName = "isGreater"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(1, name: "vlaue"), NodeFloat(0.5, name: "Threshold")]
-	var outputs: [NodeValue] = [NodeFloat(1, name: "value")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(1, name: "value"), NodeFloat(0.5, name: "threshold")]
+	result.outputs = [NodeFloat(1, name: "value")]
 	
-	mutating func update() {
-		if inputs[0].float > inputs[1].float {
-			outputs[0].float = 1
-		} else {
-			outputs[0].float = 0
-		}
-	}
-	
-	func new() -> Node {
-		IsGreaterNode()
-	}
-	
+	return result
 }
 
-struct CombineNode: Node {
-	var name: String = "Combine"
-	var functionName: String = "combine"
-	var color: Color = .nodeMath
-	var size = CGSize(width: 200, height: 200)
-	var id = UUID()
-	var position = CGPoint()
+func CombineNode() -> Node {
+	var result = Node()
+	result.type = .combine
+	result.name = "Combine"
+	result.functionName = "combine"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "x"), NodeFloat(0, name: "y"), NodeFloat(0, name: "z")]
-	var outputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "float3")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat(0, name: "x"), NodeFloat(0, name: "y"), NodeFloat(0, name: "z")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "float3")]
 	
-	mutating func update() {
-		outputs[0].float3 = Float3(inputs[0].float, inputs[1].float, inputs[2].float)
-	}
-	
-	func new() -> Node {
-		CombineNode()
-	}
+	return result
 }
 
-struct SeperateNode: Node {
-	var name: String = "Seperate"
-	var functionName: String = "seperate"
-	var color: Color = .nodeMath
-	var size = CGSize(width: 200, height: 200)
-	var id = UUID()
-	var position = CGPoint()
+func SeperateNode() -> Node {
+	var result = Node()
+	result.type = .seperate
+	result.name = "Seperate"
+	result.functionName = "seperate"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat3(Float3(0, 0, 0), name: "float3")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "x"), NodeFloat(0, name: "y"), NodeFloat(0, name: "z")]
-	var paths: [NodePath] = []
+	result.inputs = [NodeFloat3(0, 0, 0, name: "float3")]
+	result.outputs = [NodeFloat(0, name: "x"), NodeFloat(0, name: "y"), NodeFloat(0, name: "z")]
 	
-	mutating func update() {
-		return
-	}
-	
-	func new() -> Node {
-		SeperateNode()
-	}
-	
+	return result
 }
 
-struct ClampNode: Node {
-	var name: String = "Clamp"
-	var functionName: String = "nodeClamp"
-	var color: Color = .nodeMath
-	var id = UUID()
-	var position: CGPoint = .init()
+func ClampNode() -> Node {
+	var result = Node()
+	result.type = .clamp
+	result.name = "Clamp"
+	result.functionName = "nodeClamp"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(0, name: "min"), NodeFloat(0, name: "max")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat(0, name: "value"), NodeFloat(0, name: "min"), NodeFloat(0, name: "max")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		ClampNode()
-	}
-	
+	return result
 }
 
-struct SinNode: Node {
-	var name: String = "Sin"
-	var functionName: String = "nodeSin"
-	var color: Color = .nodeMath
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func SinNode() -> Node {
+	var result = Node()
+	result.type = .sin
+	result.name = "Sin"
+	result.functionName = "nodeSin"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		SinNode()
-	}
-	
+	return result
 }
 
-struct CosNode: Node {
-	var name: String = "Cos"
-	var functionName: String = "nodeCos"
-	var color: Color = .nodeMath
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func CosNode() -> Node {
+	var result = Node()
+	result.type = .cos
+	result.name = "Cos"
+	result.functionName = "nodeCos"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		CosNode()
-	}
-	
+	return result
 }
 
-struct AbsNode: Node {
-	var name: String = "Abs"
-	var functionName: String = "abs"
-	var color: Color = .nodeMath
-	var id: UUID = UUID()
-	var position: CGPoint = .init()
+func AbsNode() -> Node {
+	var result = Node()
+	result.type = .abs
+	result.name = "Abs"
+	result.functionName = "abs"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value")]
-	var outputs: [NodeValue] = [NodeFloat(0, name: "value")]
+	result.inputs = [NodeFloat(0, name: "value")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		AbsNode()
-	}
-	
+	return result
 }
 
-struct MapNode: Node {
-	var name: String = "Map"
-	var functionName: String = "map"
-	var color: Color = .nodeMath
-	var id: UUID = UUID()
-	var position: CGPoint = CGPoint()
+func MapNode() -> Node {
+	var result = Node()
+	result.type = .map
+	result.name = "Map"
+	result.functionName = "map"
+	result.color = .nodeMath
 	
-	var inputs: [NodeValue] = [NodeFloat(0, name: "value"), NodeFloat(-1, name: "from min"), NodeFloat(1, name: "from max"), NodeFloat(0, name: "to min"), NodeFloat(1, name: "to max")]
-	var outputs: [NodeValue] = [NodeFloat(0.5, name: "value")]
+	result.inputs = [NodeFloat(0, name: "value"), NodeFloat(-1, name: "from min"), NodeFloat(1, name: "from max"), NodeFloat(0, name: "to min"), NodeFloat(1, name: "to max")]
+	result.outputs = [NodeFloat(0, name: "value")]
 	
-	func update() {
-		return
-	}
-	
-	func new() -> Node {
-		MapNode()
-	}
+	return result
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RayMarchingSettings {
+struct RayMarchingSettings: Codable {
 	var mandelbulbPower: Float = 12
 	var bundleSize: UInt32 = 1
 	var quality: Float = 5000

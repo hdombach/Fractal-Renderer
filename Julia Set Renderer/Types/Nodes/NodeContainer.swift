@@ -8,13 +8,18 @@
 
 import Foundation
 
-enum NodeContainerType {
+enum NodeContainerType: String, Codable {
 	case Material
 	case DE
 }
 
 //Root node manager
-struct NodeContainer {
+struct NodeContainer: Codable {
+	struct ConstantAddress: Codable {
+		var address: NodeValueAddress
+		var vector: Int
+	}
+	
 	var nodes: [Node] = [] {
 		didSet {
 			if oldConstants != constants {
@@ -25,7 +30,7 @@ struct NodeContainer {
 	}
 	var paths: [NodePath] = []
 	
-	internal var constantsAddresses: [(address: NodeValueAddress, vector: Int)] = []
+	internal var constantsAddresses: [ConstantAddress] = []
 	private var oldConstants: [Float] = []
 	
 	//values that can be used to change the procedural texture without recalculating
@@ -159,7 +164,7 @@ struct NodeContainer {
 			}
 			point.y += CGFloat(viewIndex) * gridSize + gridSize / 2
 			
-			if node is ColorRampNode {
+			if node.type == .colorRamp {
 				point.y -= gridSize
 			}
 			

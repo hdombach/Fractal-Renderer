@@ -19,6 +19,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
 	var screenRatio: Float = 0
     var isComputingPass: Bool = false
+	var mode: ViewportMode = .preview
 	
 	var rayMarcher = RayMarcher()
 

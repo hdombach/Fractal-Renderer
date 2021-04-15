@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ShaderInfo {
+struct ShaderInfo: Codable {
 	var rayMarchingSettings: RayMarchingSettings = .init()
 	var camera: Camera = Camera(setup: false)
 	var realIndex: SIMD4<UInt32> = .init()
