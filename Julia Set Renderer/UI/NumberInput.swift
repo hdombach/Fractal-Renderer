@@ -114,12 +114,13 @@ struct NumberInput_Previews: PreviewProvider {
 
     static var previews: some View {
         
-        Group {
+        /*Group {
 			NumberInput(value: Binding.init(get: {
 				return Engine.Settings.camera.position.x.nsNumber
 			}, set: { (newValue) in
 				Engine.Settings.camera.position.x.nsNumber = newValue
 			}))
-        }
+        }*/
+		Text("hi")
     }
 }

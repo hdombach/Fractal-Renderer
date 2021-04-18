@@ -11,11 +11,13 @@ import MetalKit
 
 class Graphics {
 	var device: MTLDevice!
-	var library = LibraryManager()
+	lazy var library: LibraryManager = { LibraryManager(doc: document) }()
 	var pixelFormat = (MTLPixelFormat.rgba16Float, MTLPixelFormat.r32Float)
 	var renderMode: RenderMode = .Mandelbulb
+	var document: Document
 	
-	init() {
+	init(doc: Document) {
 		device = MTLCreateSystemDefaultDevice()
+		self.document = doc
 	}
 }

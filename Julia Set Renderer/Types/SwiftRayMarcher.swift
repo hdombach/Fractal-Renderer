@@ -10,12 +10,17 @@ import Foundation
 import simd
 
 class RayMarcher {
+	var content: Content
 	var settings: RayMarchingSettings {
-		Engine.Settings.rayMarchingSettings
+		content.rayMarchingSettings
 	}
 	
 	var iterations: Int = 50
 	var bailout: Float = 3
+	
+	init(_ content: Content) {
+		self.content = content
+	}
 	
 	func DE(pos: SIMD3<Float>) -> Float {
 		return mandelbulb(pos: pos)

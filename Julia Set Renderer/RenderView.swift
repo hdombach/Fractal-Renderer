@@ -10,6 +10,7 @@ import MetalKit
 
 //The render window.
 class RenderView: MTKView {
+	var document: Document!
 	var renderer: Renderer!
 
 	var trackingRect: NSTrackingArea!
@@ -19,13 +20,32 @@ class RenderView: MTKView {
 	var isSelected: Bool = false
 	
 	func updateRenderMode() {
-		changeRenderMode(isManual: !(isSelected || Engine.Settings.window == .rendering))
+		changeRenderMode(isManual: !(isSelected || document.viewState.viewportMode == .rendering))
 	}
 	
 	func changeRenderMode(isManual: Bool) {
 		print("changed render mode", isManual)
 		self.isPaused = isManual
 		self.enableSetNeedsDisplay = isManual
+	}
+	
+	init(doc: Document) {
+		super.init(frame: CGRect(), device: doc.graphics.device)
+		self.document = doc
+		colorPixelFormat = document.graphics.pixelFormat.0
+		
+		self.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+		
+		self.renderer = doc.viewState.renderer
+		
+		renderer.screenRatio = Float(frame.size.width / frame.size.height)
+		
+		self.delegate = renderer
+		
+		trackingRect = NSTrackingArea.init(rect: NSRect.init(x: 0, y: 0, width: 10000, height: 10000), options: [NSTrackingArea.Options.mouseMoved, NSTrackingArea.Options.activeWhenFirstResponder], owner: self, userInfo: nil)
+		addTrackingArea(trackingRect)
+		
+		changeRenderMode(isManual: true)
 	}
 
 	required init(coder: NSCoder) {
@@ -34,15 +54,11 @@ class RenderView: MTKView {
 
 		self.device = MTLCreateSystemDefaultDevice()
 
-		Engine.Init(device: device!)
-
-		colorPixelFormat = Engine.PixelFormat.0
+		colorPixelFormat = document.graphics.pixelFormat.0
 
 		self.clearColor = MTLClearColor.init(red: 0, green: 0, blue: 0, alpha: 0)
 
 		self.renderer = Renderer()
-		
-		Engine.View = self
 
 		renderer.screenRatio = Float(frame.size.width / frame.size.height)
 
@@ -62,7 +78,7 @@ class RenderView: MTKView {
 	override func mouseDown(with event: NSEvent) {
 		isSelected = true
 		updateRenderMode()
-		Engine.Settings.isShowingUI = false
+		document.viewState.isShowingUI = false
 		isTracking = true
 		CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: false)))
 		CGDisplayHideCursor(1)
@@ -73,7 +89,7 @@ class RenderView: MTKView {
 		if event.keyCode == 53 { // escape
 			isSelected = false
 			updateRenderMode()
-			Engine.Settings.isShowingUI = true
+			document.viewState.isShowingUI = true
 			isTracking = false
 			CGAssociateMouseAndMouseCursorPosition(boolean_t(UInt32(truncating: true)))
 			CGDisplayShowCursor(1)
@@ -97,10 +113,10 @@ class RenderView: MTKView {
 	}
 
 	func rotateCamera(event: NSEvent) {
-		if Engine.Settings.window == .rendering {
+		if document.viewState.viewportMode == .rendering {
 			printError("Tried to move camera while rendering.")
 		} else {
-			Engine.Settings.camera.rotate(deltaX: Float(event.deltaX / 1000), deltaY: Float(event.deltaY / -1000))
+			document.content.camera.rotate(deltaX: Float(event.deltaX / 1000), deltaY: Float(event.deltaY / -1000))
 		}
 	}
 

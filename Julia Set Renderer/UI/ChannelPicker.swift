@@ -35,10 +35,11 @@ struct ChannelPicker: View {
 
 struct ChannelPicker_Previews: PreviewProvider {
     static var previews: some View {
-		ChannelPicker(channel: .init(get: { () -> ChannelInfo in
+		/*ChannelPicker(channel: .init(get: { () -> ChannelInfo in
 			Engine.Settings.channels[0]
 		}, set: { (newChannel) in
 			Engine.Settings.channels[0] = newChannel
-		}))
+		}))*/
+		Text("hi")
     }
 }

@@ -63,9 +63,13 @@ struct Complex: Equatable {
 
 class JuliaSet {
     
-	lazy var settings: JuliaSetSettings = {
-		Engine.Settings.juliaSetSettings
-	}()
+	var document: Document
+	
+	var settings: JuliaSetSettings { document.content.julaSettings}
+	
+	init (doc: Document) {
+		self.document = doc
+	}
 
 	func getBasic(point: Complex, c: Complex) -> Bool {
 		var x = point

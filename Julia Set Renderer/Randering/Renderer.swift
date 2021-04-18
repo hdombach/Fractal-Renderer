@@ -19,15 +19,29 @@ class Renderer: NSObject, MTKViewDelegate {
 
 	var screenRatio: Float = 0
     var isComputingPass: Bool = false
-	var mode: ViewportMode = .preview
 	
-	var rayMarcher = RayMarcher()
+	var rayMarcher: RayMarcher!
+	
+	var document: Document!
+	var graphics: Graphics { document.graphics }
+	var state: ViewSate { document.viewState }
+	var content: Content { document.content }
+	
+	var commandQueue: MTLCommandQueue!
+	
 
 	//var camera = Camera(position: SIMD4<Float>(0, 0, -1, 0), deriction: SIMD4<Float>(0, 0, 0, 0), zoom: 1 / 2000, cameraDepth: 1, rotateMatrix: matrix_identity_float4x4, resolution: SIMD2<Float>(1920, 1080))
 
 	override init() {
 		super.init()
+	}
+	
+	convenience init(doc: Document) {
+		self.init()
+		document = doc
 		self.updateMesh()
+		self.rayMarcher = RayMarcher(document.content)
+		self.commandQueue = graphics.device.makeCommandQueue()
 	}
 
 	var time: Float = 0
@@ -38,12 +52,16 @@ class Renderer: NSObject, MTKViewDelegate {
 
 	func draw(in view: MTKView) {
 		
-		
-
-		let commandBuffer = Engine.CommandQueue.makeCommandBuffer()
+		var commandBuffer: MTLCommandBuffer!
+		if let buffer = commandQueue.makeCommandBuffer() {
+			commandBuffer = buffer
+		} else {
+			printError("Could not create command buffer")
+			return
+		}
 		
 		//adds a compute pipeline that does the raymarching
-		Engine.RenderPass(commandBuffer: commandBuffer!)
+		document.viewState.renderPassManager.renderPass(commandBuffer: commandBuffer, mode: state.viewportMode)
 
 
 		//post compute commands
@@ -60,8 +78,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		
 		var speed: Float = 0.01
 		
-		if Engine.Settings.renderMode == .Mandelbulb && true {
-			speed = simd_clamp(rayMarcher.DE(pos: Engine.Settings.camera.position.xyz) / 4, 0, 0.01)
+		if state.renderMode == .Mandelbulb && true {
+			speed = simd_clamp(rayMarcher.DE(pos: content.camera.position.xyz) / 4, 0, 0.01)
 		}
 
 		var offset = SIMD4<Float>(0, 0, 0, 0)
@@ -91,9 +109,9 @@ class Renderer: NSObject, MTKViewDelegate {
 			update = true
 		}
 		if update {
-			offset = Engine.Settings.camera.transformMatrix * offset
+			offset = content.camera.transformMatrix * offset
 			//print(offset)
-			Engine.Settings.camera.position += offset
+			content.camera.position += offset
 		}
 
 		//post draw commands
@@ -103,40 +121,40 @@ class Renderer: NSObject, MTKViewDelegate {
 			else { print("could not get things"); return }
 
 		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-		switch Engine.Settings.window {
+		switch state.viewportMode {
 		case .preview:
-			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.preview])
+			renderCommandEncoder?.setRenderPipelineState(graphics.library[.preview])
 		case .rendering:
-			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
+			renderCommandEncoder?.setRenderPipelineState(graphics.library[.render])
 		case .depth:
-			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.depth])
+			renderCommandEncoder?.setRenderPipelineState(graphics.library[.depth])
         default:
-			renderCommandEncoder?.setRenderPipelineState(Engine.Library[.render])
+			renderCommandEncoder?.setRenderPipelineState(graphics.library[.render])
 		}
 		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
 		renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
-		renderCommandEncoder?.setFragmentSamplerState(Engine.Library.samplerState, index: 0)
-		renderCommandEncoder?.setFragmentTexture(Engine.MainTexture.texture, index: 0)
+		renderCommandEncoder?.setFragmentSamplerState(graphics.library.samplerState, index: 0)
+		renderCommandEncoder?.setFragmentTexture(document.viewState.renderPassManager.result.texture, index: 0)
 		
 		var info = ShaderInfo.init()
-		info.camera = Engine.Settings.camera
-		info.voxelsLength = UInt32(Engine.Container.voxelCount)
-		info.isJulia = Engine.Settings.renderMode.rawValue
-		info.lightsLength = UInt32(Engine.Settings.skyBox.count)
-		info.exposure = UInt32(Engine.Settings.exposure)
-		info.rayMarchingSettings = Engine.Settings.rayMarchingSettings
-		info.channelsLength = UInt32(Engine.Settings.channels.count)
-		info.depthSettings = Engine.Settings.depthSettings
+		info.camera = content.camera
+		info.voxelsLength = UInt32(document.container.voxelCount)
+		info.isJulia = state.renderMode.rawValue
+		info.lightsLength = UInt32(content.skyBox.count)
+		info.exposure = UInt32(document.viewState.renderPassManager.samplesCurrent)
+		info.rayMarchingSettings = content.rayMarchingSettings
+		info.channelsLength = UInt32(content.channels.count)
+		info.depthSettings = content.depthSettings
 		info.randomSeed.x = UInt32.random(in: 0...10000)
 		info.randomSeed.y = UInt32.random(in: 0...10000)
 		info.randomSeed.z = UInt32.random(in: 0...10000)
 
 		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
-		renderCommandEncoder?.setFragmentBuffer(Engine.Container.voxelBuffer, offset: 0, index: 1)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.skyBox, length: MemoryLayout<LightInfo>.stride * Engine.Settings.skyBox.count, index: 2)
-		renderCommandEncoder?.setFragmentBytes(&Engine.Settings.channels, length: MemoryLayout<ChannelInfo>.stride * Engine.Settings.channels.count, index: 3)
-		renderCommandEncoder?.setFragmentBytes(Engine.Settings.nodeContainer.constants, length: MemoryLayout<Float>.stride * Engine.Settings.nodeContainer.constants.count, index: 4)
+		renderCommandEncoder?.setFragmentBuffer(document.container.voxelBuffer, offset: 0, index: 1)
+		renderCommandEncoder?.setFragmentBytes(&content.skyBox, length: MemoryLayout<LightInfo>.stride * content.skyBox.count, index: 2)
+		renderCommandEncoder?.setFragmentBytes(&content.channels, length: MemoryLayout<ChannelInfo>.stride * content.channels.count, index: 3)
+		renderCommandEncoder?.setFragmentBytes(content.nodeContainer.constants, length: MemoryLayout<Float>.stride * content.nodeContainer.constants.count, index: 4)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
@@ -161,25 +179,28 @@ class Renderer: NSObject, MTKViewDelegate {
 			Vertex(position: SIMD4<Float>(arrayLiteral: -1, 1, 0, 1), color: SIMD4<Float>(arrayLiteral: 0, 0, 0, 0), texCoord: SIMD2<Float>(arrayLiteral: 0, 1)),
 			//Vertex(position: .init(imageRatio / 1, 1, 0), color: .init(0, 0, 0, 1), texCoord: .init(1, 1))
 			Vertex(position: SIMD4<Float>(arrayLiteral: 1, 1, 0, 1), color: SIMD4<Float>(arrayLiteral: 0, 0, 0, 1), texCoord: SIMD2<Float>(arrayLiteral: 1, 1))
-		])
+		], device: graphics.device)
 	}
 }
 
 class Mesh {
 	var vertices: [Vertex] = []
 	var vertexBuffer: MTLBuffer!
+	var device: MTLDevice
 
-	init() {
+	init(device: MTLDevice) {
+		self.device = device
 		updateBuffer()
 	}
 
-	init(vertices newVertices: [Vertex]) {
+	init(vertices newVertices: [Vertex], device: MTLDevice) {
+		self.device = device
 		self.vertices = newVertices
 		updateBuffer()
 	}
 
 	func updateBuffer() {
-		vertexBuffer = Engine.Device.makeBuffer(bytes: vertices, length: Vertex.stride * vertices.count, options: [])
+		vertexBuffer = device.makeBuffer(bytes: vertices, length: Vertex.stride * vertices.count, options: [])
 	}
 }
 
@@ -187,12 +208,15 @@ class Texture {
 	var texture: MTLTexture!
 	
 	var currentChannelCount: UInt32 = 1
+	
+	var document: Document
 
 	private var _textureName: String!
 	private var _textureExtension: String!
 	private var _origin: MTKTextureLoader.Origin!
 
-	init(_ textureName: String, ext: String = "png", origin: MTKTextureLoader.Origin = .bottomLeft) {
+	init(_ textureName: String, ext: String = "png", origin: MTKTextureLoader.Origin = .bottomLeft, doc: Document) {
+		self.document = doc
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
@@ -202,7 +226,7 @@ class Texture {
 	private func oldLoadTextureFromBundle() -> MTLTexture {
 		var result: MTLTexture!
 		if let url = Bundle.main.url(forResource: _textureName, withExtension: _textureExtension) {
-			let textureLoader = MTKTextureLoader.init(device: Engine.Device)
+			let textureLoader = MTKTextureLoader.init(device: document.graphics.device)
 
 			let options = [MTKTextureLoader.Option.origin : _origin]
 
@@ -227,16 +251,16 @@ class Texture {
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.textureType = .type2DArray
 		textureDescriptor.arrayLength = Int(size) * 3
-		textureDescriptor.pixelFormat = Engine.PixelFormat.1
+		textureDescriptor.pixelFormat = document.graphics.pixelFormat.1
 		textureDescriptor.width = 1920
 		textureDescriptor.height = 1080
 		textureDescriptor.usage = .init([MTLTextureUsage.shaderRead, MTLTextureUsage.shaderWrite])
-		return Engine.Device.makeTexture(descriptor: textureDescriptor)
+		return document.graphics.device.makeTexture(descriptor: textureDescriptor)
 	}
 	
 	func updateTexture() {
-		if currentChannelCount != Engine.Settings.channels.count {
-			texture = loadTextureFromBundle(size: UInt32(Engine.Settings.channels.count))
+		if currentChannelCount != document.content.channels.count {
+			texture = loadTextureFromBundle(size: UInt32(document.content.channels.count))
 		}
 	}
 }

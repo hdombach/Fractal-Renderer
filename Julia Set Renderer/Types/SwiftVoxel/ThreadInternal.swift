@@ -16,8 +16,8 @@ extension VoxelContainerThread {
 	func voxelSize(index: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Float {
 		let width = pow(0.5, Float(voxelBuffer[index].layer + 1))
 		let position = voxelBuffer[index].position
-		var voxelSize = (width / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0)))
-		if 0 > dot(SIMD4<Float>(0, 0, 1, 0) * Engine.Settings.savedCamera.transformMatrix, SIMD4<Float>(position, 0) - Engine.Settings.savedCamera.position) {
+		var voxelSize = (width / distance(content.savedCamera.position, SIMD4<Float>(position, 0)))
+		if 0 > dot(SIMD4<Float>(0, 0, 1, 0) * content.savedCamera.transformMatrix, SIMD4<Float>(position, 0) - content.savedCamera.position) {
 			voxelSize = voxelSize / 2
 		}
 		return voxelSize
@@ -25,7 +25,7 @@ extension VoxelContainerThread {
 	
 	///Returns then layer depth at a point
 	func layerDepth(position: SIMD3<Float>) -> Int {
-		var depth = Int(ceil(container.loadQuality * distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))))
+		var depth = Int(ceil(container.loadQuality * distance(content.savedCamera.position, SIMD4<Float>(position, 0))))
 		if depth > maxLayer {
 			depth = maxLayer
 		}

@@ -20,18 +20,10 @@ struct NodeContainer: Codable {
 		var vector: Int
 	}
 	
-	var nodes: [Node] = [] {
-		didSet {
-			if oldConstants != constants {
-				Engine.View.setNeedsDisplay(Engine.View.frame)
-				oldConstants = constants
-			}
-		}
-	}
+	var nodes: [Node] = []
 	var paths: [NodePath] = []
 	
 	internal var constantsAddresses: [ConstantAddress] = []
-	private var oldConstants: [Float] = []
 	
 	//values that can be used to change the procedural texture without recalculating
 	var constants: [Float] {

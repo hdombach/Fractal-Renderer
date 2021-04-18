@@ -9,10 +9,21 @@
 import SwiftUI
 
 struct ContentView: View {
-	@ObservedObject var settings = Engine.Settings
+	@ObservedObject var content: Content
+	@ObservedObject var state: ViewSate
+	var document: Document
+	
+	init(doc: Document) {
+		content = doc.content
+		state = doc.viewState
+		document = doc
+	}
+	
     @State var isShowingCamera = false
     @State var isShowingImageSettings = false
     @State var isShowingPatternSettings = false
+	
+	
 	
 	enum Menu {
 		case Render
@@ -27,7 +38,7 @@ struct ContentView: View {
     //@State private var renderMode: RenderMode = .JuliaSet
 	
 	var body: some View {
-		if settings.isShowingUI {
+		if state.isShowingUI {
 			VStack {
 				HStack {
 					Button("􀏅") {
@@ -60,24 +71,24 @@ struct ContentView: View {
 				
 				switch currentMenu {
 				case .Render:
-					RenderBox()
+					RenderBox(doc: document)
 				case .Camera:
-					CameraSettings()
+					CameraSettings(content: content)
 				case .Image:
-					ImageSettings()
+					ImageSettings(content: content)
 				case .Fractal:
-					TabView(selection: $settings.renderMode) {
-						PatternSettings()
+					TabView(selection: $state.renderMode) {
+						PatternSettings(document: document)
 							.tabItem { Text("yeet") }.tag(RenderMode.JuliaSet)
-						MandelbulbSettings(settings: $settings.rayMarchingSettings)
+						MandelbulbSettings(settings: $content.rayMarchingSettings)
 							.tabItem { Text("better yeet") }.tag(RenderMode.Mandelbulb)
 					}.frame(minHeight: 400)
 				case .Material:
-					MaterialSettings()
+					MaterialSettings(doc: document)
 				case .Lightin:
 					ScrollView {
-						SkyBoxSettings().frame(height: 300)
-						ChannelSettings().frame(height: 300)
+						SkyBoxSettings(content: content).frame(height: 300)
+						ChannelSettings(content: content).frame(height: 300)
 					}.frame(minHeight: 500)
 				}
 			}
@@ -90,8 +101,9 @@ struct ContentView: View {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-			.environmentObject(Engine.Settings)
+		Text("hi")
+       // ContentView()
+		//	.environmentObject(Engine.Settings)
     }
 }
 #endif

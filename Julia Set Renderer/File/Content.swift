@@ -11,20 +11,33 @@ import Cocoa
 import Combine
 
 class Content: NSObject, Codable, ObservableObject {
-	@Published var imageSize: SIMD2<Int> = .init(1920, 1080)
-	@Published var camera: Camera = Camera()
-	@Published var savedCamera: Camera = Camera()
-	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)]
-	@Published var channels: [ChannelInfo] = [ChannelInfo.init(index: 0, color: .init(1, 1, 1), strength: 1)]
-	@Published var nodeContainer = NodeContainer()
-	@Published var rayMarchingSettings = RayMarchingSettings()
-	@Published var julaSettings = JuliaSetSettings()
-	@Published var depthSettings: Float3 = .init(0, 0, 1)
+	@Published var imageSize: SIMD2<Int> = .init(1920, 1080) { didSet { update() } }
+	@Published var camera: Camera = Camera() { didSet { update() } }
+	@Published var savedCamera: Camera = Camera() { didSet { update() } }
+	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] { didSet { updateChannels(); update() } }
+	@Published var channels: [ChannelInfo] = [ChannelInfo.init(index: 0, color: .init(1, 1, 1), strength: 1)] { didSet { update() } }
+	@Published var nodeContainer = NodeContainer() {didSet {
+		if nodeContainer.constants != oldNodeContainerConstants {
+			oldNodeContainerConstants = nodeContainer.constants
+			update()
+		}
+	}}
+	@Published var rayMarchingSettings = RayMarchingSettings() { didSet { update() } }
+	@Published var julaSettings = JuliaSetSettings() { didSet { update() } }
+	@Published var depthSettings: Float3 = .init(0, 0, 1) { didSet { update() } }
 	///x: groupsize, y: groups
 	@Published var kernelSize: Int2 = .init(200, 50)
 	
 	var kernelGroupSize: Int { kernelSize.x }
 	var kernelGroups: Int { kernelSize.y }
+	
+	var viewState: ViewSate?
+	
+	private var oldNodeContainerConstants: [Float] = []
+	
+	func update() {
+		viewState?.updateView()
+	}
 	
 	
 	//Loading/Saving

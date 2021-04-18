@@ -56,10 +56,11 @@ struct LightPicker: View {
 
 struct ColorPicker_Previews: PreviewProvider {
     static var previews: some View {
-		LightPicker(light: .init(get: { () -> LightInfo in
+		/*LightPicker(light: .init(get: { () -> LightInfo in
 			Engine.Settings.skyBox[0]
 		}, set: { (newLight) in
 			Engine.Settings.skyBox[0] = newLight
-		}))
+		}))*/
+		Text("hi")
     }
 }

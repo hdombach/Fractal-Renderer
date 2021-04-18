@@ -4,6 +4,10 @@ namespace node {
 		*out1 = in1 + in2;
 	}
 	
+	void subtract(thread float *out1, float in1, float in2) {
+		*out1 = in1 + in2;
+	}
+	
 	void multiply(thread float *out1, float in1, float in2) {
 		*out1 = in1 * in2;
 	}

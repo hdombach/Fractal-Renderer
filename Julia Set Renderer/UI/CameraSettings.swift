@@ -9,20 +9,20 @@
 import SwiftUI
 
 struct CameraSettings: View {
-    @ObservedObject var settings = Engine.Settings
+	@ObservedObject var content: Content
 
     var body: some View {
         HStack(alignment: .top) {
             VStack {
 				VStack(alignment: .leading) {
 					
-					Tuple3FloatInput(value: $settings.camera.position.xyz, step: 0.01.nsNumber.0, name: "Position")
+					Tuple3FloatInput(value: $content.camera.position.xyz, step: 0.01.nsNumber.0, name: "Position")
                 }
                 Divider()
                 VStack(alignment: .leading) {
-					NumberInput(value: $settings.camera.vfov.nsNumber, name: "Vertical FOV")
-					NumberInput(value: $settings.camera.lensRadius.nsNumber, step: 0.01, name: "Lense Radius")
-					NumberInput(value: $settings.camera.focusDistance.nsNumber, step: 0.01, name: "Focus Distance")
+					NumberInput(value: $content.camera.vfov.nsNumber, name: "Vertical FOV")
+					NumberInput(value: $content.camera.lensRadius.nsNumber, step: 0.01, name: "Lense Radius")
+					NumberInput(value: $content.camera.focusDistance.nsNumber, step: 0.01, name: "Focus Distance")
 					
 					//Tuple3FloatInput(value: $settings.camera.deriction.xyz, step: 0.01.nsNumber.0, name: "Dericiton")
                 }
@@ -34,13 +34,13 @@ struct CameraSettings: View {
 				//NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
                 Spacer()
 				Button(action: {
-					Engine.Settings.savedCamera = Engine.Settings.camera
+					content.savedCamera = content.camera
 				}) {
 					Text("Set Saved Camera")
 				}
 				
                 Button(action: {
-                    Engine.Settings.camera = Engine.Settings.savedCamera
+					content.camera = content.savedCamera
                 }) {
                     Text("Saved Camera")
                 }
@@ -52,7 +52,8 @@ struct CameraSettings: View {
 
 struct CameraSettings_Previews: PreviewProvider {
     static var previews: some View {
-        CameraSettings()
-			.environmentObject(Engine.Settings)
+		Text("hi")
+       // CameraSettings()
+		//	.environmentObject(Engine.Settings)
     }
 }

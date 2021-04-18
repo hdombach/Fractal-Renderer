@@ -9,12 +9,15 @@
 import SwiftUI
 
 struct PatternSettings: View {
+	var document: Document
 	@State var quality: Float = 1
     var body: some View {
         HStack {
             Button(action: {
                 print("started loading")
-                Engine.LoadJuliaSet(quality: self.quality)
+				document.container.loadQuality = quality
+				document.content.savedCamera = document.content.camera
+				document.container.load(passSize: 10000)
             }) {
                 Text("Load Pattern")
             }
@@ -25,6 +28,7 @@ struct PatternSettings: View {
 
 struct PatternSettings_Previews: PreviewProvider {
     static var previews: some View {
-        PatternSettings()
+        //PatternSettings()
+		Text("hi")
     }
 }

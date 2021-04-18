@@ -9,19 +9,26 @@
 import SwiftUI
 
 struct MaterialSettings: View {
-	@ObservedObject var settings = Engine.Settings
+	var document: Document
+	@ObservedObject var content: Content
+	
+	init(doc: Document) {
+		self.document = doc
+		self.content = doc.content
+	}
 	
 	@State var code: String = ""
 	
 	
 	
 	var body: some View {
-		NodeEditor(nodeContainer: $settings.nodeContainer)
+		NodeEditor(nodeContainer: $content.nodeContainer, document: document)
     }
 }
 
 struct MaterialSettings_Previews: PreviewProvider {
     static var previews: some View {
-        MaterialSettings()
+		 //MaterialSettings()
+		Text("Asdf")
     }
 }

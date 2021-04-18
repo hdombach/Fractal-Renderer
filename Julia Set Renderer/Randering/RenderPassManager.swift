@@ -22,14 +22,13 @@ class RenderPassManager: ObservableObject {
 	@Published var progress: String = "0% (0 / 0)"
 	
 	private var computeIndex: Int = 0
-	private var viewPortMode: ViewportMode { document.renderer.mode }
 	private var content: Content { document.content }
 	
 	init(doc: Document) {
 		self.document = doc
 		self.graphics = doc.graphics
 		commandQueue = graphics.device.makeCommandQueue()!
-		result = Texture("yeet")
+		result = Texture("yeet", doc: document)
 	}
 	
 	func resetRender() {
@@ -37,6 +36,13 @@ class RenderPassManager: ObservableObject {
 		samplesCurrent = 1
 		samplesGoal = 0
 		resetTexture()
+	}
+	
+	func startRender(samplesCount: Int) {
+		result.updateTexture()
+		samplesGoal += samplesCount
+		isRendering = true
+		
 	}
 	
 	private func resetTexture() {
@@ -63,9 +69,9 @@ class RenderPassManager: ObservableObject {
 		}
 	}
 	
-	func renderPass(commandBuffer: MTLCommandBuffer) {
+	func renderPass(commandBuffer: MTLCommandBuffer, mode: ViewportMode) {
 		//This function is called every frame so it has to return if it isn't supposed to be rendering.
-		if (viewPortMode != .rendering) {
+		if (mode != .rendering) {
 			return;
 		}
 		

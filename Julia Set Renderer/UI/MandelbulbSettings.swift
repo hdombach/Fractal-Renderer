@@ -33,10 +33,11 @@ struct MandelbulbSettings: View {
 
 struct MandelbulbSettings_Previews: PreviewProvider {
     static var previews: some View {
-		MandelbulbSettings(settings: Binding.init(get: {
+		/*MandelbulbSettings(settings: Binding.init(get: {
 			Engine.Settings.rayMarchingSettings
 		}, set: { (newSettings) in
 			Engine.Settings.rayMarchingSettings = newSettings
-		}))
+		}))*/
+		Text("gi")
     }
 }

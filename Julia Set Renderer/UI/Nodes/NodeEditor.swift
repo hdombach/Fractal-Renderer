@@ -20,6 +20,8 @@ struct NodeEditor: View {
 	
 	@State var position: CGPoint = .init(x: 100, y: 100)
 	
+	var document: Document
+	
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
@@ -39,7 +41,7 @@ struct NodeEditor: View {
 				Button("􀅈") {
 					//nodeContainer.compile()
 					do {
-						try nodeContainer.newCompile()
+						try nodeContainer.compile(library: document.graphics.library, viewState: document.viewState)
 					} catch {
 						print(error)
 					}

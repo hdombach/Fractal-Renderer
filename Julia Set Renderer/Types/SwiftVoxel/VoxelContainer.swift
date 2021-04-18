@@ -20,8 +20,19 @@ class VoxelContainer {
 	var isComplete = false
 	var threadQueue: [Int] = []
 	
+	var document: Document
+	
 	var containerSemaphore = DispatchSemaphore.init(value: 1)
 	var containerQueue: DispatchQueue = .init(label: "Append Thread")
+	
+	var jSet: LinearJuliaSet
+	
+	init(doc: Document) {
+		self.document = doc
+		self.jSet = LinearJuliaSet(doc: document)
+		voxels = [Voxel()]
+		updateVoxelBuffer()
+	}
 	
 	/*func getIndex(address: inout VoxelAddress) -> Int {
 	if voxels.count <= address.index || voxels[Int(address.index)].id != address.id {
@@ -87,7 +98,7 @@ class VoxelContainer {
 			threadQueue.append(c)
 		}
 		threadQueue.sort { (closer, farther) -> Bool in
-			let position = Engine.Settings.camera.position
+			let position = document.content.camera.position
 			let closerDistance = distance(position, SIMD4<Float>(voxels[Int(closer)].position, 1))
 			let fartherDistance = distance(position, SIMD4<Float>(voxels[Int(farther)].position, 1))
 			return closerDistance < fartherDistance
@@ -109,7 +120,7 @@ class VoxelContainer {
 		} else {
 			uWidth = width!
 		}
-		var voxelSize = uWidth / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))
+		var voxelSize = uWidth / distance(document.content.savedCamera.position, SIMD4<Float>(position, 0))
 		/*var voxelSize = (Engine.Settings.savedCamera.cameraDepth * uWidth / distance(Engine.Settings.savedCamera.position, SIMD4<Float>(position, 0))) / Engine.Settings.savedCamera.zoom
 		if 0 > dot(SIMD4<Float>(0, 0, 1, 0) * Engine.Settings.savedCamera.rotateMatrix, SIMD4<Float>(position, 0) - Engine.Settings.savedCamera.position) {
 			voxelSize = voxelSize / 4
@@ -176,7 +187,7 @@ class VoxelContainer {
 	
 	func updateVoxelBuffer() {
 		if voxels.count > 0 {
-			voxelBuffer = Engine.Device.makeBuffer(bytes: voxels, length: MemoryLayout<Voxel>.stride * voxels.count, options: [])
+			voxelBuffer = document.graphics.device.makeBuffer(bytes: voxels, length: MemoryLayout<Voxel>.stride * voxels.count, options: [])
 		}
 	}
 }

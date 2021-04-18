@@ -27,6 +27,7 @@ class VoxelContainerThread {
 	}
 	
     var container: VoxelContainer
+	var content: Content { container.document.content}
     var activeAddress: VoxelAddress = 0
     var deletedIndexes: [Int] = []
     var rootVoxel: VoxelAddress = 0
@@ -105,7 +106,7 @@ class VoxelContainerThread {
     
     func pass(length: Int, voxelBuffer: UnsafeMutableBufferPointer<Voxel>) -> Bool {
         for _ in 1...length {
-			if Engine.Settings.juliaSetSettings.quickMode {
+			if content.julaSettings.quickMode {
 				if needsSetup {
 					setUpNeighborMethod(voxelBuffer: voxelBuffer)
 				} else {
@@ -153,7 +154,7 @@ class VoxelContainerThread {
 		///Fills all faces along a certain plane
 		func fillPlane(planeX: Bool, planeY: Bool, planeZ: Bool) {
 			var isCameraInside = true
-			let camera = Engine.Settings.savedCamera!
+			let camera = content.savedCamera
 			if !planeX {
 				if camera.position.x < voxel.position.x || camera.position.x > voxel.position.x + voxel.width {
 					isCameraInside = false
@@ -458,7 +459,7 @@ class VoxelContainerThread {
             }
         } else {
             let position = (voxelBuffer[index].position - SIMD3<Float>.init(0.5, 0.5, 0.5)) * 3
-            if Engine.JuliaSetSettings.getLinear(point: Complex(position.x, position.y), z: position.z) {
+			if container.jSet.getLinear(point: Complex(position.x, position.y), z: position.z) {
                 voxelBuffer[index].opacity = 1
             } else {
                 voxelBuffer[index].opacity = 0

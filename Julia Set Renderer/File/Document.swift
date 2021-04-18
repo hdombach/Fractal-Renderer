@@ -9,23 +9,31 @@
 import Cocoa
 import Foundation
 import Swift
+import SwiftUI
+import MetalKit
 
 class Document: NSDocument {
 	
 	@objc var content = Content()
 	
-	var graphics = Graphics()
+	var graphics: Graphics!
 	
-	var renderPassManager: RenderPassManager!
+	var container: VoxelContainer!
 	
-	var container = VoxelContainer()
+	var viewState: ViewSate!
 	
-	var renderer: Renderer!
+	var view: RenderView!
 	
 	override init() {
 		super.init()
-		//renderPassManager = RenderPassManager(doc: self)
-		Swift.print("file did thing")
+		graphics = Graphics(doc: self)
+		container = VoxelContainer(doc: self)
+		viewState = ViewSate(doc: self)
+		view = RenderView(doc: self)
+		viewState.view = view
+		
+		content.viewState = viewState
+		
 	}
 	
 	//enable autosave
@@ -40,14 +48,22 @@ class Document: NSDocument {
 			addWindowController(windowController)
 			
 		}*/
+		let viewPortWindow = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 300), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+		viewPortWindow.isReleasedWhenClosed = false
+		viewPortWindow.contentView = view
+		
+		
+		let viewWindowController = NSWindowController(window: viewPortWindow)
 		
 		let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 300), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
 		window.isReleasedWhenClosed = false;
 		window.center()
-		window.contentView = NSView.init()
+		window.contentView = NSHostingView(rootView: ContentView(doc: self))
 		
 		let windowController = NSWindowController(window: window)
 		self.addWindowController(windowController)
+		
+		self.addWindowController(viewWindowController)
 	}
 	
 	override class var autosavesInPlace: Bool {

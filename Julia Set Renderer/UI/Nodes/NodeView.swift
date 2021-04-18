@@ -350,7 +350,7 @@ struct NodeValueView: View {
 
 struct Node_Previews: PreviewProvider {
     static var previews: some View {
-		ColorRampNodeView(nodeAddress: { () -> NodeAddress in
+		/*ColorRampNodeView(nodeAddress: { () -> NodeAddress in
 			if Engine.Settings.nodeContainer.nodes.count == 0 {
 				var newNode = ColorRampNode()
 				newNode.position = CGPoint(x: 150, y: 100)
@@ -362,6 +362,7 @@ struct Node_Previews: PreviewProvider {
 			Engine.Settings.nodeContainer
 		}, set: { (new) in
 			Engine.Settings.nodeContainer = new
-		}), selected: .constant(nil), node: .constant(ColorRampNode()), values: .constant([]))
+		}), selected: .constant(nil), node: .constant(ColorRampNode()), values: .constant([]))*/
+		Text("hi")
     }
 }

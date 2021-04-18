@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MetalKit
 
 enum RenderMode: UInt32 {
 	case JuliaSet = 0
@@ -29,10 +30,33 @@ enum ViewportMode: String, CaseIterable, Identifiable {
 }
 
 class ViewSate: ObservableObject {
-	@Published var window = ViewportMode.preview
+	@Published var viewportMode = ViewportMode.preview
 	@Published var renderMode: RenderMode = .Mandelbulb
 	@Published var isShowingUI: Bool = true
-	func updateDisplay() {
-		//add later
+	var document: Document
+	
+	var view: MTKView!
+	var renderer: Renderer!
+	var renderPassManager: RenderPassManager!
+	
+	init(doc: Document) {
+		document = doc
+		renderer = Renderer(doc: doc)
+		renderPassManager = RenderPassManager(doc: doc)
+	}
+	
+	func startRendering(samplesCount: Int) {
+		renderPassManager.startRender(samplesCount: samplesCount)
+		viewportMode = .rendering
+	}
+	
+	func stopRendering() {
+		viewportMode = .preview
+		updateView()
+		renderPassManager.resetRender()
+	}
+	
+	func updateView() {
+		view.setNeedsDisplay(view.frame)
 	}
 }

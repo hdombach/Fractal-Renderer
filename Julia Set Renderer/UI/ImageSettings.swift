@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct ImageSettings: View {
-    @ObservedObject var settings = Engine.Settings
+	@ObservedObject var content: Content
 	@State var myString: String = "hello"
 
     var body: some View {
 
         VStack {
-			NumberInput(value: $settings.imageSize.0.nsNumber, step: 1.nsNumber.0, name: "Width")
-			NumberInput(value: $settings.imageSize.1.nsNumber, step: 1.nsNumber.0, name: "Height")
+			NumberInput(value: $content.imageSize.x.nsNumber, step: 1.nsNumber.0, name: "Width")
+			NumberInput(value: $content.imageSize.y.nsNumber, step: 1.nsNumber.0, name: "Height")
         }
         .padding()
     }
@@ -24,7 +24,8 @@ struct ImageSettings: View {
 
 struct ImageSettings_Previews: PreviewProvider {
     static var previews: some View {
-        ImageSettings()
-			.environmentObject(Engine.Settings)
+        //ImageSettings()
+			//.environmentObject(Engine.Settings)
+		Text("hi")
     }
 }

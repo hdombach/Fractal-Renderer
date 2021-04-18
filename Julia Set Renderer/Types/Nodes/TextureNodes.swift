@@ -29,7 +29,7 @@ func Perlin3Node() -> Node {
 	result.color = .nodeTexture
 	
 	result.inputs = [NodeFloat3(0, 0, 0, name: "position")]
-	result.outputs = [NodeFloat(0, name: "color")]
+	result.outputs = [NodeFloat3(0, 0, 0, name: "color")]
 	
 	return result
 }

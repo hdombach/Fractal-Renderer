@@ -33,10 +33,6 @@ struct Tuple3FloatInput: View {
 
 struct Tuple3FloatInput_Previews: PreviewProvider {
     static var previews: some View {
-		Tuple3FloatInput(value: Binding.init(get: {
-			Engine.Settings.rayMarchingSettings.colorBase
-		}, set: { (newValue) in
-			Engine.Settings.rayMarchingSettings.colorBase = newValue
-		}), name: "Color").padding()
+		Text("hi")
     }
 }

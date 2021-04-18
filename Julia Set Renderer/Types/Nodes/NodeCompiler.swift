@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import MetalKit
 //compiling stuff and things
 
 enum NodeCompilationError: Error {
@@ -63,7 +63,7 @@ extension NodeContainer {
 	
 	
 	
-	mutating func newCompile() throws {
+	mutating func compile(library: LibraryManager, viewState: ViewSate) throws {
 		
 		//Find all outputs nodes if there is more than one, throw error.
 		var output: NodeAddress? = nil
@@ -289,11 +289,11 @@ extension NodeContainer {
 		compilerMessage = "Succesfully updated"
 		
 		//compiledMaterial = "rgbAbsorption = float3(1, 0, 0); return;"
-		Engine.Library.loadLibrary(material: compiledMaterial, de: compiledDE, completion: {
+		library.loadLibrary(material: compiledMaterial, de: compiledDE) {
 			DispatchQueue.main.async {
-				Engine.View.setNeedsDisplay(Engine.View.frame)
+				viewState.updateView()
 			}
-		})
+		}
 	}
 	
 }

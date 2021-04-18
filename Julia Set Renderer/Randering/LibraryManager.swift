@@ -18,7 +18,18 @@ class LibraryManager {
 	private var mainComputePipelineState: MTLComputePipelineState!
 	private var resetComputePipelineState: MTLComputePipelineState!
 	
+	var document: Document!
+	
 	var samplerState: MTLSamplerState!
+	
+	init(doc: Document) {
+		document = doc
+		do {
+			try document.content.nodeContainer.compile(library: self, viewState: document.viewState)
+		} catch {
+			loadDefaultDibrary(completion: nil)
+		}
+	}
 	
 	enum RenderPipelineState {
 		case preview
@@ -60,7 +71,7 @@ class LibraryManager {
 		do {
 			try code = String(contentsOfFile: url!)
 		} catch {
-			print(error)
+			assertionFailure(error.localizedDescription)
 			return;
 		}
 		
@@ -118,7 +129,7 @@ class LibraryManager {
 		
 		if completion != nil {
 			
-			Engine.Device.makeLibrary(source: code, options: nil) { (library, compileError) in
+			document.graphics.device.makeLibrary(source: code, options: nil) { (library, compileError) in
 				if compileError != nil {
 					print(code)
 					print(compileError!)
@@ -130,7 +141,7 @@ class LibraryManager {
 			}
 		} else {
 			do {
-				let library = try Engine.Device.makeLibrary(source: code, options: nil)
+				let library = try document.graphics.device.makeLibrary(source: code, options: nil)
 				self.setUp(library: library)
 			} catch {
 				print(error)
@@ -171,13 +182,13 @@ class LibraryManager {
 		
 		let previewRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
 		
-		previewRenderPipelineDescriptor.colorAttachments[0].pixelFormat = Engine.PixelFormat.0
+		previewRenderPipelineDescriptor.colorAttachments[0].pixelFormat = document.graphics.pixelFormat.0
 		previewRenderPipelineDescriptor.vertexFunction = vertexShader
 		previewRenderPipelineDescriptor.fragmentFunction = previewFragmentShader
 		previewRenderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 		
 		do {
-			previewRenderPipelineState = try Engine.Device.makeRenderPipelineState(descriptor: previewRenderPipelineDescriptor)
+			previewRenderPipelineState = try document.graphics.device.makeRenderPipelineState(descriptor: previewRenderPipelineDescriptor)
 		} catch {
 			print(error)
 		}
@@ -187,13 +198,13 @@ class LibraryManager {
 		
 		let depthRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
 		
-		depthRenderPipelineDescriptor.colorAttachments[0].pixelFormat = Engine.PixelFormat.0
+		depthRenderPipelineDescriptor.colorAttachments[0].pixelFormat = document.graphics.pixelFormat.0
 		depthRenderPipelineDescriptor.vertexFunction = vertexShader
 		depthRenderPipelineDescriptor.fragmentFunction = depthFragmentShader
 		depthRenderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 		
 		do {
-			depthRenderPipelineState = try Engine.Device.makeRenderPipelineState(descriptor: depthRenderPipelineDescriptor)
+			depthRenderPipelineState = try document.graphics.device.makeRenderPipelineState(descriptor: depthRenderPipelineDescriptor)
 		} catch {
 			print(error)
 		}
@@ -203,13 +214,13 @@ class LibraryManager {
 		
 		let mainRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
 		
-		mainRenderPipelineDescriptor.colorAttachments[0].pixelFormat = Engine.PixelFormat.0
+		mainRenderPipelineDescriptor.colorAttachments[0].pixelFormat = document.graphics.pixelFormat.0
 		mainRenderPipelineDescriptor.vertexFunction = vertexShader
 		mainRenderPipelineDescriptor.fragmentFunction = mainFragmentShader
 		mainRenderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 		
 		do {
-			mainRenderPipelineState = try Engine.Device.makeRenderPipelineState(descriptor: mainRenderPipelineDescriptor)
+			mainRenderPipelineState = try document.graphics.device.makeRenderPipelineState(descriptor: mainRenderPipelineDescriptor)
 		} catch {
 			print(error)
 		}
@@ -219,14 +230,14 @@ class LibraryManager {
 		samplerDescriptor.minFilter = .linear
 		samplerDescriptor.magFilter = .linear
 		samplerDescriptor.label = "basic"
-		samplerState = Engine.Device.makeSamplerState(descriptor: samplerDescriptor)
+		samplerState = document.graphics.device.makeSamplerState(descriptor: samplerDescriptor)
 		
 		
 		//Create Reset Compute function
 		let resetFunction = library?.makeFunction(name: "reset_compute_shader")
 		
 		do {
-			resetComputePipelineState = try Engine.Device.makeComputePipelineState(function: resetFunction!)
+			resetComputePipelineState = try document.graphics.device.makeComputePipelineState(function: resetFunction!)
 		} catch {
 			print(error)
 		}
@@ -235,7 +246,7 @@ class LibraryManager {
 		let mainFunction = library?.makeFunction(name: "ray_compute_shader")
 		
 		do {
-			mainComputePipelineState = try Engine.Device.makeComputePipelineState(function: mainFunction!)
+			mainComputePipelineState = try document.graphics.device.makeComputePipelineState(function: mainFunction!)
 		} catch {
 			print(error)
 		}

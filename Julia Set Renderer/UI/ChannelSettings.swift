@@ -9,11 +9,11 @@
 import SwiftUI
 
 struct ChannelSettings: View {
-	@ObservedObject var settings = Engine.Settings
+	@ObservedObject var content: Content
 	@State var selected: ChannelInfo?
 	
 	func index(id: UInt32) -> Int {
-		guard let index = self.settings.channels.firstIndex(where: { $0.index == id}) else {
+		guard let index = self.content.channels.firstIndex(where: { $0.index == id}) else {
 			fatalError("channel does not exist")
 		}
 		return index
@@ -22,8 +22,8 @@ struct ChannelSettings: View {
     var body: some View {
 		VStack {
 			Text("Channels")
-			List(settings.channels, id: \.self, selection: $selected) { channel in
-				ChannelPicker(channel: $settings.channels[index(id: channel.index)])
+			List(content.channels, id: \.self, selection: $selected) { channel in
+				ChannelPicker(channel: $content.channels[index(id: channel.index)])
 			}.cornerRadius(5)
 		}.padding([.leading, .bottom, .trailing])
     }
@@ -31,6 +31,7 @@ struct ChannelSettings: View {
 
 struct ChannelSettings_Previews: PreviewProvider {
     static var previews: some View {
-        ChannelSettings()
+        //ChannelSettings()
+		Text("hi")
     }
 }

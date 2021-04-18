@@ -22,21 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		// Add `@Environment(\.managedObjectContext)` in the views that will need the context.
 		
 		
-		let contentView = ContentView().environment(\.managedObjectContext, persistentContainer.viewContext)
-			.environmentObject(Engine.Settings)
-		//contentView.previewDisplayName("yeet")
-
-		// Create the window and set the content view. 
-		sWindow = NSWindow(
-		    contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
-		    styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-		    backing: .buffered, defer: false)
-		sWindow.center()
-		sWindow.setFrameAutosaveName("Main Window")
-		sWindow.contentView = NSHostingView(rootView: contentView)
-		sWindow.makeKeyAndOrderFront(nil)
-
-		rWindowController.showWindow(nil)
+		
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {

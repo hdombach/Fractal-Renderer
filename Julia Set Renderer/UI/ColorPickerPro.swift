@@ -45,10 +45,11 @@ struct ColorPickerPro: View {
 
 struct ColorPickerPro_Previews: PreviewProvider {
     static var previews: some View {
-		ColorPickerPro(color: Binding.init(get: {
+		/*ColorPickerPro(color: Binding.init(get: {
 			Engine.Settings.skyBox[0].color
 		}, set: { (newColor) in
 			Engine.Settings.skyBox[0].color = newColor
-		}))
+		}))*/
+		Text("afsdg")
     }
 }
