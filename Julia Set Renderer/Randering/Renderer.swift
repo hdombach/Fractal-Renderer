@@ -76,11 +76,11 @@ class Renderer: NSObject, MTKViewDelegate {
 		//move camera
 		var update = false
 		
-		var speed: Float = 0.01
+		var speed: Float = document.viewState.cameraSpeed
 		
-		if state.renderMode == .Mandelbulb && true {
+		/*if state.renderMode == .Mandelbulb && true {
 			speed = simd_clamp(rayMarcher.DE(pos: content.camera.position.xyz) / 4, 0, 0.01)
-		}
+		}*/
 
 		var offset = SIMD4<Float>(0, 0, 0, 0)
 
@@ -154,7 +154,8 @@ class Renderer: NSObject, MTKViewDelegate {
 		renderCommandEncoder?.setFragmentBuffer(document.container.voxelBuffer, offset: 0, index: 1)
 		renderCommandEncoder?.setFragmentBytes(&content.skyBox, length: MemoryLayout<LightInfo>.stride * content.skyBox.count, index: 2)
 		renderCommandEncoder?.setFragmentBytes(&content.channels, length: MemoryLayout<ChannelInfo>.stride * content.channels.count, index: 3)
-		renderCommandEncoder?.setFragmentBytes(content.nodeContainer.constants, length: MemoryLayout<Float>.stride * content.nodeContainer.constants.count, index: 4)
+		renderCommandEncoder?.setFragmentBytes(content.materialNodeContainer.constants, length: MemoryLayout<Float>.stride * content.materialNodeContainer.constants.count, index: 4)
+		renderCommandEncoder?.setFragmentBytes(content.deNodeContainer.constants, length: MemoryLayout<Float>.stride * content.deNodeContainer.constants.count, index: 5)
 		
 		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 

@@ -65,6 +65,14 @@ func NodeFloat(_ value: Float, name initName: String?) -> NodeValue {
 	
 	return result
 }
+func NodeFloat(_ initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.type = .float
+	result.name = initName ?? ""
+	
+	return result
+}
+
 func NodeFloat3(_ value: Float3, name initName: String?) -> NodeValue {
 	var result = NodeValue()
 	result.float3 = value
@@ -76,6 +84,14 @@ func NodeFloat3(_ value: Float3, name initName: String?) -> NodeValue {
 func NodeFloat3(_ value1: Float, _ value2: Float, _ value3: Float, name initName: String?) -> NodeValue {
 	return NodeFloat3(Float3(value1, value2, value3), name: initName)
 }
+func NodeFloat3(_ initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.type = .float3
+	result.name = initName ?? ""
+	
+	return result
+}
+
 func NodeColor(_ value: Float3, name initName: String?) -> NodeValue {
 	var result = NodeValue()
 	result.float3 = value

@@ -110,7 +110,8 @@ class RenderPassManager: ObservableObject {
 		computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 		computeCommandEncoder?.setBuffer(document.container.voxelBuffer, offset: 0, index: 1)
 		computeCommandEncoder?.setBytes(&content.skyBox, length: MemoryLayout<LightInfo>.stride * Int(shaderInfo.lightsLength), index: 2)
-		computeCommandEncoder?.setBytes(content.nodeContainer.constants, length: MemoryLayout<Float>.stride * content.nodeContainer.constants.count, index: 4)
+		computeCommandEncoder?.setBytes(content.materialNodeContainer.constants, length: MemoryLayout<Float>.stride * content.materialNodeContainer.constants.count, index: 4)
+		computeCommandEncoder?.setBytes(content.deNodeContainer.constants, length: MemoryLayout<Float>.stride * content.deNodeContainer.constants.count, index: 5)
 		
 		computeCommandEncoder?.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 		computeCommandEncoder?.endEncoding()

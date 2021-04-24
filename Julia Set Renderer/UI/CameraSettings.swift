@@ -10,6 +10,14 @@ import SwiftUI
 
 struct CameraSettings: View {
 	@ObservedObject var content: Content
+	@ObservedObject var state: ViewSate
+	var document: Document
+	
+	init(doc: Document) {
+		self.content = doc.content
+		self.state = doc.viewState
+		self.document = doc
+	}
 
     var body: some View {
         HStack(alignment: .top) {
@@ -32,6 +40,7 @@ struct CameraSettings: View {
                 Text("Other")
 				//NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
 				//NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
+				NumberInput(value: $state.cameraSpeed.nsNumber, name: "Camera Speed")
                 Spacer()
 				Button(action: {
 					content.savedCamera = content.camera

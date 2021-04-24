@@ -1,7 +1,7 @@
 #include "ColorChannels.txt"
 #include "ResultInfo.txt"
 #include "Settings.txt"
-#include "DE.txt"
+#include "MainDE.txt"
 #include "Material.txt"
 #include "Voxel.txt"
 #include "VoxelMath.txt"
@@ -59,7 +59,7 @@ Ray reflectRay(thread Ray rayIn, float3 surfaceNormal, Material surfaceMaterial,
 	return ray;
 }
 
-SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, constant float *constants) {
+SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, constant float *mConstants, constant float *dConstants) {
 	Ray ray = rayIn;
 	
 	int steps = 0;
@@ -67,7 +67,7 @@ SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, co
 	RayMarchInfo bulbResult;
 	
 	while (100000 > d.distance) {
-		bulbResult = DE(ray.position.xyz, settings);
+		bulbResult = DE(ray.position.xyz, settings, dConstants);
 		float step = bulbResult.d;
 		ray.march(step);
 		d.distance += step;
@@ -81,11 +81,11 @@ SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, co
 	SingleResult result;
 	result.distance = d.distance;
 	result.steps = steps;
-	result.collision.surfaceNormal = DEnormal(ray.position.xyz, settings);
+	result.collision.surfaceNormal = DEnormal(ray.position.xyz, settings, dConstants);
 	result.collision.surfaceNormal = correctNormal(result.collision.surfaceNormal, ray.direction.xyz);
 	
 	Material material;
-	material.init(ray.position.xyz, bulbResult.orbit, bulbResult.orbitLife, settings, constants);
+	material.init(ray.position.xyz, bulbResult.orbit, bulbResult.orbitLife, settings, mConstants);
 	
 	result.collision.surfaceMaterial = material;
 	result.collision.position = ray.position.xyz;
@@ -94,7 +94,7 @@ SingleResult rayMarchStep(Ray rayIn, float fog, RayMarchingSettings settings, co
 	return result;
 }
 
-SingleResult voxelRaytraceStep(Ray rayIn, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *constants) {
+SingleResult voxelRaytraceStep(Ray rayIn, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *mConstants) {
 	Ray ray = rayIn;
 	
 	device Voxel *rootVoxel = &voxels[1];
@@ -126,7 +126,7 @@ SingleResult voxelRaytraceStep(Ray rayIn, device Voxel *voxels, bool showVoxels,
 	}
 	
 	Material material;
-	material.init(ray.position.xyz, float3(0), 0, info.rayMarchingSettings, constants);
+	material.init(ray.position.xyz, float3(0), 0, info.rayMarchingSettings, mConstants);
 	
 	CollisionInfo collision;
 	collision.position = ray.position.xyz;
@@ -143,15 +143,15 @@ SingleResult voxelRaytraceStep(Ray rayIn, device Voxel *voxels, bool showVoxels,
 	return result;
 }
 
-SingleResult step(Ray ray, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *constants) {
+SingleResult step(Ray ray, device Voxel *voxels, bool showVoxels, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
 	if (info.isJulia == 0) {
-		return voxelRaytraceStep(ray, voxels, showVoxels, info, constants);
+		return voxelRaytraceStep(ray, voxels, showVoxels, info, mConstants);
 	} else {
-		return rayMarchStep(ray, 0, info.rayMarchingSettings, constants);
+		return rayMarchStep(ray, 0, info.rayMarchingSettings, mConstants, dConstants);
 	}
 }
 
-Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *constants) {
+Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
 	uint3 seed = info.randomSeed;
 	seed.x += pos.x * 2150;
 	seed.y += pos.y * 6350;
@@ -161,7 +161,7 @@ Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool sho
 	
 	int bounces = 0;
 	while (bounces < bounceLimit) {
-		SingleResult result = step(ray, voxels, showVoxels, info, constants);
+		SingleResult result = step(ray, voxels, showVoxels, info, mConstants, dConstants);
 		
 		ray = result.ray;
 		if (result.distance >= 10000) {
@@ -185,14 +185,14 @@ Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool sho
 	
 }
 
-float depthMap(float2 pos, device Voxel *voxels, ShaderInfo info, constant float *constants) {
+float depthMap(float2 pos, device Voxel *voxels, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
 	uint3 seed = info.randomSeed;
 	seed.x += pos.x * 5150;
 	seed.y += pos.y * 5230;
 
 	Ray ray = info.camera.spawnRay(pos, seed);
 	
-	SingleResult result = step(ray, voxels, false, info, constants);
+	SingleResult result = step(ray, voxels, false, info, mConstants, dConstants);
 	
 	float gray = result.distance * info.depthSettings.z;
 	
@@ -204,7 +204,7 @@ float depthMap(float2 pos, device Voxel *voxels, ShaderInfo info, constant float
 	return gray;
 }
 
-float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, ShaderInfo info, constant float *constants) {
+float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
 	uint3 seed = info.randomSeed;
 	seed.x += pos.x * 5041;
 	seed.y += pos.y * 5420;
@@ -213,7 +213,7 @@ float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, S
 	Ray ray = info.camera.spawnRay(pos, seed);
 	float3 originalDirection = normalize(ray.direction.xyz);
 	
-	SingleResult result = step(ray, voxels, false, info, constants);
+	SingleResult result = step(ray, voxels, false, info, mConstants, dConstants);
 	
 	//return float4();
 	

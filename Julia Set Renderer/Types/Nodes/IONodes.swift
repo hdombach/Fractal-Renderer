@@ -86,7 +86,20 @@ func DENode() -> Node {
 	result.name = "DE"
 	result.functionName = "de"
 	result.color = .nodeOutput
-	result.inputs = [NodeFloat(1, name: "Distance")]
+	result.inputs = [NodeFloat(1, name: "Distance"), NodeFloat(0, name: "Orbit Life"), NodeFloat3(0, 0, 0, name: "Orbit")]
+	
+	result._generateCommand = {outputs, inputs, unique, node in
+		var code: String = ""
+		
+		code += "RayMarchInfo result;"
+		code += "result.d = \(inputs[0]);"
+		code += "result.orbitLife = \(inputs[1]);"
+		code += "result.orbit = \(inputs[2]);"
+		
+		code += "return result;"
+		
+		return code
+	}
 	
 	return result
 }

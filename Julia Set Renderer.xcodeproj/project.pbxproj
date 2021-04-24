@@ -28,11 +28,11 @@
 		DE62BD322579B6A900E67351 /* ChannelInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD312579B6A900E67351 /* ChannelInfo.swift */; };
 		DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD352579C26D00E67351 /* ChannelPicker.swift */; };
 		DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD392579C3F300E67351 /* ChannelSettings.swift */; };
-		DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6435D024D8DF8300C97FB5 /* Settings.swift */; };
 		DE68A69B259D6F0900D66457 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69A259D6F0900D66457 /* ColorExtensions.swift */; };
 		DE68A69F259D7D2800D66457 /* NodeCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A69E259D7D2800D66457 /* NodeCanvas.swift */; };
 		DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */; };
 		DE778479261408C000DA1E5F /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE778478261408C000DA1E5F /* Content.swift */; };
+		DE8178E4262F753500999A56 /* FlowNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8178E3262F753500999A56 /* FlowNodes.swift */; };
 		DE8237D724AE2023000FA948 /* RenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D624AE2023000FA948 /* RenderView.swift */; };
 		DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237D824AE20BF000FA948 /* Renderer.swift */; };
 		DE8237DF24AE8234000FA948 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8237DE24AE8234000FA948 /* Other.swift */; };
@@ -44,6 +44,10 @@
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
 		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
+		DE91B8E02630C9990096A099 /* DESettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8DF2630C9990096A099 /* DESettings.swift */; };
+		DE91B8E4263107DF0096A099 /* DENodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8E3263107DF0096A099 /* DENodes.swift */; };
+		DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */; };
+		DE91B8F42631133B0096A099 /* MainDE.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8F32631133B0096A099 /* MainDE.txt */; };
 		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
@@ -124,11 +128,11 @@
 		DE62BD312579B6A900E67351 /* ChannelInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelInfo.swift; sourceTree = "<group>"; };
 		DE62BD352579C26D00E67351 /* ChannelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPicker.swift; sourceTree = "<group>"; };
 		DE62BD392579C3F300E67351 /* ChannelSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSettings.swift; sourceTree = "<group>"; };
-		DE6435D024D8DF8300C97FB5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		DE68A69A259D6F0900D66457 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		DE68A69E259D7D2800D66457 /* NodeCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCanvas.swift; sourceTree = "<group>"; };
 		DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeMenuItem.swift; sourceTree = "<group>"; };
 		DE778478261408C000DA1E5F /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
+		DE8178E3262F753500999A56 /* FlowNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowNodes.swift; sourceTree = "<group>"; };
 		DE8237D624AE2023000FA948 /* RenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderView.swift; sourceTree = "<group>"; };
 		DE8237D824AE20BF000FA948 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		DE8237DC24AE221B000FA948 /* OldShaders.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = OldShaders.txt; sourceTree = "<group>"; };
@@ -141,6 +145,10 @@
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
 		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
+		DE91B8DF2630C9990096A099 /* DESettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DESettings.swift; sourceTree = "<group>"; };
+		DE91B8E3263107DF0096A099 /* DENodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DENodes.swift; sourceTree = "<group>"; };
+		DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RayMarchInfo.txt; sourceTree = "<group>"; };
+		DE91B8F32631133B0096A099 /* MainDE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = MainDE.txt; sourceTree = "<group>"; };
 		DE942D2C25F968BA00CAF9CA /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		DE942D5D25F9874000CAF9CA /* Ray.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ray.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
@@ -258,6 +266,7 @@
 				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
 				DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */,
 				DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */,
+				DE91B8DF2630C9990096A099 /* DESettings.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -282,6 +291,7 @@
 				DEF9F04A25F98C9600D89043 /* Math.txt */,
 				DEF9F06125F9BEAF00D89043 /* NodeFunctions.txt */,
 				DEF9F07725F9C06F00D89043 /* DE.txt */,
+				DE91B8F32631133B0096A099 /* MainDE.txt */,
 				DEF9F07F25F9C20B00D89043 /* VoxelMath.txt */,
 				DEF9F08725F9C2D800D89043 /* RayMarcher.txt */,
 				DEF9F08D25FA928D00D89043 /* Shaders.txt */,
@@ -292,7 +302,6 @@
 		DE627E80259290A700B2DA8F /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				DE6435D024D8DF8300C97FB5 /* Settings.swift */,
 				DE62BD312579B6A900E67351 /* ChannelInfo.swift */,
 				DE62BD2D2579B68F00E67351 /* LightInfo.swift */,
 				DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */,
@@ -307,8 +316,8 @@
 			children = (
 				DE85F09D259CDEB600FF475F /* NodeView.swift */,
 				DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */,
-				DE68A69E259D7D2800D66457 /* NodeCanvas.swift */,
 				DEC91209259E2C74002158C9 /* NodeEditor.swift */,
+				DE68A69E259D7D2800D66457 /* NodeCanvas.swift */,
 				DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */,
 			);
 			path = Nodes;
@@ -326,6 +335,8 @@
 				DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */,
 				DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */,
 				DED8F76025C631C900ABFBCC /* ColorNodes.swift */,
+				DE8178E3262F753500999A56 /* FlowNodes.swift */,
+				DE91B8E3263107DF0096A099 /* DENodes.swift */,
 				DEF0B2D225A007A9002BB7A1 /* NodePath.swift */,
 			);
 			path = Nodes;
@@ -341,6 +352,7 @@
 				DEF9F05A25F9BD9700D89043 /* Settings.txt */,
 				DEF9F07125F9BFE000D89043 /* ResultInfo.txt */,
 				DEF9F07B25F9C14700D89043 /* Voxel.txt */,
+				DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -540,8 +552,10 @@
 				DEF9F0B625FA94C600D89043 /* Math.txt in Resources */,
 				DEF9F0B725FA94C600D89043 /* NodeFunctions.txt in Resources */,
 				DEF9F0B825FA94C600D89043 /* DE.txt in Resources */,
+				DE91B8F42631133B0096A099 /* MainDE.txt in Resources */,
 				DEF9F0B925FA94C600D89043 /* VoxelMath.txt in Resources */,
 				DEF9F0BA25FA94C600D89043 /* RayMarcher.txt in Resources */,
+				DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */,
 				DEF9F0BB25FA94C600D89043 /* Shaders.txt in Resources */,
 				DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */,
 				DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */,
@@ -578,7 +592,6 @@
 				DE9E7E8126116ADE00E3CC05 /* Application.swift in Sources */,
 				DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */,
 				DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */,
-				DE6435D124D8DF8300C97FB5 /* Settings.swift in Sources */,
 				DE627E84259290E600B2DA8F /* JuliaSetSettings.swift in Sources */,
 				DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */,
 				DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */,
@@ -597,10 +610,13 @@
 				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
+				DE91B8E02630C9990096A099 /* DESettings.swift in Sources */,
 				DE68A69F259D7D2800D66457 /* NodeCanvas.swift in Sources */,
 				DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */,
 				DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */,
+				DE8178E4262F753500999A56 /* FlowNodes.swift in Sources */,
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
+				DE91B8E4263107DF0096A099 /* DENodes.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
 				DE9E7E8626116B3F00E3CC05 /* Mouse.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,

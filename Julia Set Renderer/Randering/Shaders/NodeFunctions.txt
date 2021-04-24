@@ -1,3 +1,4 @@
+#include "DE.txt"
 
 namespace node {
 	void add(thread float *out1, float in1, float in2) {
@@ -248,5 +249,52 @@ namespace node {
 		result.z = cnoise(float4(pos, 20));
 		
 		*out = result;
+	}
+	
+	void mandelbulbDE(thread float *distance, thread float3 *orbit, float3 pos, float power, float iterations, float bailout) {
+		RayMarchingSettings settings;
+		settings.mandelbulbPower = power;
+		settings.iterations = iterations;
+		settings.bailout = bailout;
+		RayMarchInfo info = newBulbDE(pos, settings);
+		*distance = info.d;
+		*orbit = info.orbit;
+	}
+	
+	void sphereDE(thread float *distance, float3 pos, float3 c, float r) {
+		*distance = length(pos - c) - r;
+	}
+	
+	void boxDE(thread float *distance, float3 pos, float3 c, float3 b) {
+		float3 q = metal::abs(pos) - b - c;
+		//float3 q = float3(metal::abs(pos.x), metal::abs(pos.y), metal::abs(pos.z)) - b - c;
+		*distance = length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+	}
+	
+	void unionNode(thread float *out, float a, float b) {
+		*out = min(a, b);
+	}
+	
+	void difference(thread float *out, float a, float b) {
+		*out = max(-a, b);
+	}
+	
+	void intersect(thread float *out, float a, float b) {
+		*out = max(a, b);
+	}
+	
+	void smoothUnion(thread float *out, float a, float b, float k) {
+		float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+		*out = mix(b, a, h) - k * h * (1.0 - h);
+	}
+	
+	void smoothDifference(thread float *out, float a, float b, float k) {
+		float h = clamp(0.5 - 0.5 * (b + a) / k, 0.0, 1.0);
+		*out = mix(b, -a, h) + k * h * (1.0 - h);
+	}
+	
+	void smoothIntersect(thread float *out, float a, float b, float k) {
+		float h = clamp(0.5 - 0.5 * (b - a) / k, 0.0, 1.0);
+		*out = mix(b, a, h) + k * h * (1.0 - h);
 	}
 }

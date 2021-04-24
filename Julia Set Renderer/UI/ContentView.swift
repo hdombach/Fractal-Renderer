@@ -31,6 +31,7 @@ struct ContentView: View {
 		case Image
 		case Fractal
 		case Material
+		case DE
 		case Lightin
 	}
 	
@@ -63,6 +64,10 @@ struct ContentView: View {
 						currentMenu = .Material
 					}.foregroundColor(currentMenu == .Material ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
+					Button("􀇯") {
+						currentMenu = .DE
+					}.foregroundColor(currentMenu == .DE ? .accentColor : .primary)
+					.buttonStyle(PlainButtonStyle())
 					Button("􀆭") {
 						currentMenu = .Lightin
 					}.foregroundColor(currentMenu == .Lightin ? .accentColor : .primary)
@@ -73,7 +78,7 @@ struct ContentView: View {
 				case .Render:
 					RenderBox(doc: document)
 				case .Camera:
-					CameraSettings(content: content)
+					CameraSettings(doc: document)
 				case .Image:
 					ImageSettings(content: content)
 				case .Fractal:
@@ -85,6 +90,8 @@ struct ContentView: View {
 					}.frame(minHeight: 400)
 				case .Material:
 					MaterialSettings(doc: document)
+				case .DE:
+					DESettings(doc: document)
 				case .Lightin:
 					ScrollView {
 						SkyBoxSettings(content: content).frame(height: 300)

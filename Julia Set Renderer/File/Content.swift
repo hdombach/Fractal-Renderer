@@ -16,9 +16,15 @@ class Content: NSObject, Codable, ObservableObject {
 	@Published var savedCamera: Camera = Camera() { didSet { update() } }
 	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] { didSet { updateChannels(); update() } }
 	@Published var channels: [ChannelInfo] = [ChannelInfo.init(index: 0, color: .init(1, 1, 1), strength: 1)] { didSet { update() } }
-	@Published var nodeContainer = NodeContainer() {didSet {
-		if nodeContainer.constants != oldNodeContainerConstants {
-			oldNodeContainerConstants = nodeContainer.constants
+	@Published var materialNodeContainer = NodeContainer() {didSet {
+		if materialNodeContainer.constants != oldMaterialNodeContainerConstants {
+			oldMaterialNodeContainerConstants = materialNodeContainer.constants
+			update()
+		}
+	}}
+	@Published var deNodeContainer = NodeContainer() {didSet {
+		if deNodeContainer.constants != oldDeMaterialNodeContainerConstants {
+			oldDeMaterialNodeContainerConstants = deNodeContainer.constants
 			update()
 		}
 	}}
@@ -34,6 +40,8 @@ class Content: NSObject, Codable, ObservableObject {
 	var viewState: ViewSate?
 	
 	private var oldNodeContainerConstants: [Float] = []
+	private var oldMaterialNodeContainerConstants: [Float] = []
+	private var oldDeMaterialNodeContainerConstants: [Float] = []
 	
 	func update() {
 		viewState?.updateView()
@@ -52,10 +60,14 @@ class Content: NSObject, Codable, ObservableObject {
 		case juliaSettings
 		case depthSettings
 		case kernelSize
+		
+		case materialNodeContainer
+		case deNodeContainer
 	}
 	
 	override init() {
 		super.init()
+		deNodeContainer.type = .DE
 	}
 	
 	required init(from decoder: Decoder) throws {
@@ -66,11 +78,22 @@ class Content: NSObject, Codable, ObservableObject {
 		savedCamera = try values.decode(Camera.self, forKey: .savedCamera)
 		skyBox = try values.decode(Array<LightInfo>.self, forKey: .skyBox)
 		channels = try values.decode(Array<ChannelInfo>.self, forKey: .channels)
-		nodeContainer = try values.decode(NodeContainer.self, forKey: .nodeContainer)
+		do {
+			materialNodeContainer = try values.decode(NodeContainer.self, forKey: .materialNodeContainer)
+			deNodeContainer = try values.decode(NodeContainer.self, forKey: .deNodeContainer)
+		} catch {
+			materialNodeContainer = try values.decode(NodeContainer.self, forKey: .nodeContainer)
+		}
+		
 		rayMarchingSettings = try values.decode(RayMarchingSettings.self, forKey: .rayMarchingSettings)
 		julaSettings = try values.decode(JuliaSetSettings.self, forKey: .juliaSettings)
 		depthSettings = try values.decode(Float3.self, forKey: .depthSettings)
 		kernelSize = try values.decode(Int2.self, forKey: .kernelSize)
+		
+		super.init()
+		
+		deNodeContainer.type = .DE
+		
 	}
 	
 	func encode(to encoder: Encoder) throws {
@@ -80,7 +103,8 @@ class Content: NSObject, Codable, ObservableObject {
 		try container.encode(savedCamera, forKey: .savedCamera)
 		try container.encode(skyBox, forKey: .skyBox)
 		try container.encode(channels, forKey: .channels)
-		try container.encode(nodeContainer, forKey: .nodeContainer)
+		try container.encode(materialNodeContainer, forKey: .materialNodeContainer)
+		try container.encode(deNodeContainer, forKey: .deNodeContainer)
 		try container.encode(rayMarchingSettings, forKey: .rayMarchingSettings)
 		try container.encode(julaSettings, forKey: .juliaSettings)
 		try container.encode(depthSettings, forKey: .depthSettings)

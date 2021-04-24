@@ -33,6 +33,7 @@ class ViewSate: ObservableObject {
 	@Published var viewportMode = ViewportMode.preview
 	@Published var renderMode: RenderMode = .Mandelbulb
 	@Published var isShowingUI: Bool = true
+	@Published var cameraSpeed: Float = 0.01
 	var document: Document
 	
 	var view: MTKView!
@@ -57,6 +58,14 @@ class ViewSate: ObservableObject {
 	}
 	
 	func updateView() {
-		view.setNeedsDisplay(view.frame)
+		DispatchQueue.main.async {
+			self.view.setNeedsDisplay(self.view.frame)
+		}
+	}
+	
+	func updateShaders(material: String? = nil, de: String? = nil) {
+		document.graphics.library.loadLibrary(material: material ?? document.content.materialNodeContainer.compiled, de: de ?? document.content.deNodeContainer.compiled) {
+			self.updateView()
+		}
 	}
 }

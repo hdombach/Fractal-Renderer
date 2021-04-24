@@ -15,7 +15,9 @@ extension Color {
 	static let nodeMath = Color.blue
 	static let nodeOutput = Color.green
 	static let nodeInput = Color.red
-	static let nodeVector = Color.purple
+	static let nodeVector = Color.blue
 	static let nodeTexture = Color.orange
 	static let nodeColor = Color.yellow
+	static let nodeFlow = Color.pink
+	static let nodeDE = Color.purple
 }

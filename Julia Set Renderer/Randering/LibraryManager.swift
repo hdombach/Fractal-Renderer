@@ -25,7 +25,9 @@ class LibraryManager {
 	init(doc: Document) {
 		document = doc
 		do {
-			try document.content.nodeContainer.compile(library: self, viewState: document.viewState)
+			try document.content.materialNodeContainer.compile(library: self, viewState: document.viewState)
+			try document.content.deNodeContainer.compile(library: self, viewState: document.viewState)
+			document.viewState.updateShaders()
 		} catch {
 			loadDefaultDibrary(completion: nil)
 		}
@@ -124,6 +126,11 @@ class LibraryManager {
 		if material != nil {
 			if let range = code.range(of: "//INSERT_MATERIAL//") {
 				code.insert(contentsOf: material!, at: range.lowerBound)
+			}
+		}
+		if de != nil {
+			if let range = code.range(of: "//INSERT_DE//") {
+				code.insert(contentsOf: de!, at: range.lowerBound)
 			}
 		}
 		

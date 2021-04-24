@@ -227,6 +227,43 @@ struct ColorRampNodeView: View, Equatable {
 	}
 }
 
+struct NodeIterateView: View {
+	var nodeAddress: NodeAddress
+	
+	@Binding var nodeContainer: NodeContainer
+	
+	@Binding var selected: Node?
+	
+	var gridSize: CGFloat {
+		get {
+			nodeContainer.gridSize
+		}
+	}
+	
+	var node: Node? {
+		get {
+			nodeContainer[nodeAddress]
+		}
+		
+		set {
+			nodeContainer[nodeAddress] = newValue
+		}
+	}
+	var body: some View {
+		if let node = node {
+			ZStack {
+				Color.controlBackgroundColor.opacity(0.6)
+				VStack(spacing: 0) {
+					ZStack {
+						node.color.opacity(0.4)
+						Text(node.name)
+					}.frame(height: gridSize)
+				}
+			}
+		}
+	}
+}
+
 struct NodeOutputView: View {
 	var valueAddress: NodeValueAddress
 	@Binding var nodeContainer: NodeContainer
@@ -349,20 +386,13 @@ struct NodeValueView: View {
 }
 
 struct Node_Previews: PreviewProvider {
+	static var container = NodeContainer()
+	static var node = IterateNode()
+	static var adress: NodeAddress!
+	
     static var previews: some View {
-		/*ColorRampNodeView(nodeAddress: { () -> NodeAddress in
-			if Engine.Settings.nodeContainer.nodes.count == 0 {
-				var newNode = ColorRampNode()
-				newNode.position = CGPoint(x: 150, y: 100)
-				Engine.Settings.nodeContainer.nodes.append(newNode)
-			}
-			return Engine.Settings.nodeContainer.createNodeAddress(node: Engine.Settings.nodeContainer.nodes[0])
-			
-		}(), nodeContainer: .init(get: { () -> NodeContainer in
-			Engine.Settings.nodeContainer
-		}, set: { (new) in
-			Engine.Settings.nodeContainer = new
-		}), selected: .constant(nil), node: .constant(ColorRampNode()), values: .constant([]))*/
-		Text("hi")
+		node.position = CGPoint(x: 200, y: 200)
+		container.nodes.append(node)
+		return NodeView(nodeAddress: container.createNodeAddress(node: node), nodeContainer: .constant(container), selected: .constant(nil))
     }
 }

@@ -60,18 +60,20 @@ fragment float4 depth_fragment_shader(RasterizerData rd [[ stage_in ]],
 									  constant ShaderInfo &shaderInfo [[buffer(0)]],
 									  device Voxel *voxels [[buffer(1)]],
 									  constant SkyBoxLight *lights [[buffer(2)]],
-									  constant float *constants [[buffer(4)]]) {
+									  constant float *mConstants [[buffer(4)]],
+									  constant float *dConstants [[buffer(5)]]) {
 	ShaderInfo info = shaderInfo;
-	return float4(depthMap(rd.texCoord, voxels, info, constants));
+	return float4(depthMap(rd.texCoord, voxels, info, mConstants, dConstants));
 }
 
 fragment float4 preview_fragment_shader(RasterizerData rd [[ stage_in ]],
 										constant ShaderInfo &shaderInfo [[buffer(0)]],
 										device Voxel *voxels [[buffer(1)]],
 										constant SkyBoxLight *lights [[buffer(2)]],
-										constant float *constants [[buffer(4)]]) {
+										constant float *mConstants [[buffer(4)]],
+										constant float *dConstants [[buffer(5)]]) {
 	ShaderInfo info = shaderInfo;
-	return preview(rd.texCoord, voxels, lights, info, constants);
+	return preview(rd.texCoord, voxels, lights, info, mConstants, dConstants);
 }
 
 fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
@@ -91,7 +93,8 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 							   constant ShaderInfo &shaderInfo [[buffer(0)]],
 							   device Voxel *voxels [[buffer(1)]],
 							   constant SkyBoxLight *lights [[buffer(2)]],
-							   constant float *constants [[buffer(4)]]) {
+							   constant float *mConstants [[buffer(4)]],
+							   constant float *dConstants [[buffer(5)]]) {
 	
 	ShaderInfo info = shaderInfo;
 	
@@ -120,7 +123,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	pos.x = (pos.x + 0) / readTexture.get_width();
 	pos.y = (pos.y + 0) / readTexture.get_height();
 	
-	Colors colors = getPointColor(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, constants);
+	Colors colors = getPointColor(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, mConstants, dConstants);
 	
 	for (uint c = 0; info.channelsLength > c; c++) {
 		float3 oldColor;

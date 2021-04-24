@@ -1,5 +1,6 @@
 #include "Settings.txt"
-#include "ResultInfo.txt"
+#include "RayMarchInfo.txt"
+#include "NodeFunctions.txt"
 
 RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 	float3 z = pos;
@@ -61,24 +62,4 @@ RayMarchInfo SphereDE(float3 pos, float r, RayMarchingSettings settings) {
 	//info.d = max(length(fmod(pos, float(1)) - c) - r, length(pos - c) - 10);
 	info.orbitLife = settings.iterations;
 	return info;
-}
-
-RayMarchInfo DE(float3 pos, RayMarchingSettings settings) {
-	//RayMarchInfo info;
-	//info.orbitLife = settings.iterations;
-	//info.d = TriangleDE(mirror(pos, float3(0, 1, 0)), settings);
-	//return SphereDE(pos, 1, settings);
-	return newBulbDE(pos, settings);
-}
-
-float3 DEnormal(float3 pos, RayMarchingSettings settings) {
-	//e is an abitrary number
-	//e can cause white specks to appear if chosen wrongly
-	float e = 0.00001;
-	float n = DE(pos, settings).d;
-	float dx = DE(pos + float3(e, 0, 0), settings).d - n;
-	float dy = DE(pos + float3(0, e, 0), settings).d - n;
-	float dz = DE(pos + float3(0, 0, e), settings).d - n;
-	
-	return normalize(float3(dx, dy, dz) * -1);
 }

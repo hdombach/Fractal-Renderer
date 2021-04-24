@@ -1,0 +1,5 @@
+struct RayMarchInfo {
+	float d;
+	float orbitLife;
+	float3 orbit;
+};

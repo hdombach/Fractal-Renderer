@@ -50,8 +50,7 @@ struct NodeContainer: Codable {
 	let nodeWidth: CGFloat = 200
 	var type: NodeContainerType = .Material
 	
-	var compiledMaterial: String?
-	var compiledDE: String?
+	var compiled: String?
 	var compilerMessage: String = "Succesfully updated"
 	var compilerCompleted: Bool = true
 	

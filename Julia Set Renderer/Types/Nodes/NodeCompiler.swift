@@ -283,17 +283,17 @@ extension NodeContainer {
 		//compiled = tempCode
 		print("\n\n*__CODE__*\n\n")
 		print(tempCode)
-		compiledMaterial = tempCode
+		compiled = tempCode
 		
 		compilerCompleted = true
 		compilerMessage = "Succesfully updated"
 		
-		//compiledMaterial = "rgbAbsorption = float3(1, 0, 0); return;"
-		library.loadLibrary(material: compiledMaterial, de: compiledDE) {
-			DispatchQueue.main.async {
-				viewState.updateView()
-			}
+		if type == .DE {
+			viewState.updateShaders(de: compiled)
+		} else {
+			viewState.updateShaders(material: compiled)
 		}
+		//compiledMaterial = "rgbAbsorption = float3(1, 0, 0); return;"
 	}
 	
 }

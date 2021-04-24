@@ -22,7 +22,7 @@ struct MaterialSettings: View {
 	
 	
 	var body: some View {
-		NodeEditor(nodeContainer: $content.nodeContainer, document: document)
+		NodeEditor(nodeContainer: $content.materialNodeContainer, document: document)
     }
 }
 

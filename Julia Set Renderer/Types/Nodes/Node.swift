@@ -50,6 +50,20 @@ enum NodeType: String, Codable, CaseIterable {
 	//color
 	case colorBlend
 	case colorRamp
+	
+	//flow
+	case iterate
+	
+	//DE
+	case mandelbulbDE
+	case sphereDE
+	case boxDE
+	case intersect
+	case union
+	case difference
+	case smoothIntersect
+	case smoothUnion
+	case smoothDifference
 }
 
 let allNodes: [NodeType: () -> Node] = [
@@ -81,7 +95,17 @@ let allNodes: [NodeType: () -> Node] = [
 	.perlin: PerlinNode,
 	.perlin3: Perlin3Node,
 	.colorBlend: ColorBlendNode,
-	.colorRamp: ColorRampNode
+	.colorRamp: ColorRampNode,
+	.iterate: IterateNode,
+	.mandelbulbDE: MandelbulbDENode,
+	.sphereDE: SphereDENode,
+	.boxDE: BoxDENode,
+	.intersect: IntersectNode,
+	.union: UnionNode,
+	.difference: DifferenceNode,
+	.smoothIntersect: SmoothIntersectNode,
+	.smoothUnion: SmoothUnionNode,
+	.smoothDifference: SmoothDifference
 ]
 
 
