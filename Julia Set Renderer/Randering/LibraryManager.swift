@@ -11,12 +11,12 @@ import MetalKit
 
 //Creates and manages all the states that are used when interacting with the gpu
 class LibraryManager {
-	private var previewRenderPipelineState: MTLRenderPipelineState!
-	private var depthRenderPipelineState: MTLRenderPipelineState!
-	private var mainRenderPipelineState: MTLRenderPipelineState!
+	private var previewRenderPipelineState: MTLRenderPipelineState?
+	private var depthRenderPipelineState: MTLRenderPipelineState?
+	private var mainRenderPipelineState: MTLRenderPipelineState?
 	
-	private var mainComputePipelineState: MTLComputePipelineState!
-	private var resetComputePipelineState: MTLComputePipelineState!
+	private var mainComputePipelineState: MTLComputePipelineState?
+	private var resetComputePipelineState: MTLComputePipelineState?
 	
 	var document: Document!
 	
@@ -24,13 +24,7 @@ class LibraryManager {
 	
 	init(doc: Document) {
 		document = doc
-		do {
-			try document.content.materialNodeContainer.compile(library: self, viewState: document.viewState)
-			try document.content.deNodeContainer.compile(library: self, viewState: document.viewState)
-			document.viewState.updateShaders()
-		} catch {
-			loadDefaultDibrary(completion: nil)
-		}
+		loadDefaultDibrary(completion: nil)
 	}
 	
 	enum RenderPipelineState {
@@ -43,7 +37,7 @@ class LibraryManager {
 		case reset
 	}
 	
-	subscript(state: RenderPipelineState) -> MTLRenderPipelineState {
+	subscript(state: RenderPipelineState) -> MTLRenderPipelineState? {
 		switch (state) {
 		case .preview:
 			return previewRenderPipelineState
@@ -57,7 +51,7 @@ class LibraryManager {
 		}
 	}
 	
-	subscript(state: ComputePipelineState) -> MTLComputePipelineState {
+	subscript(state: ComputePipelineState) -> MTLComputePipelineState? {
 		switch (state) {
 		case .render:
 			return mainComputePipelineState

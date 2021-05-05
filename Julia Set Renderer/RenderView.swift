@@ -46,6 +46,8 @@ class RenderView: MTKView {
 		addTrackingArea(trackingRect)
 		
 		changeRenderMode(isManual: true)
+		
+		colorspace = CGColorSpace.init(name: CGColorSpace.sRGB)
 	}
 
 	required init(coder: NSCoder) {

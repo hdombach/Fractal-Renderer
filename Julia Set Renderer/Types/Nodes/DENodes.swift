@@ -16,7 +16,7 @@ func MandelbulbDENode() -> Node {
 	result.color = .nodeDE
 	
 	result.inputs = [NodeFloat3(0, 0, 0, name: "Position"), NodeFloat(12, name: "Power"), NodeFloat(20, name: "Iterations"), NodeFloat(2, name: "Bailout")]
-	result.outputs = [NodeFloat(0, name: "Distance"), NodeFloat3(0, 0, 0, name: "Orbit")]
+	result.outputs = [NodeFloat(0, name: "Distance"), NodeFloat3(0, 0, 0, name: "Orbit"), NodeFloat("Orbit Life")]
 	
 	return result
 }
@@ -112,7 +112,7 @@ func SmoothUnionNode() -> Node {
 	return result
 }
 
-func SmoothDifference() -> Node {
+func SmoothDifferenceNode() -> Node {
 	var result = Node()
 	result.type = .smoothDifference
 	result.name = "Smooth Difference"
@@ -121,6 +121,32 @@ func SmoothDifference() -> Node {
 	
 	result.inputs = [NodeFloat("value"), NodeFloat("value"), NodeFloat("Smoothness")]
 	result.outputs = [NodeFloat("value")]
+	
+	return result
+}
+
+func MirrorNode() -> Node {
+	var result = Node()
+	result.type = .mirror
+	result.name = "Mirror"
+	result.functionName = "mirror"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeInt("Axis"), NodeFloat("Offset")]
+	result.outputs = [NodeFloat3("Position")]
+	
+	return result
+}
+
+func RotateNode() -> Node {
+	var result = Node()
+	result.type = .rotate
+	result.name = "Rotate"
+	result.functionName = "rotate"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeFloat("Ange"), NodeFloat3("Axis")]
+	result.outputs = [NodeFloat3("Position")]
 	
 	return result
 }

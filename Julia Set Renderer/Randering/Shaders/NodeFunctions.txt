@@ -251,7 +251,7 @@ namespace node {
 		*out = result;
 	}
 	
-	void mandelbulbDE(thread float *distance, thread float3 *orbit, float3 pos, float power, float iterations, float bailout) {
+	void mandelbulbDE(thread float *distance, thread float3 *orbit, thread float *orbitLife, float3 pos, float power, float iterations, float bailout) {
 		RayMarchingSettings settings;
 		settings.mandelbulbPower = power;
 		settings.iterations = iterations;
@@ -259,6 +259,7 @@ namespace node {
 		RayMarchInfo info = newBulbDE(pos, settings);
 		*distance = info.d;
 		*orbit = info.orbit;
+		*orbitLife = info.orbitLife;
 	}
 	
 	void sphereDE(thread float *distance, float3 pos, float3 c, float r) {
@@ -296,5 +297,16 @@ namespace node {
 	void smoothIntersect(thread float *out, float a, float b, float k) {
 		float h = clamp(0.5 - 0.5 * (b - a) / k, 0.0, 1.0);
 		*out = mix(b, a, h) + k * h * (1.0 - h);
+	}
+	
+	void mirror(thread float3 *out, float3 pos, int axis, float offset) {
+		pos[axis] = offset + metal::abs(pos[axis] - offset);
+		*out = pos;
+	}
+	
+	void rotate(thread float3 *out, float3 pos, float angle, float3 axis) {
+		axis = metal::normalize(axis);
+		float c = cos(angle);
+		*out = pos * c + cross(axis, pos) * sin(angle) + axis * dot(axis, pos) * (1.0 - c);
 	}
 }

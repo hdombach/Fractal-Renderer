@@ -9,7 +9,7 @@ RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 	float power = settings.mandelbulbPower;
 	uint iterations = settings.iterations;
 	RayMarchInfo info;
-	info.orbitLife = iterations;
+	info.orbitLife = 0;
 	for (int i = 0; i < iterations; i++) {
 		r = length(z);
 		if (r > settings.bailout) {
@@ -30,6 +30,7 @@ RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 		//convert back to cartesian
 		z = zr * float3(sin(theta) * cos(phi), sin(phi) * sin(theta), cos(theta));
 		z += pos;
+		info.orbitLife = i;
 	}
 	info.d = 0.5 * log(r) * r / dr;
 	info.orbit = z;

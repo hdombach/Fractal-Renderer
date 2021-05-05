@@ -36,7 +36,7 @@ struct RenderBox: View {
 		HStack(alignment: .top) {
 			VStack(alignment: .leading) {
 				Button(action: render) {
-					Text("Render")
+					Text("Wender")
 				}
 				Button(action: preview) {
 					Text("Stop")
@@ -57,6 +57,8 @@ struct RenderBox: View {
 				if (state.viewportMode == .depth) {
 					Tuple3FloatInput(value: $content.depthSettings)
 				}
+				NumberInput(value: $content.shadingSettings.x.nsNumber, step: 0.01.nsNumber.0, name: "Ambient Shading")
+				NumberInput(value: $content.shadingSettings.y.nsNumber, step: 0.1.nsNumber.0, name: "Angle Shading")
 			}
 		}
 		.padding()

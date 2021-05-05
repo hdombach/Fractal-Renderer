@@ -22,6 +22,7 @@
 		DE56BE53258EE46B00F4007D /* Tuple3FloatInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */; };
 		DE5C04B525784DD700F5DDCD /* ShaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */; };
 		DE5C04BD257877E100F5DDCD /* SwiftRayMarcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */; };
+		DE5C743726387803002196CC /* box.mbulb in Resources */ = {isa = PBXBuildFile; fileRef = DE5C743626387803002196CC /* box.mbulb */; };
 		DE627E84259290E600B2DA8F /* JuliaSetSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE627E83259290E600B2DA8F /* JuliaSetSettings.swift */; };
 		DE62BD282579B66A00E67351 /* RayMarchingSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD272579B66A00E67351 /* RayMarchingSettings.swift */; };
 		DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE62BD2D2579B68F00E67351 /* LightInfo.swift */; };
@@ -51,8 +52,6 @@
 		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
-		DE9E7E8126116ADE00E3CC05 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9E7E8026116ADE00E3CC05 /* Application.swift */; };
-		DE9E7E8626116B3F00E3CC05 /* Mouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9E7E8526116B3F00E3CC05 /* Mouse.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
@@ -122,6 +121,7 @@
 		DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuple3FloatInput.swift; sourceTree = "<group>"; };
 		DE5C04B425784DD700F5DDCD /* ShaderInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderInfo.swift; sourceTree = "<group>"; };
 		DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftRayMarcher.swift; sourceTree = "<group>"; };
+		DE5C743626387803002196CC /* box.mbulb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = box.mbulb; sourceTree = "<group>"; };
 		DE627E83259290E600B2DA8F /* JuliaSetSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JuliaSetSettings.swift; sourceTree = "<group>"; };
 		DE62BD272579B66A00E67351 /* RayMarchingSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RayMarchingSettings.swift; sourceTree = "<group>"; };
 		DE62BD2D2579B68F00E67351 /* LightInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightInfo.swift; sourceTree = "<group>"; };
@@ -153,8 +153,6 @@
 		DE942D5D25F9874000CAF9CA /* Ray.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ray.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
-		DE9E7E8026116ADE00E3CC05 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
-		DE9E7E8526116B3F00E3CC05 /* Mouse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mouse.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
@@ -361,7 +359,6 @@
 			isa = PBXGroup;
 			children = (
 				DE1E40A624CB7FC5003B198F /* Keys.swift */,
-				DE9E7E8526116B3F00E3CC05 /* Mouse.swift */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -409,7 +406,6 @@
 			isa = PBXGroup;
 			children = (
 				DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */,
-				DE9E7E8026116ADE00E3CC05 /* Application.swift */,
 				DE9E7E8B26116CD600E3CC05 /* File */,
 				DE9E7E8426116B3200E3CC05 /* Input */,
 				DE8237D624AE2023000FA948 /* RenderView.swift */,
@@ -424,6 +420,7 @@
 				DEC8CDE824ADFC9E00DB5701 /* Info.plist */,
 				DEC8CDE924ADFC9E00DB5701 /* Julia_Set_Renderer.entitlements */,
 				DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */,
+				DE5C743626387803002196CC /* box.mbulb */,
 				DEC8CDE224ADFC9E00DB5701 /* Preview Content */,
 			);
 			path = "Julia Set Renderer";
@@ -559,6 +556,7 @@
 				DEF9F0BB25FA94C600D89043 /* Shaders.txt in Resources */,
 				DEC8CDE724ADFC9E00DB5701 /* Main.storyboard in Resources */,
 				DEC8CDE424ADFC9E00DB5701 /* Preview Assets.xcassets in Resources */,
+				DE5C743726387803002196CC /* box.mbulb in Resources */,
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
@@ -589,7 +587,6 @@
 				DE14D83625E715E600E443DB /* NodeCompiler.swift in Sources */,
 				DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */,
 				DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */,
-				DE9E7E8126116ADE00E3CC05 /* Application.swift in Sources */,
 				DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */,
 				DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */,
 				DE627E84259290E600B2DA8F /* JuliaSetSettings.swift in Sources */,
@@ -618,7 +615,6 @@
 				DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */,
 				DE91B8E4263107DF0096A099 /* DENodes.swift in Sources */,
 				DE05617824EDD2BB0058925E /* ComplexNumbers.swift in Sources */,
-				DE9E7E8626116B3F00E3CC05 /* Mouse.swift in Sources */,
 				DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */,
 				DE8237DF24AE8234000FA948 /* Other.swift in Sources */,
 				DE68A6A3259D843A00D66457 /* NodeMenuItem.swift in Sources */,

@@ -31,6 +31,8 @@ class Content: NSObject, Codable, ObservableObject {
 	@Published var rayMarchingSettings = RayMarchingSettings() { didSet { update() } }
 	@Published var julaSettings = JuliaSetSettings() { didSet { update() } }
 	@Published var depthSettings: Float3 = .init(0, 0, 1) { didSet { update() } }
+	///ambient, angle
+	@Published var shadingSettings: Float2 = .init(0.995, 1) { didSet { update() } }
 	///x: groupsize, y: groups
 	@Published var kernelSize: Int2 = .init(200, 50)
 	

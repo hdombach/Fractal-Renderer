@@ -98,6 +98,7 @@ struct ContentView: View {
 						ChannelSettings(content: content).frame(height: 300)
 					}.frame(minHeight: 500)
 				}
+				Spacer()
 			}
 			.frame(minWidth: 400)
 		}

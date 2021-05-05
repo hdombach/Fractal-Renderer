@@ -64,7 +64,7 @@ func ColorRampNode() -> Node {
 		node.values = values
 	}
 	
-	
+	//Fix it crashing when deleting thingy
 	
 	result._inputRange = {node in
 		return node.outputs.count ..< node.outputs.count + node.inputs.count + getValues(node).count * 2
@@ -77,6 +77,9 @@ func ColorRampNode() -> Node {
 		} else {
 			let ind = Int(floor(CGFloat(index - node.inputs.count - node.outputs.count) / 2))
 			let itemIndex = (index - node.inputs.count - node.outputs.count) % 2
+			if getValues(node).count <= ind {
+				return nil
+			}
 			if (itemIndex == 0) {
 				return NodeFloat(getValues(node)[ind].position, name: nil)
 			} else {
@@ -86,25 +89,25 @@ func ColorRampNode() -> Node {
 	}
 	result._setSubscript = {valueIndex, newValue, node in
 		if (node.outputs.count > valueIndex) {
-			node.outputs[valueIndex] = newValue
+			node.outputs[valueIndex] = newValue!
 		} else if (node.outputs.count + node.inputs.count > valueIndex) {
-			node.inputs[valueIndex - node.outputs.count] = newValue
+			node.inputs[valueIndex - node.outputs.count] = newValue!
 		} else {
 			let index = Int(floor(CGFloat(valueIndex - node.inputs.count - node.outputs.count) / 2))
 			let itemIndex = (valueIndex - node.inputs.count - node.outputs.count) % 2
 			var values = getValues(node)
 			if (itemIndex == 0) {
-				values[index].position = newValue.float
+				values[index].position = newValue!.float
 			} else {
-				values[index].color = newValue.float3
+				values[index].color = newValue!.float3
 			}
 			node.values = values
 		}
 		
 		if node.outputs.count > valueIndex {
-			node.outputs[valueIndex] = newValue
+			node.outputs[valueIndex] = newValue!
 		} else {
-			node.inputs[valueIndex - node.outputs.count] = newValue
+			node.inputs[valueIndex - node.outputs.count] = newValue!
 		}
 	}
 	

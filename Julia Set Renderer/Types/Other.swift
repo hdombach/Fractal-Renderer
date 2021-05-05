@@ -99,6 +99,10 @@ extension Int {
 			self = Int(newValue)
 		}
 	}
+	
+	var float: Float {
+		get { return Float(self)}
+	}
 }
 
 extension SIMD4 {

@@ -115,54 +115,66 @@ class Renderer: NSObject, MTKViewDelegate {
 		}
 
 		//post draw commands
-
-		guard let drawable = view.currentDrawable,
-			let renderPassDescriptor = view.currentRenderPassDescriptor
-			else { print("could not get things"); return }
-
-		let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+		
+		var pipeState: MTLRenderPipelineState?
 		switch state.viewportMode {
 		case .preview:
-			renderCommandEncoder?.setRenderPipelineState(graphics.library[.preview])
+			pipeState = graphics.library[.preview]
 		case .rendering:
-			renderCommandEncoder?.setRenderPipelineState(graphics.library[.render])
+			pipeState = graphics.library[.render]
 		case .depth:
-			renderCommandEncoder?.setRenderPipelineState(graphics.library[.depth])
-        default:
-			renderCommandEncoder?.setRenderPipelineState(graphics.library[.render])
+			pipeState = graphics.library[.depth]
+		default:
+			pipeState = graphics.library[.render]
 		}
-		renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
-		renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
-		renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
-		renderCommandEncoder?.setFragmentSamplerState(graphics.library.samplerState, index: 0)
-		renderCommandEncoder?.setFragmentTexture(document.viewState.renderPassManager.result.texture, index: 0)
 		
-		var info = ShaderInfo.init()
-		info.camera = content.camera
-		info.voxelsLength = UInt32(document.container.voxelCount)
-		info.isJulia = state.renderMode.rawValue
-		info.lightsLength = UInt32(content.skyBox.count)
-		info.exposure = UInt32(document.viewState.renderPassManager.samplesCurrent)
-		info.rayMarchingSettings = content.rayMarchingSettings
-		info.channelsLength = UInt32(content.channels.count)
-		info.depthSettings = content.depthSettings
-		info.randomSeed.x = UInt32.random(in: 0...10000)
-		info.randomSeed.y = UInt32.random(in: 0...10000)
-		info.randomSeed.z = UInt32.random(in: 0...10000)
+		if let pipeState = pipeState {
+			guard let drawable = view.currentDrawable,
+				  let renderPassDescriptor = view.currentRenderPassDescriptor
+			else { print("could not get things"); return }
+			let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+			renderCommandEncoder?.setRenderPipelineState(pipeState)
+			
+			renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
+			renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
+			renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
+			renderCommandEncoder?.setFragmentSamplerState(graphics.library.samplerState, index: 0)
+			renderCommandEncoder?.setFragmentTexture(document.viewState.renderPassManager.result.texture, index: 0)
+			
+			var info = ShaderInfo.init()
+			info.camera = content.camera
+			info.voxelsLength = UInt32(document.container.voxelCount)
+			info.isJulia = state.renderMode.rawValue
+			info.lightsLength = UInt32(content.skyBox.count)
+			info.exposure = UInt32(document.viewState.renderPassManager.samplesCurrent)
+			info.rayMarchingSettings = content.rayMarchingSettings
+			info.channelsLength = UInt32(content.channels.count)
+			info.depthSettings = content.depthSettings
+			info.randomSeed.x = UInt32.random(in: 0...10000)
+			info.randomSeed.y = UInt32.random(in: 0...10000)
+			info.randomSeed.z = UInt32.random(in: 0...10000)
+			
+			info.ambient = content.shadingSettings.x
+			info.angleShading = content.shadingSettings.y
+			
+			renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
+			renderCommandEncoder?.setFragmentBuffer(document.container.voxelBuffer, offset: 0, index: 1)
+			renderCommandEncoder?.setFragmentBytes(&content.skyBox, length: MemoryLayout<LightInfo>.stride * content.skyBox.count, index: 2)
+			renderCommandEncoder?.setFragmentBytes(&content.channels, length: MemoryLayout<ChannelInfo>.stride * content.channels.count, index: 3)
+			renderCommandEncoder?.setFragmentBytes(content.materialNodeContainer.constants, length: MemoryLayout<Float>.stride * content.materialNodeContainer.constants.count, index: 4)
+			renderCommandEncoder?.setFragmentBytes(content.deNodeContainer.constants, length: MemoryLayout<Float>.stride * content.deNodeContainer.constants.count, index: 5)
+			
+			renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
+			
+			renderCommandEncoder?.endEncoding()
+			commandBuffer?.present(drawable)
+			commandBuffer?.commit()
+			commandBuffer?.waitUntilCompleted()
+		}
 
-		renderCommandEncoder?.setFragmentBytes(&info, length: MemoryLayout<ShaderInfo>.stride, index: 0)
-		renderCommandEncoder?.setFragmentBuffer(document.container.voxelBuffer, offset: 0, index: 1)
-		renderCommandEncoder?.setFragmentBytes(&content.skyBox, length: MemoryLayout<LightInfo>.stride * content.skyBox.count, index: 2)
-		renderCommandEncoder?.setFragmentBytes(&content.channels, length: MemoryLayout<ChannelInfo>.stride * content.channels.count, index: 3)
-		renderCommandEncoder?.setFragmentBytes(content.materialNodeContainer.constants, length: MemoryLayout<Float>.stride * content.materialNodeContainer.constants.count, index: 4)
-		renderCommandEncoder?.setFragmentBytes(content.deNodeContainer.constants, length: MemoryLayout<Float>.stride * content.deNodeContainer.constants.count, index: 5)
 		
-		renderCommandEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: squareMesh.vertices.count)
 
-		renderCommandEncoder?.endEncoding()
-		commandBuffer?.present(drawable)
-		commandBuffer?.commit()
-		commandBuffer?.waitUntilCompleted()
+		
 	}
 
 	func updateMesh() {

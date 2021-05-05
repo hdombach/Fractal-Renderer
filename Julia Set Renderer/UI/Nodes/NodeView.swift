@@ -154,64 +154,67 @@ struct ColorRampNodeView: View, Equatable {
 	
 	var body: some View {
 		ZStack {
-			Color.controlBackgroundColor.opacity(0.6)
-			VStack(spacing: 0) {
-				
-				ZStack {
-					node.color.opacity(0.4)
-					Text(node.name)
-				}.frame(height: gridSize)
-				if node.outputs.count > 0 {
-					ForEach(0..<node.outputs.count) { c in
-						
-						NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
-						
-					}.frame(alignment: Alignment.leading)
-				}
-				
-				if node.inputs.count > 0 {
-					ForEach(0..<node.inputs.count) { c in
-						NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
-						
+			if nodeContainer.nodes.contains(node) {
+				Color.controlBackgroundColor.opacity(0.6)
+				VStack(spacing: 0) {
+					
+					ZStack {
+						node.color.opacity(0.4)
+						Text(node.name)
+					}.frame(height: gridSize)
+					if node.outputs.count > 0 {
+						ForEach(0..<node.outputs.count) { c in
+							
+							NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
+							
+						}.frame(alignment: Alignment.leading)
 					}
-				}
-				HStack(alignment: .top) {
-					Button("+") {
-						values.append(ColorRampValue(position: 0, color: Float3(0, 0, 0)))
-					}.buttonStyle(PlainButtonStyle())
-					Button("-") {
-						if let point = selectedPoint {
-							values.remove(at: point)
-							selectedPoint = nil
+					
+					if node.inputs.count > 0 {
+						ForEach(0..<node.inputs.count) { c in
+							NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
+							
 						}
-					}.buttonStyle(PlainButtonStyle())
-					if let c = selectedPoint {
-						ColorInput(value: $values[c].color)
 					}
-					Spacer()
-				}.padding(.horizontal).frame(height: gridSize)
-				ZStack {
-					GeometryReader { reader in
-						
-						LinearGradient(gradient: gradient, startPoint: .leading, endPoint: .trailing)
-						ZStack {
-							ForEach(0..<values.count, id: \.self) { c in
-								let frame = reader.frame(in: .local)
-								let position = CGPoint(x: frame.minX + CGFloat(values[c].position) * frame.width, y: frame.midY)
-								Circle()
-									.gesture(dragGesture(index: c, frameWidth: frame.width))
-									.position(position)
-									.overlay(Circle().stroke((selectedPoint ?? -1 == c) ? Color.blue : Color.controlBackgroundColor).position(position))
+					HStack(alignment: .top) {
+						Button("+") {
+							values.append(ColorRampValue(position: 0, color: Float3(0, 0, 0)))
+						}.buttonStyle(PlainButtonStyle())
+						Button("-") {
+							if let point = selectedPoint {
+								values.remove(at: point)
+								selectedPoint = nil
+							}
+						}.buttonStyle(PlainButtonStyle())
+						if let c = selectedPoint {
+							ColorInput(value: $values[c].color)
+						}
+						Spacer()
+					}.padding(.horizontal).frame(height: gridSize)
+					ZStack {
+						GeometryReader { reader in
+							
+							LinearGradient(gradient: gradient, startPoint: .leading, endPoint: .trailing)
+							ZStack {
+								ForEach(0..<values.count, id: \.self) { c in
+									let frame = reader.frame(in: .local)
+									let position = CGPoint(x: frame.minX + CGFloat(values[c].position) * frame.width, y: frame.midY)
+									Circle()
+										.gesture(dragGesture(index: c, frameWidth: frame.width))
+										.position(position)
+										.overlay(Circle().stroke((selectedPoint ?? -1 == c) ? Color.blue : Color.controlBackgroundColor).position(position))
+								}
 							}
 						}
 					}
-				}
-				.padding(.horizontal)
-				.padding(.vertical, 5)
-				.frame(height: gridSize)
-				Spacer()
+					.padding(.horizontal)
+					.padding(.vertical, 5)
+					.frame(height: gridSize)
+					Spacer()
 					
+				}
 			}
+			
 		}
 		.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(6), alignment: .center)
 		.overlay(
@@ -234,6 +237,8 @@ struct NodeIterateView: View {
 	
 	@Binding var selected: Node?
 	
+	@State var draggedPosition: CGPoint = .init()
+	
 	var gridSize: CGFloat {
 		get {
 			nodeContainer.gridSize
@@ -249,16 +254,78 @@ struct NodeIterateView: View {
 			nodeContainer[nodeAddress] = newValue
 		}
 	}
+	
+	var iterateEnd: Node? {
+		get {
+			if let address = node?.values as? NodeAddress {
+				let endNode = nodeContainer[address]
+				if (endNode?.values as? NodeAddress)?.id == node?.id {
+					return endNode
+				}
+			}
+			return nil
+		}
+	}
+	var endPoint: CGPoint? {
+		draggedPosition ?? iterateEnd?.position
+	}
+	
+	/*func createPathGesture() -> some Gesture {
+		DragGesture().onChanged({ (data) in
+			draggedPosition = node.position + CGPoint(x: data.translation.width, y: data.translation.height)
+		}).onEnded({ (data) in
+			draggedPosition = nil
+		})
+	}*/
+	
 	var body: some View {
 		if let node = node {
+			if let endPoint = endPoint {
+				Path { path in
+					let startPoint = node.position
+					
+					path.addLines([startPoint, endPoint])
+				}.stroke(Color.primary)
+			}
 			ZStack {
 				Color.controlBackgroundColor.opacity(0.6)
 				VStack(spacing: 0) {
+					
 					ZStack {
 						node.color.opacity(0.4)
 						Text(node.name)
+						HStack {
+							Spacer()
+							Circle().frame(width: nodeContainer.dotSize, height: nodeContainer.dotSize)
+						}
 					}.frame(height: gridSize)
+					if node.outputs.count > 0 {
+						ForEach(0..<node.outputs.count) { c in
+							
+							NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
+							
+						}.frame(alignment: Alignment.leading)
+					}
+					
+					if node.inputs.count > 0 {
+						ForEach(0..<node.inputs.count) { c in
+							NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
+							
+						}
+					}
+					Spacer()
 				}
+			}
+			.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
+			.overlay(
+				RoundedRectangle(cornerRadius: 10)
+					.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
+			)
+			.cornerRadius(10)
+			.shadow(radius: 5)
+			.position(node.position)
+			.onTapGesture {
+				selected = node
 			}
 		}
 	}
@@ -364,7 +431,7 @@ struct NodeInputView: View {
 			}))
 			
 			Spacer()
-		}.frame(height: gridSize * ((nodeContainer[valueAddress]!.type == .float3) ? 3 : 1), alignment: .center)
+		}.frame(height: gridSize * CGFloat((nodeContainer[valueAddress]!.type.length)), alignment: .center)
 	}
 }
 
@@ -381,6 +448,8 @@ struct NodeValueView: View {
 			NumberInput(value: $value.int.nsNumber, name: value.name)
 		case .color:
 			ColorInput(value: $value.float3, name: value.name)
+		case .float4:
+			Tuple4FloatInput(value: $value.float4, name: value.name)
 		}
 	}
 }
@@ -393,6 +462,6 @@ struct Node_Previews: PreviewProvider {
     static var previews: some View {
 		node.position = CGPoint(x: 200, y: 200)
 		container.nodes.append(node)
-		return NodeView(nodeAddress: container.createNodeAddress(node: node), nodeContainer: .constant(container), selected: .constant(nil))
+		return NodeIterateView(nodeAddress: container.createNodeAddress(node: node), nodeContainer: .constant(container), selected: .constant(nil))
     }
 }

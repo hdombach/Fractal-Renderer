@@ -31,6 +31,30 @@ struct Tuple3FloatInput: View {
     }
 }
 
+struct Tuple4FloatInput: View {
+	@Binding var value: Float4
+	var step: NSNumber = 1
+	var name: String?
+	var min: NSNumber?
+	var max: NSNumber?
+	
+	var body: some View {
+		VStack {
+			if name != nil {
+				Text(name!)
+			}
+			VStack(spacing: -1) {
+				NumberInput(value: $value.x.nsNumber, step: step, min: min, max: max, hasPadding: false)
+				NumberInput(value: $value.y.nsNumber, step: step, min: min, max: max, hasPadding: false)
+				NumberInput(value: $value.z.nsNumber, step: step, min: min, max: max, hasPadding: false)
+				NumberInput(value: $value.w.nsNumber, step: step, min: min, max: max, hasPadding: false)
+			}.cornerRadius(5.0)
+			.overlay(RoundedRectangle(cornerRadius: 5)
+						.stroke(Color.controlHighlightColor))
+		}
+	}
+}
+
 struct Tuple3FloatInput_Previews: PreviewProvider {
     static var previews: some View {
 		Text("hi")

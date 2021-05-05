@@ -12,12 +12,13 @@ import SwiftUI
 enum NodeValueType: String, Codable {
 	case float
 	case float3
+	case float4
 	case int
 	case color
 	
 	var isVector: Bool {
 		get {
-			self == .float3 || self == .color
+			self == .float3 || self == .color || self == .float4
 		}
 	}
 	
@@ -32,28 +33,34 @@ enum NodeValueType: String, Codable {
 				return 1
 			case .color:
 				return 3
+			case .float4:
+				return 4
 			}
 		}
 	}
 }
 
 struct NodeValue: Codable, Equatable {
-	private var value = Float3(repeating: 0)
+	private var value = Float4(repeating: 0)
 	var position: CGPoint?
 	var type: NodeValueType = .float3
 	var name = ""
 	
 	var float: Float {
-		get { value.x }
-		set { value = Float3(newValue, newValue, newValue )}
+		get { value.x } 
+		set { value = Float4(newValue, newValue, newValue, newValue)}
 	}
 	var float3: Float3 {
-		get { value }
-		set { value = newValue }
+		get { value.xyz }
+		set { value = Float4(newValue.x, newValue.y, newValue.z, 0) }
 	}
 	var int: Int {
 		get { Int(value.x) }
-		set { value = Float3(Float(newValue), Float(newValue), Float(newValue))}
+		set { value = Float4(Float(newValue), Float(newValue), Float(newValue), Float(newValue))}
+	}
+	var float4: Float4 {
+		get {value}
+		set {value = newValue}
 	}
 }
 
@@ -104,6 +111,22 @@ func NodeInt(_ value: Int, name initName: String?) -> NodeValue {
 	var result = NodeValue()
 	result.int = value
 	result.type = .int
+	result.name = initName ?? ""
+	
+	return result
+}
+
+func NodeInt(_ initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.type = .int
+	result.name = initName ?? ""
+	
+	return result
+}
+
+func NodeFloat4(_ initName: String?) -> NodeValue {
+	var result = NodeValue()
+	result.type = .float4
 	result.name = initName ?? ""
 	
 	return result

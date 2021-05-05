@@ -27,4 +27,7 @@ struct ShaderInfo {
 	//1: starting depth;
 	//2: depth multiplier
 	float3 depthSettings;
+	
+	float ambient;
+	float angleShading;
 };

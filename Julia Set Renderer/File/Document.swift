@@ -27,13 +27,13 @@ class Document: NSDocument {
 	override init() {
 		super.init()
 		graphics = Graphics(doc: self)
+		graphics.setUp()
 		container = VoxelContainer(doc: self)
 		viewState = ViewSate(doc: self)
 		view = RenderView(doc: self)
 		viewState.view = view
 		
 		content.viewState = viewState
-		
 	}
 	
 	//enable autosave
@@ -83,6 +83,8 @@ class Document: NSDocument {
 	override func read(from data: Data, ofType typeName: String) throws {
 		let decoder = JSONDecoder()
 		content = try decoder.decode(Content.self, from: data)
+		content.viewState = viewState
+		graphics.setUp()
 		
 		
 		// Insert code here to read your document from the given data of the specified type, throwing an error in case of failure.

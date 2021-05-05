@@ -64,6 +64,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case smoothIntersect
 	case smoothUnion
 	case smoothDifference
+	case mirror
+	case rotate
 }
 
 let allNodes: [NodeType: () -> Node] = [
@@ -105,7 +107,9 @@ let allNodes: [NodeType: () -> Node] = [
 	.difference: DifferenceNode,
 	.smoothIntersect: SmoothIntersectNode,
 	.smoothUnion: SmoothUnionNode,
-	.smoothDifference: SmoothDifference
+	.smoothDifference: SmoothDifferenceNode,
+	.mirror: MirrorNode,
+	.rotate: RotateNode
 ]
 
 
@@ -165,21 +169,23 @@ struct Node: Codable, Equatable {
 	}
 	var inputRange: Range<Int> { _inputRange(self) }
 	
-	var _getSubscript: (Int, Node) -> NodeValue = {valueIndex, node in
+	var _getSubscript: (Int, Node) -> NodeValue? = {valueIndex, node in
 		if node.outputs.count > valueIndex {
 			return node.outputs[valueIndex]
 		} else {
 			return node.inputs[valueIndex - node.outputs.count]
 		}
 	}
-	var _setSubscript: (Int, NodeValue, inout Node) -> Void = {valueIndex, newValue, node in
-		if node.outputs.count > valueIndex {
-			node.outputs[valueIndex] = newValue
-		} else {
-			node.inputs[valueIndex - node.outputs.count] = newValue
+	var _setSubscript: (Int, NodeValue?, inout Node) -> Void = {valueIndex, newValue, node in
+		if let newValue = newValue {
+			if node.outputs.count > valueIndex {
+				node.outputs[valueIndex] = newValue
+			} else {
+				node.inputs[valueIndex - node.outputs.count] = newValue
+			}
 		}
 	}
-	subscript(valueIndex: Int) -> NodeValue {
+	subscript(valueIndex: Int) -> NodeValue? {
 		get { _getSubscript(valueIndex, self) }
 		set { _setSubscript(valueIndex, newValue, &self) }
 	}
@@ -187,11 +193,7 @@ struct Node: Codable, Equatable {
 	var _getHeight: (Node) -> Int = { node in
 		var height: Int = 2
 		for value in node.inputs {
-			if (value.type == .float3) {
-				height += 3
-			} else {
-				height += 1
-			}
+			height += value.type.length
 		}
 		
 		height += node.outputs.count
@@ -199,7 +201,7 @@ struct Node: Codable, Equatable {
 	}
 	func getHeight() -> Int { _getHeight(self) }
 	
-	var _compareValues: (Node, Node) -> Bool = {_, _ in true }
+	var _compareValues: (Node, Node) -> Bool = {_, _ in return true }
 	
 	var _compare: (Node, Node) -> Bool = { lhs, rhs in
 		let id = lhs.id == rhs.id

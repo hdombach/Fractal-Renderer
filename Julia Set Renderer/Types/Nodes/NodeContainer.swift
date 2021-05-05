@@ -45,7 +45,7 @@ struct NodeContainer: Codable {
 	
 	
 	var activePath: DraggablePath?
-	let circleSize: CGFloat = 8
+	let dotSize: CGFloat = 8
 	let gridSize: CGFloat = 25
 	let nodeWidth: CGFloat = 200
 	var type: NodeContainerType = .Material
@@ -116,11 +116,7 @@ struct NodeContainer: Codable {
 			var height = node.outputs.count + 2
 			
 			for value in node.inputs {
-				if value.type == .float3 {
-					height += 3
-				} else {
-					height += 1
-				}
+				height += value.type.length
 			}
 			
 			return height
@@ -135,25 +131,21 @@ struct NodeContainer: Codable {
 			//should anchor view at top left
 			var point = node.position - CGPoint(x: nodeWidth / 2, y: CGFloat(getHeight(nodeAddress: value.nodeAddress())) * gridSize / 2)
 			//starts at 1 to include the banner at top
-			var viewIndex: Int = 0
+			var viewIndex: Float = 1
 			if value.valueIndex < node.outputs.count {
-				viewIndex += value.valueIndex + 1
+				viewIndex += value.valueIndex.float + 0.5
 				point.x += nodeWidth
 			} else {
-				viewIndex += node.outputs.count
-				for c in 0...(value.valueIndex - node.outputs.count) {
-					if node.inputs[c].type == .float3 {
-						if c == (value.valueIndex - node.outputs.count) {
-							viewIndex += 2
-						} else {
-							viewIndex += 3
-						}
-					} else {
-						viewIndex += 1
+				viewIndex += node.outputs.count.float
+				if value.valueIndex >= node.outputs.count {
+					for c in 0...(value.valueIndex - node.outputs.count) {
+						viewIndex += node.inputs[c].type.length.float
 					}
+					viewIndex -= node.inputs[value.valueIndex - node.outputs.count].type.length.float / 2
 				}
 			}
-			point.y += CGFloat(viewIndex) * gridSize + gridSize / 2
+			
+			point.y += CGFloat(viewIndex) * gridSize
 			
 			if node.type == .colorRamp {
 				point.y -= gridSize
@@ -199,7 +191,7 @@ struct NodeContainer: Codable {
 		if activePath == nil {
 			return false
 		}
-		return circleSize * 2 > activePath!.ending.distanceTo(point: getPosition(value: valueAddress))
+		return dotSize * 2 > activePath!.ending.distanceTo(point: getPosition(value: valueAddress))
 	}
 	
 	private func getIndex(address: NodeAddress) -> Int? {

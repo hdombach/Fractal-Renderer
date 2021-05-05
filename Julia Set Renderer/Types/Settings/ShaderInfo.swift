@@ -23,4 +23,7 @@ struct ShaderInfo: Codable {
 	//1: starting depth;
 	//2: depth multiplier
 	var depthSettings: SIMD3<Float> = .init(0, 0, 1)
+	
+	var ambient: Float = 0.995
+	var angleShading: Float = 1
 }

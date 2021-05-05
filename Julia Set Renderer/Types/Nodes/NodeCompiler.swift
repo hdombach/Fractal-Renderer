@@ -120,10 +120,10 @@ extension NodeContainer {
 					} else {
 						//if there are no paths at the input then it is a constant
 						
-						variables.append(Variable(value: valueAddress, observers: -1, constantIndex: constantsAddresses.count, vectorLength: node[valueIndex].type.length))
+						variables.append(Variable(value: valueAddress, observers: -1, constantIndex: constantsAddresses.count, vectorLength: node[valueIndex]!.type.length))
 						
 						constantsAddresses.append(ConstantAddress(address: valueAddress, vector: 0))
-						if node[valueIndex].type == .float3 || node[valueIndex].type == .color {
+						if node[valueIndex]!.type == .float3 || node[valueIndex]!.type == .color {
 							constantsAddresses.append(ConstantAddress(address: valueAddress, vector: 1))
 							constantsAddresses.append(ConstantAddress(address: valueAddress, vector: 2))
 						}
@@ -181,7 +181,13 @@ extension NodeContainer {
 				
 				if variable.isConstant {
 					//constants are only floats so if float3 is required then fix it
-					if vectorLength == 3 {
+					if vectorLength == 4 {
+						let v1 = "constants[\(variable.constantIndex! + 0)]"
+						let v2 = "constants[\(variable.constantIndex! + 1)]"
+						let v3 = "constants[\(variable.constantIndex! + 2)]"
+						let v4 = "constants[\(variable.constantIndex! + 3)]"
+						return "float4(\(v1), \(v2), \(v3), \(v4))"
+					} else if vectorLength == 3 {
 						//from 3 floats to float3
 						let v1 = "constants[\(variable.constantIndex! + 0)]"
 						let v2 = "constants[\(variable.constantIndex! + 1)]"
@@ -199,11 +205,19 @@ extension NodeContainer {
 					
 					if variable.vectorLength != vectorLength {
 						//if the vector lengths are incorrect then fix it
-						if vectorLength == 3 {
-							//float to float3
-							return "float3(v\(index - constantsLength))"
+						if vectorLength == 4 {
+							if variable.vectorLength == 3 {
+								return "float4(v\(index - constantsLength), 0)"
+							} else {
+								return "float4(\(index - constantsLength))"
+							}
+						} else if vectorLength == 3 {
+							if variable.vectorLength == 4 {
+								return "v\(index - constantsLength).xyz"
+							} else {
+								return "float3(v\(index - constantsLength))"
+							}
 						} else {
-							//float3 to float
 							return "v\(index - constantsLength).x"
 						}
 					} else {
@@ -226,10 +240,10 @@ extension NodeContainer {
 				let observors = getPathsAt(address: address).count
 				
 				if observors > 0 {
-					outputVariables.append(createVarialbe(Variable(value: address, observers: observors, vectorLength: output.type.length)))
+					outputVariables.append(createVarialbe(Variable(value: address, observers: observors, vectorLength: output!.type.length)))
 					//print("created variable", outputVariables.last, "for node", node)
 				} else {
-					outputVariables.append("empty\(output.type.length)")
+					outputVariables.append("empty\(output!.type.length)")
 				}
 			}
 			
@@ -243,7 +257,7 @@ extension NodeContainer {
 				}
 				
 				do {
-					let tempVar = try findVariable(value: address, vectorLength: input.type.length)
+					let tempVar = try findVariable(value: address, vectorLength: input!.type.length)
 					inputVariables.append(tempVar)
 				} catch {
 					throw error
@@ -270,8 +284,10 @@ extension NodeContainer {
 				let length = variables[c + constantsLength].vectorLength
 				if length == 1 {
 					createdVariables += "float "
-				} else {
+				} else if length == 3 {
 					createdVariables += "float3 "
+				} else {
+					createdVariables += "float4 "
 				}
 				
 				createdVariables += "v\(c);\n"

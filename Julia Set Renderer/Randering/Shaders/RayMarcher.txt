@@ -173,6 +173,8 @@ Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool sho
 					float3 oldColor = colors.channel(c);
 					ray.colors.setChannel(c, oldColor * ray.colorAbsorption);
 				}
+			} else {
+				ray.colors.setChannel(0, float3(1));
 			}
 			break;
 		}
@@ -219,8 +221,8 @@ float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, S
 	
 	float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
 	//return float4(result.steps);
-	color *= pow(0.995, float(result.steps));
-	color *= abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal)));
+	color *= pow(info.ambient, float(result.steps));
+	color -= color * abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal))) * info.angleShading;
 	if (result.distance > 100) {
 		float3 tempColor = float3(0);
 		Colors colors = getSkyBox(ray, lights, info.lightsLength);
@@ -228,9 +230,7 @@ float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, S
 			tempColor += colors.channel(c);
 		}
 		color = float4(tempColor, 1);
-		return color;
 	}
-	//color = 1 - (color - 0.2) / color;
 	return color;
 	
 }

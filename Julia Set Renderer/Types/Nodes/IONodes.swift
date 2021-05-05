@@ -16,7 +16,7 @@ func CoordinateNode() -> Node {
 	result.functionName = "coordinate"
 	result.color = .nodeInput
 	
-	result.outputs = [NodeFloat3(Float3(0), name: "position"), NodeFloat3(0, 0, 0, name: "orbit"), NodeFloat(0, name: "iterations")]
+	result.outputs = [NodeFloat3(Float3(repeating: 0), name: "position"), NodeFloat3(0, 0, 0, name: "orbit"), NodeFloat(0, name: "iterations")]
 	
 	result._generateCommand = {outputs, inputs, unique, node in
 		var code = ""
@@ -50,7 +50,7 @@ func MaterialNode() -> Node {
 	result.functionName = "material"
 	result.color = .nodeOutput
 	
-	result.inputs = [NodeColor(Float3(0.5), name: "Surface Color")]
+	result.inputs = [NodeColor(Float3(repeating: 0.5), name: "Surface Color")]
 	
 	result._generateCommand = {outputs, inputs, unique, node in
 		var code: String = ""
@@ -73,8 +73,8 @@ func ColorNode() -> Node {
 	result.functionName = "color"
 	result.color = .nodeInput
 	
-	result.inputs = [NodeColor(Float3(0.5), name: "color")]
-	result.outputs = [NodeColor(Float3(0.5), name: "color")]
+	result.inputs = [NodeColor(Float3(repeating: 0.5), name: "color")]
+	result.outputs = [NodeColor(Float3(repeating: 0.5), name: "color")]
 	
 	return result
 }
