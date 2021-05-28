@@ -52,9 +52,7 @@ struct NodeEditor: View {
 			HStack {
 				if isShowingList {
 					ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: true, content: {
-						ForEach(Array(NodeType.allCases), id: \.self) { type in
-							NodeMenuItem(nodes: $nodeContainer.nodes, position: position, node: Node(type))
-						}
+						SideBarView(nodeContainer: $nodeContainer, position: $position, selected: selected)
 					}).frame(width: 150)
 					.padding(.bottom)
 					.zIndex(100)

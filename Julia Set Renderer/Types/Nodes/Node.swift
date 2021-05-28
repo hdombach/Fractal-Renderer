@@ -53,6 +53,7 @@ enum NodeType: String, Codable, CaseIterable {
 	
 	//flow
 	case iterate
+	case iterateEnd
 	
 	//DE
 	case mandelbulbDE
@@ -109,7 +110,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.smoothUnion: SmoothUnionNode,
 	.smoothDifference: SmoothDifferenceNode,
 	.mirror: MirrorNode,
-	.rotate: RotateNode
+	.rotate: RotateNode,
+	.iterateEnd: IterateEndNode
 ]
 
 

@@ -16,6 +16,7 @@
 		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
 		DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE263C6F26277DA700CA346C /* RenderPassManager.swift */; };
 		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3922572644DEBF00D38B03 /* IterateNodeView.swift */; };
 		DE4523D22613917300125AE6 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4523D12613917300125AE6 /* Document.swift */; };
 		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
 		DE528A582626761600F88EC3 /* Graphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE528A572626761600F88EC3 /* Graphics.swift */; };
@@ -62,6 +63,7 @@
 		DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB9703625B4EC2E00386EEA /* NodeContainer.swift */; };
 		DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E0E254235CE0060FED0 /* BufferTests.swift */; };
 		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
+		DEC450412659D46200F76B80 /* SideBarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC450402659D46200F76B80 /* SideBarViews.swift */; };
 		DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */; };
 		DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */; };
 		DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */; };
@@ -115,6 +117,7 @@
 		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		DE263C6F26277DA700CA346C /* RenderPassManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPassManager.swift; sourceTree = "<group>"; };
 		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE3922572644DEBF00D38B03 /* IterateNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IterateNodeView.swift; sourceTree = "<group>"; };
 		DE4523D12613917300125AE6 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
 		DE528A572626761600F88EC3 /* Graphics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphics.swift; sourceTree = "<group>"; };
@@ -164,6 +167,7 @@
 		DEB9703625B4EC2E00386EEA /* NodeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainer.swift; sourceTree = "<group>"; };
 		DEBE4E0E254235CE0060FED0 /* BufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferTests.swift; sourceTree = "<group>"; };
 		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
+		DEC450402659D46200F76B80 /* SideBarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViews.swift; sourceTree = "<group>"; };
 		DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Julia Set Renderer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -313,10 +317,12 @@
 			isa = PBXGroup;
 			children = (
 				DE85F09D259CDEB600FF475F /* NodeView.swift */,
+				DE3922572644DEBF00D38B03 /* IterateNodeView.swift */,
 				DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */,
 				DEC91209259E2C74002158C9 /* NodeEditor.swift */,
 				DE68A69E259D7D2800D66457 /* NodeCanvas.swift */,
 				DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */,
+				DEC450402659D46200F76B80 /* SideBarViews.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -604,6 +610,7 @@
 				DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
 				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
+				DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */,
 				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
@@ -632,6 +639,7 @@
 				DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */,
 				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
 				DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */,
+				DEC450412659D46200F76B80 /* SideBarViews.swift in Sources */,
 				DE62BD322579B6A900E67351 /* ChannelInfo.swift in Sources */,
 				DEC91210259E47D5002158C9 /* IONodes.swift in Sources */,
 				DE5C04BD257877E100F5DDCD /* SwiftRayMarcher.swift in Sources */,

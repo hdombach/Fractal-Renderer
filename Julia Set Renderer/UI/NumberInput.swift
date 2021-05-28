@@ -18,7 +18,7 @@ enum NumberTypes {
 
 struct NumberInput: View, Equatable {
 	static func == (lhs: NumberInput, rhs: NumberInput) -> Bool {
-		lhs.value == rhs.value
+		lhs.value == rhs.value && lhs.name == rhs.name
 	}
 	
 	@Binding var value: NSNumber

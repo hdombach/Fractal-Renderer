@@ -91,12 +91,12 @@ func DENode() -> Node {
 	result._generateCommand = {outputs, inputs, unique, node in
 		var code: String = ""
 		
-		code += "RayMarchInfo result;"
-		code += "result.d = \(inputs[0]);"
-		code += "result.orbitLife = \(inputs[1]);"
-		code += "result.orbit = \(inputs[2]);"
+		code += "RayMarchInfo result;\n"
+		code += "result.d = \(inputs[0]);\n"
+		code += "result.orbitLife = \(inputs[1]);\n"
+		code += "result.orbit = \(inputs[2]);\n"
 		
-		code += "return result;"
+		code += "return result;\n"
 		
 		return code
 	}

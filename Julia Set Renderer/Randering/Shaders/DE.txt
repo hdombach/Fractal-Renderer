@@ -32,6 +32,7 @@ RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 		z += pos;
 		info.orbitLife = i;
 	}
+	info.orbitLife = info.orbitLife / iterations;
 	info.d = 0.5 * log(r) * r / dr;
 	info.orbit = z;
 	return info;

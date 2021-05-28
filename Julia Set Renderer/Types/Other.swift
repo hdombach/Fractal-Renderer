@@ -100,6 +100,10 @@ extension Int {
 		}
 	}
 	
+	var cgfloat: CGFloat {
+		get {return CGFloat(self)}
+	}
+	
 	var float: Float {
 		get { return Float(self)}
 	}

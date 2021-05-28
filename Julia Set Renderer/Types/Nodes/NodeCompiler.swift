@@ -107,7 +107,7 @@ extension NodeContainer {
 			}
 			
 			//recursivly call all inputs to the node to backtrack through node network
-			if node.inputs.count > 0 {
+			if !node.inputRange.isEmpty {
 				for valueIndex in node.inputRange {
 					let valueAddress = createValueAddress(node: node, valueIndex: valueIndex)
 					
@@ -237,13 +237,28 @@ extension NodeContainer {
 			for c in node.outputRange {
 				let output = node[c]
 				let address = createValueAddress(node: node, valueIndex: c)
-				let observors = getPathsAt(address: address).count
+				var observors = getPathsAt(address: address).count
 				
 				if observors > 0 {
+					if (node.type == .iterate) {
+						observors += 1
+					}
 					outputVariables.append(createVarialbe(Variable(value: address, observers: observors, vectorLength: output!.type.length)))
 					//print("created variable", outputVariables.last, "for node", node)
 				} else {
 					outputVariables.append("empty\(output!.type.length)")
+				}
+			}
+			if (node.type == .iterateEnd) {
+				if let paired = (node.values as? IterateNodeValue)?.pairedNode {
+					if let pairedNode = self[paired] {
+						for c in node.outputRange {
+							let address = createValueAddress(node: pairedNode, valueIndex: c)
+							
+							let tempVar = try findVariable(value: address, vectorLength: node[c]!.type.length)
+							outputVariables.append(tempVar)
+						}
+					}
 				}
 			}
 			
