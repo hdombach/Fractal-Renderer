@@ -47,6 +47,10 @@ namespace node {
 		*out = ::abs(in);
 	}
 	
+	void mod(thread float *out, float in1, float in2) {
+		*out = fmod(in1, in2);
+	}
+	
 	void vectorAdd(thread float3 *out, float3 in1, float3 in2) {
 		*out = in1 + in2;
 	}
@@ -57,6 +61,10 @@ namespace node {
 	
 	void vectorScale(thread float3 *out, float3 in, float scale) {
 		*out = in * scale;
+	}
+	
+	void vectorMod(thread float3 *out, float3 in, float3 in2) {
+		*out = fmod(in, in2);
 	}
 	
 	void color(thread float3 *out, float3 in) {

@@ -18,6 +18,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case color
 	case material
 	case de
+	case float3
+	case float
 	
 	//math nodes
 	case add
@@ -32,6 +34,7 @@ enum NodeType: String, Codable, CaseIterable {
 	case cos
 	case abs
 	case map
+	case mod
 	
 	//vector nodes
 	case vectorAdd
@@ -42,6 +45,7 @@ enum NodeType: String, Codable, CaseIterable {
 	case crossProduct
 	case vectorMultiply
 	case vectorClamp
+	case vectorMod
 	
 	//Texture Nodes
 	case perlin
@@ -75,6 +79,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.material: MaterialNode,
 	.color: ColorNode,
 	.de: DENode,
+	.float3: Float3Node,
+	.float: FloatNode,
 	.add: AddNode,
 	.subtract: SubtractNode,
 	.multiply: MultiplyNode,
@@ -87,6 +93,7 @@ let allNodes: [NodeType: () -> Node] = [
 	.cos: CosNode,
 	.abs: AbsNode,
 	.map: MapNode,
+	.mod: ModNode,
 	.vectorAdd: VectorAddNode,
 	.vectorLength: VectorLengthNode,
 	.vectorScale: VectorScaleNode,
@@ -95,6 +102,7 @@ let allNodes: [NodeType: () -> Node] = [
 	.crossProduct: CrossProductNode,
 	.vectorMultiply: VectorMultiplyNode,
 	.vectorClamp: VectorClampNode,
+	.vectorMod: VectorModNode,
 	.perlin: PerlinNode,
 	.perlin3: Perlin3Node,
 	.colorBlend: ColorBlendNode,

@@ -165,3 +165,15 @@ func MapNode() -> Node {
 	
 	return result
 }
+
+func ModNode() -> Node {
+	var result = Node()
+	result.type = .mod
+	result.name = "Modulo"
+	result.functionName = "mod"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Value"), NodeFloat(1, name: "Value")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}

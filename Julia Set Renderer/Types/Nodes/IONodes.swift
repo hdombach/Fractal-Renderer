@@ -103,3 +103,37 @@ func DENode() -> Node {
 	
 	return result
 }
+
+func Float3Node() -> Node {
+	var result = Node()
+	
+	result.type = .float3
+	result.name = "Float3"
+	result.functionName = "float3"
+	result.color = .nodeInput
+	
+	result.inputs = [NodeFloat3("value")]
+	result.outputs = [NodeFloat3("value")]
+	
+	result._generateCommand = { outputs, inputs, unique, node in
+		"\(outputs[0]) = \(inputs[0]);\n"
+	}
+	return result
+}
+
+func FloatNode() -> Node {
+	var result = Node()
+	
+	result.type = .float
+	result.name = "Float"
+	result.functionName = "float"
+	result.color = .nodeInput
+	
+	result.inputs = [NodeFloat("value")]
+	result.outputs = [NodeFloat("value")]
+	
+	result._generateCommand = {outputs, inputs, unique, node in
+		"\(outputs[0]) = \(inputs[0]);\n"
+	}
+	return result
+}

@@ -111,3 +111,16 @@ func VectorClampNode() -> Node {
 	
 	return result
 }
+
+func VectorModNode() -> Node {
+	var result = Node()
+	result.type = .vectorMod
+	result.name = "Vector Modulo"
+	result.functionName = "vectorMod"
+	result.color = .nodeVector
+	
+	result.inputs = [NodeFloat3("vector"), NodeFloat3("vector")]
+	result.outputs = [NodeFloat3("vector")]
+	
+	return result
+}

@@ -28,7 +28,7 @@ func SphereDENode() -> Node {
 	result.functionName = "sphereDE"
 	result.color = .nodeDE
 	
-	result.inputs = [NodeFloat3(0, 0, 0, name: "Position"), NodeFloat3(0, 0, 0, name: "Center"), NodeFloat(0, name: "Radius")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "Position"), NodeFloat3(0, 0, 0, name: "Center"), NodeFloat(1, name: "Radius")]
 	result.outputs = [NodeFloat(0, name: "Distance")]
 	
 	return result
@@ -41,7 +41,7 @@ func BoxDENode() -> Node {
 	result.functionName = "boxDE"
 	result.color = .nodeDE
 	
-	result.inputs = [NodeFloat3("position"), NodeFloat3("Center"), NodeFloat3("Size")]
+	result.inputs = [NodeFloat3("position"), NodeFloat3("Center"), NodeFloat3(Float3(1), name: "Size")]
 	result.outputs = [NodeFloat("Distance")]
 	
 	return result
