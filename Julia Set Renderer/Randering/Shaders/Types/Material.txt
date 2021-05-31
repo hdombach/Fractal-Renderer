@@ -6,6 +6,7 @@
 struct Material {
 	float3 rgbAbsorption = float3(0), rgbEmitted = float3(0);
 	float diffuse = 1;
+	float metality = 0;
 	
 	float3 sin(float3 value) {
 		return float3(metal::precise::sin(value.x), metal::precise::sin(value.y), metal::precise::sin(value.z));

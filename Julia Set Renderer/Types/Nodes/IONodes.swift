@@ -50,13 +50,15 @@ func MaterialNode() -> Node {
 	result.functionName = "material"
 	result.color = .nodeOutput
 	
-	result.inputs = [NodeColor(Float3(repeating: 0.5), name: "Surface Color")]
+	result.inputs = [NodeColor(Float3(repeating: 0.5), name: "Surface Color"), NodeColor(Float3(repeating: 0), name: "Emission"), NodeFloat("Emmision Strength"), NodeFloat("Metality"), NodeFloat("Diffuse")]
 	
 	result._generateCommand = {outputs, inputs, unique, node in
 		var code: String = ""
 		
 		code += "rgbAbsorption.xyz = clamp(\(inputs[0]), float3(0), float3(1));\n"
-		code += "rgbEmitted = float3(0, 0, 0); \n"
+		code += "rgbEmitted = clamp(\(inputs[1]), float3(0), float3(1)) * \(inputs[2]); \n"
+		code += "metality = \(inputs[3]);\n"
+		code += "diffuse = clamp(\(inputs[4]), 0.0, 1.0);\n"
 		code += "return;\n"
 		
 		return code
