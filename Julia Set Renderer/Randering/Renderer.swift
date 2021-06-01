@@ -233,7 +233,7 @@ class Texture {
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
-		self.texture = loadTextureFromBundle(size: 1)
+		self.texture = loadTextureFromBundle(depth: 1, size: doc.content.imageSize)
 	}
 
 	private func oldLoadTextureFromBundle() -> MTLTexture {
@@ -255,25 +255,25 @@ class Texture {
 		return result
 	}
 
-	private func loadTextureFromBundle(size: UInt32) -> MTLTexture? {
+	private func loadTextureFromBundle(depth: UInt32, size: Int2) -> MTLTexture? {
 
-		self.currentChannelCount = size
+		self.currentChannelCount = depth
 		
 		//print(size)
 		
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.textureType = .type2DArray
-		textureDescriptor.arrayLength = Int(size) * 3
+		textureDescriptor.arrayLength = Int(depth) * 3
 		textureDescriptor.pixelFormat = document.graphics.pixelFormat.1
-		textureDescriptor.width = 1920
-		textureDescriptor.height = 1080
+		textureDescriptor.width = size.x
+		textureDescriptor.height = size.y
 		textureDescriptor.usage = .init([MTLTextureUsage.shaderRead, MTLTextureUsage.shaderWrite])
 		return document.graphics.device.makeTexture(descriptor: textureDescriptor)
 	}
 	
 	func updateTexture() {
-		if currentChannelCount != document.content.channels.count {
-			texture = loadTextureFromBundle(size: UInt32(document.content.channels.count))
+		if currentChannelCount != document.content.channels.count || texture.width != document.content.imageSize.x || texture.height != document.content.imageSize.y {
+			texture = loadTextureFromBundle(depth: UInt32(document.content.channels.count), size: document.content.imageSize)
 		}
 	}
 }
