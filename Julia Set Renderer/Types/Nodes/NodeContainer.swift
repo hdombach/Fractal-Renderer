@@ -113,6 +113,9 @@ struct NodeContainer: Codable {
 	//returns the height of a node
 	func getHeight(nodeAddress: NodeAddress) -> Int {
 		if let node = self[nodeAddress] {
+			if node.type == .colorRamp {
+				return 4
+			}
 			var height = node.outputRange.count + 2
 			
 			for index in node.inputRange {

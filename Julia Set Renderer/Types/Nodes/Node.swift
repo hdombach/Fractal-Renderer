@@ -63,6 +63,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case mandelbulbDE
 	case sphereDE
 	case boxDE
+	case juliaDE
+	case mandelboxDE
 	case intersect
 	case union
 	case difference
@@ -111,6 +113,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.mandelbulbDE: MandelbulbDENode,
 	.sphereDE: SphereDENode,
 	.boxDE: BoxDENode,
+	.juliaDE: juliaDENode,
+	.mandelboxDE: mandelboxDENode,
 	.intersect: IntersectNode,
 	.union: UnionNode,
 	.difference: DifferenceNode,

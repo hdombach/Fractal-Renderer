@@ -47,6 +47,35 @@ func BoxDENode() -> Node {
 	return result
 }
 
+func juliaDENode() -> Node {
+	var result = Node()
+	result.type = .juliaDE
+	
+	result.name = "Julia DE"
+	result.functionName = "juliaDE"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeFloat("Iterations"), NodeFloat("Traps")]
+	result.outputs = [NodeFloat("Distance"), NodeFloat("Orbit Life")]
+	
+	return result
+}
+
+func mandelboxDENode() -> Node {
+	var result = Node()
+	result.type = .mandelboxDE
+	
+	result.name = "Mandelbox DE"
+	result.functionName = "mandelboxDE"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeFloat(20, name: "Iterations")]
+	result.outputs = [NodeFloat("Distance"), NodeFloat3("Orbit")]
+	
+	
+	return result
+}
+
 func IntersectNode() -> Node {
 	var result = Node()
 	result.type = .intersect
