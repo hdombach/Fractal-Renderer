@@ -11,8 +11,6 @@ import MetalKit
 //Updates the render window.
 class Renderer: NSObject, MTKViewDelegate {
 
-	var imageRatio: Float = 16 / 9
-
 	var squareMesh: Mesh!
 	
 	var exp: Float = 0
@@ -135,6 +133,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			renderCommandEncoder?.setRenderPipelineState(pipeState)
 			
+			var imageRatio: Float = content.imageSize.x.float / content.imageSize.y.float
+			
 			renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 			renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
 			renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
@@ -153,6 +153,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			info.randomSeed.x = UInt32.random(in: 0...10000)
 			info.randomSeed.y = UInt32.random(in: 0...10000)
 			info.randomSeed.z = UInt32.random(in: 0...10000)
+			info.atmosphere = content.atmosphereSettings
+			
 			
 			info.ambient = content.shadingSettings.x
 			info.angleShading = content.shadingSettings.y
@@ -233,7 +235,7 @@ class Texture {
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
-		self.texture = loadTextureFromBundle(depth: 1, size: doc.content.imageSize)
+		self.texture = loadTextureFromBundle(depth: 8, size: doc.content.imageSize)
 	}
 
 	private func oldLoadTextureFromBundle() -> MTLTexture {
@@ -259,11 +261,11 @@ class Texture {
 
 		self.currentChannelCount = depth
 		
-		//print(size)
+		print(depth)
 		
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.textureType = .type2DArray
-		textureDescriptor.arrayLength = Int(depth) * 3
+		textureDescriptor.arrayLength = Int(depth)
 		textureDescriptor.pixelFormat = document.graphics.pixelFormat.1
 		textureDescriptor.width = size.x
 		textureDescriptor.height = size.y
@@ -271,9 +273,15 @@ class Texture {
 		return document.graphics.device.makeTexture(descriptor: textureDescriptor)
 	}
 	
+	//0: alpha
+	//1: depth
+	//2-4: emmision
+	//5...: layers
+	
 	func updateTexture() {
-		if currentChannelCount != document.content.channels.count || texture.width != document.content.imageSize.x || texture.height != document.content.imageSize.y {
-			texture = loadTextureFromBundle(depth: UInt32(document.content.channels.count), size: document.content.imageSize)
+		if currentChannelCount != document.content.skyBox.count || texture.width != document.content.imageSize.x || texture.height != document.content.imageSize.y {
+			texture = loadTextureFromBundle(depth: UInt32(document.content.skyBox.count * 3) + 5, size: document.content.imageSize)
+			currentChannelCount = document.content.skyBox.count.uint32
 		}
 	}
 }

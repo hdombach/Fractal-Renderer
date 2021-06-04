@@ -24,6 +24,17 @@ struct SkyBoxSettings: View {
 	
     var body: some View {
 		VStack {
+			
+			VStack {
+				ColorInput(value: $content.atmosphereSettings.backgroundColor, name: "Background")
+				
+				HStack {
+					ColorInput(value: $content.atmosphereSettings.depthColor, name: "Mist")
+					NumberInput(value: $content.atmosphereSettings.depthStrength.nsNumber, name: "Strength")
+				}
+				NumberInput(value: $content.atmosphereSettings.emissionStrength.nsNumber, name: "Emission")
+			}.frame(height: 150)
+			
 			Text("Lights")
 			List(content.skyBox, id: \.self, selection: $selected) { light in
 				LightPicker(light: $content.skyBox[index(id: light.id)])
@@ -54,8 +65,7 @@ struct SkyBoxSettings: View {
 
 struct SkyBoxSettings_Previews: PreviewProvider {
     static var previews: some View {
-		//SkyBoxSettings()
-		Text("hgi")
+		SkyBoxSettings(content: Content()).frame(height: 1000)
 			
     }
 }

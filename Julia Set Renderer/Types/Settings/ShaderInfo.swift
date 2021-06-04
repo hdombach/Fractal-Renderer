@@ -26,4 +26,33 @@ struct ShaderInfo: Codable {
 	
 	var ambient: Float = 0.995
 	var angleShading: Float = 1
+	
+	var backgroundColor: Float3 = Float3(135 / 255, 206 / 255, 235 / 255)
+	var depthColor: Float3 = Float3(repeating: 0);
+	var depthStrength: Float = 0;
+	var emissionStrength: Float = 0
+	
+	var atmosphere: AtmosphereSettings {
+		get {
+			var result = AtmosphereSettings()
+			result.backgroundColor = backgroundColor
+			result.depthColor = depthColor
+			result.depthStrength = depthStrength
+			result.emissionStrength = emissionStrength
+			return result
+		}
+		set {
+			backgroundColor = newValue.backgroundColor
+			depthColor = newValue.depthColor
+			depthStrength = newValue.depthStrength
+			emissionStrength = newValue.emissionStrength
+		}
+	}
+}
+
+struct AtmosphereSettings: Codable {
+	var backgroundColor: Float3 = Float3(135 / 255, 206 / 255, 235 / 255)
+	var depthColor: Float3 = Float3(repeating: 0);
+	var depthStrength: Float = 0;
+	var emissionStrength: Float = 0
 }

@@ -10,7 +10,7 @@ RayMarchInfo newBulbDE(float3 pos, RayMarchingSettings settings) {
 	uint iterations = settings.iterations;
 	RayMarchInfo info;
 	info.orbitLife = 0;
-	for (int i = 0; i < iterations; i++) {
+	for (uint i = 0; i < iterations; i++) {
 		r = length(z);
 		if (r > settings.bailout) {
 			info.orbitLife = i;
@@ -46,7 +46,7 @@ float TriangleDE(float3 z, RayMarchingSettings settings)
 {
 	float Scale = 2;
 	float Offset = 1;
-	int n = 0;
+	uint n = 0;
 	while (n < settings.iterations) {
 		if(z.x+z.y<0) z.xy = -z.yx; // fold 1
 		if(z.x+z.z<0) z.xz = -z.zx; // fold 2

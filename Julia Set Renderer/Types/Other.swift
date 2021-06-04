@@ -100,6 +100,12 @@ extension Int {
 		}
 	}
 	
+	var uint32: UInt32 {
+		get {
+			return UInt32(self)
+		}
+	}
+	
 	var cgfloat: CGFloat {
 		get {return CGFloat(self)}
 	}

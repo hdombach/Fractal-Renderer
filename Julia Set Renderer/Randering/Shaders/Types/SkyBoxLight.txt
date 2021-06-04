@@ -1,0 +1,29 @@
+#include "Ray.txt"
+#include "Channels.txt"
+
+struct SkyBoxLight {
+	float3 color;
+	float strength;
+	float size;
+	float3 position;
+	uint channel;
+	uint id;
+	
+	float3 getColor(Ray ray) {
+		if (size < dot(normalize(ray.direction.xyz), normalize(position))) {
+			return ray.colorAbsorption;
+		}
+		return float3(0);
+	}
+};
+
+
+void getSkyBox(thread Ray *ray, constant SkyBoxLight *lights, int lightsLength) {
+	for (int c = 0; lightsLength > c; c++) {
+		SkyBoxLight light = lights[c];
+		
+		float3 old = ray->channels.getLight(c);
+		old += light.getColor(*ray);
+		ray->channels.setLight(c, old);
+	}
+}

@@ -64,7 +64,7 @@ class ViewSate: ObservableObject {
 	}
 	
 	func updateShaders(material: String? = nil, de: String? = nil) {
-		document.graphics.library.loadLibrary(material: material ?? document.content.materialNodeContainer.compiled, de: de ?? document.content.deNodeContainer.compiled) {
+		document.graphics.library.loadLibrary(material: material ?? document.content.materialNodeContainer.compiled, de: de ?? document.content.deNodeContainer.compiled, channelsLength: 5 + document.content.skyBox.count * 3) {
 			self.updateView()
 		}
 	}

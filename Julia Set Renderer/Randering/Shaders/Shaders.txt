@@ -34,24 +34,37 @@ fragment float4 basic_fragment_shader(RasterizerData rd [[ stage_in ]],
 									  sampler sampler2d [[ sampler(0) ]],
 									  texture2d_array<float> texture [[ texture(0) ]],
 									  constant ShaderInfo &info [[buffer(0)]],
-									  constant Channel *channels [[buffer(3)]]) {
+									  constant SkyBoxLight *lights [[buffer(2)]]) {
 	float4 color = float4(0);
-	for (uint c = 0; info.channelsLength > c; c++) {
-		float3 channelColor;
-		Channel channel = channels[c];
-		channelColor.r = texture.sample(sampler2d, rd.texCoord, 0 + c * 3).x * channel.color.r;
-		channelColor.g = texture.sample(sampler2d, rd.texCoord, 1 + c * 3).x * channel.color.g;
-		channelColor.b = texture.sample(sampler2d, rd.texCoord, 2 + c * 3).x * channel.color.b;
+	
+	color.x += texture.sample(sampler2d, rd.texCoord, 2).x * info.emissionStrength;
+	color.y += texture.sample(sampler2d, rd.texCoord, 3).x * info.emissionStrength;
+	color.z += texture.sample(sampler2d, rd.texCoord, 4).x * info.emissionStrength;
+	
+	for (int c = 0; c < info.lightsLength; c++) {
+		int start = 5 + c * 3;
+		SkyBoxLight light = lights[c];
 		
-		channelColor *= channel.strength;
-		
-		color.r += channelColor.r;
-		color.g += channelColor.g;
-		color.b += channelColor.b;
+		color.x += texture.sample(sampler2d, rd.texCoord, start + 0).x * light.color.x * light.strength;
+		color.y += texture.sample(sampler2d, rd.texCoord, start + 1).x * light.color.y * light.strength;
+		color.z += texture.sample(sampler2d, rd.texCoord, start + 2).x * light.color.z * light.strength;
 	}
+	
+	color = color / info.exposure;
+	
+	
+	float depth = texture.sample(sampler2d, rd.texCoord, 1).x * info.depthStrength / info.exposure;
+	depth = clamp(depth, 0.0, 1.0);
+	
+	color.xyz = color.xyz * (1 - depth) + info.depthColor * depth;
+	
+	float background = texture.sample(sampler2d, rd.texCoord, 0).x / info.exposure;
+	
+	color.xyz = color.xyz * (1 - background) + info.backgroundColor * background;
+	
 	color.a = 1;
 	
-	return color / info.exposure;
+	return color;
 }
 
 
@@ -82,7 +95,7 @@ fragment float4 sample_fragment_shader(RasterizerData rd [[ stage_in ]],
 									   constant SkyBoxLight *lights [[buffer(2)]],
 									   constant float *constants [[buffer(4)]]) {
 	
-	ShaderInfo info = shaderInfo;
+	//ShaderInfo info = shaderInfo;
 	
 	return float4(1);
 }
@@ -95,6 +108,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 							   constant SkyBoxLight *lights [[buffer(2)]],
 							   constant float *mConstants [[buffer(4)]],
 							   constant float *dConstants [[buffer(5)]]) {
+							   
 	
 	ShaderInfo info = shaderInfo;
 	
@@ -123,19 +137,15 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 	pos.x = (pos.x + 0) / readTexture.get_width();
 	pos.y = (pos.y + 0) / readTexture.get_height();
 	
-	//second is bounce limit
-	Colors colors = getPointColor(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, mConstants, dConstants);
+	//second param bounce limit
+	Channels channels = getPointColor(pos, 4, voxels, false, lights, float2(readTexture.get_width(), readTexture.get_height()), info, mConstants, dConstants);
 	
-	for (uint c = 0; info.channelsLength > c; c++) {
-		float3 oldColor;
-		oldColor.x = readTexture.read(textureIndex, 3 * c).x;
-		oldColor.y = readTexture.read(textureIndex, 3 * c + 1).x;
-		oldColor.z = readTexture.read(textureIndex, 3 * c + 2).x;
-		
-		float3 color = colors.channel(c);
-		writeTexture.write(float4(oldColor.x + color.x, 0, 0, 0), textureIndex, 3 * c);
-		writeTexture.write(float4(oldColor.y + color.y, 0, 0, 0), textureIndex, 3 * c + 1);
-		writeTexture.write(float4(oldColor.z + color.z, 0, 0, 0), textureIndex, 3 * c + 2);
+	//everything should be averages
+	
+	for (int c = 0; c < channelsLength; c++) {
+		float old = readTexture.read(textureIndex, c).x;
+		old += channels.channels[c];
+		writeTexture.write(float4(old, 0, 0, 0), textureIndex, c);
 	}
 	
 	return;
@@ -144,7 +154,7 @@ kernel void ray_compute_shader(texture2d_array<float, access::read> readTexture 
 kernel void reset_compute_shader(texture2d_array<float, access::write> writeTexture [[texture(0)]],
 								 uint2 index [[ thread_position_in_grid]],
 								 constant ShaderInfo &info [[buffer(0)]]) {
-	for (int c = 0; c < info.channelsLength * 3; c++) {
+	for (int c = 0; c < channelsLength; c++) {
 		writeTexture.write(float4(0, 0, 0, 0), index, c);
 	}
 	return;

@@ -35,6 +35,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case abs
 	case map
 	case mod
+	case exp
+	case log
 	
 	//vector nodes
 	case vectorAdd
@@ -96,6 +98,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.abs: AbsNode,
 	.map: MapNode,
 	.mod: ModNode,
+	.exp: ExpNode,
+	.log: LogNode,
 	.vectorAdd: VectorAddNode,
 	.vectorLength: VectorLengthNode,
 	.vectorScale: VectorScaleNode,

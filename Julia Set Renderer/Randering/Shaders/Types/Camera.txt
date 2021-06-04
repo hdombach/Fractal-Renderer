@@ -32,10 +32,6 @@ struct Camera {
 		
 		ray.colorAbsorption = float3(1);
 		
-		for (int c = 0; 8 > c; c++) {
-			ray.colors.setChannel(c, float3(0));
-		}
-		
 		return ray;
 	}
 };

@@ -177,3 +177,26 @@ func ModNode() -> Node {
 	result.outputs = [NodeFloat("Value")]
 	return result
 }
+func ExpNode() -> Node {
+	var result = Node()
+	result.type = .exp
+	result.name = "Exponent"
+	result.functionName = "exp"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Base"), NodeFloat("Exponent")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}
+
+func LogNode() -> Node {
+	var result = Node()
+	result.type = .log
+	result.name = "Log"
+	result.functionName = "log"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Base"), NodeFloat("Value")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}

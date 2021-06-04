@@ -61,7 +61,7 @@ class LibraryManager {
 		}
 	}
 	
-	func loadLibrary(material: String?, de: String?, completion: (() -> ())?) {
+	func loadLibrary(material: String?, de: String?, channelsLength: Int, completion: (() -> ())?) {
 		let url = Bundle.main.path(forResource: "Shaders", ofType: "txt")
 		var code: String;
 		do {
@@ -117,6 +117,11 @@ class LibraryManager {
 		
 		
 		
+		print(channelsLength, "ASDFSAD")
+		code = code.replacingOccurrences(of: "static constant int channelsLength = 8;", with: "static constant int channelsLength = \(channelsLength);")
+		
+		
+		
 		if material != nil {
 			if let range = code.range(of: "//INSERT_MATERIAL//") {
 				code.insert(contentsOf: material!, at: range.lowerBound)
@@ -151,7 +156,7 @@ class LibraryManager {
 	}
 	
 	func loadDefaultDibrary(completion: (() -> ())?) {
-		loadLibrary(material: nil, de: nil, completion: completion)
+		loadLibrary(material: nil, de: nil, channelsLength: 8, completion: completion)
 	}
 	
 	func setUp(library: MTLLibrary?) {

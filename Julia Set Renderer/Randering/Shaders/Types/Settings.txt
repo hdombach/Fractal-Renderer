@@ -30,4 +30,9 @@ struct ShaderInfo {
 	
 	float ambient;
 	float angleShading;
+	
+	float3 backgroundColor;
+	float3 depthColor;
+	float depthStrength;
+	float emissionStrength;
 };

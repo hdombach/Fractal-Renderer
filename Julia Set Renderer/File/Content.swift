@@ -35,6 +35,7 @@ class Content: NSObject, Codable, ObservableObject {
 	@Published var shadingSettings: Float2 = .init(0.995, 1) { didSet { update() } }
 	///x: groupsize, y: groups
 	@Published var kernelSize: Int2 = .init(200, 50)
+	@Published var atmosphereSettings = AtmosphereSettings() { didSet { update() }}
 	
 	var kernelGroupSize: Int { kernelSize.x }
 	var kernelGroups: Int { kernelSize.y }
@@ -62,6 +63,7 @@ class Content: NSObject, Codable, ObservableObject {
 		case juliaSettings
 		case depthSettings
 		case kernelSize
+		case atmosphereSettings
 		
 		case materialNodeContainer
 		case deNodeContainer
@@ -91,6 +93,11 @@ class Content: NSObject, Codable, ObservableObject {
 		julaSettings = try values.decode(JuliaSetSettings.self, forKey: .juliaSettings)
 		depthSettings = try values.decode(Float3.self, forKey: .depthSettings)
 		kernelSize = try values.decode(Int2.self, forKey: .kernelSize)
+		do {
+			atmosphereSettings = try values.decode(AtmosphereSettings.self, forKey: .atmosphereSettings)
+		} catch {
+			
+		}
 		
 		super.init()
 		
@@ -111,6 +118,7 @@ class Content: NSObject, Codable, ObservableObject {
 		try container.encode(julaSettings, forKey: .juliaSettings)
 		try container.encode(depthSettings, forKey: .depthSettings)
 		try container.encode(kernelSize, forKey: .kernelSize)
+		try container.encode(atmosphereSettings, forKey: .atmosphereSettings)
 	}
 	
 	func updateChannels() {

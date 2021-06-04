@@ -1,11 +1,11 @@
-#include "ColorChannels.txt"
+#include "Channels.txt"
 
 struct Ray {
 	float4 position;
 	float4 direction;
 	
 	float3 colorAbsorption;
-	Colors colors;
+	Channels channels;
 	
 	void normalize() {
 		direction = metal::normalize(direction);

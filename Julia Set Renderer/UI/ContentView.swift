@@ -13,10 +13,11 @@ struct ContentView: View {
 	@ObservedObject var state: ViewSate
 	var document: Document
 	
-	init(doc: Document) {
+	init(doc: Document, menu: ContentView.Menu = .Render) {
 		content = doc.content
 		state = doc.viewState
 		document = doc
+		currentMenu = menu
 	}
 	
     @State var isShowingCamera = false
@@ -35,7 +36,7 @@ struct ContentView: View {
 		case Lightin
 	}
 	
-	@State private var currentMenu = Menu.Render
+	@State private var currentMenu = Menu.Lightin
     //@State private var renderMode: RenderMode = .JuliaSet
 	
 	var body: some View {
@@ -93,10 +94,7 @@ struct ContentView: View {
 				case .DE:
 					DESettings(doc: document)
 				case .Lightin:
-					ScrollView {
-						SkyBoxSettings(content: content).frame(height: 300)
-						ChannelSettings(content: content).frame(height: 300)
-					}.frame(minHeight: 500)
+					SkyBoxSettings(content: content)
 				}
 				Spacer()
 			}
@@ -109,8 +107,7 @@ struct ContentView: View {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-		Text("hi")
-       // ContentView()
+		ContentView(doc: Document(), menu: .Lightin)
 		//	.environmentObject(Engine.Settings)
     }
 }

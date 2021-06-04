@@ -51,6 +51,7 @@
 		DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */; };
 		DE91B8F42631133B0096A099 /* MainDE.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8F32631133B0096A099 /* MainDE.txt */; };
 		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
+		DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE9B7254266715BF00290677 /* SkyBoxLight.txt */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
@@ -81,7 +82,7 @@
 		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
 		DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE942D5D25F9874000CAF9CA /* Ray.txt */; };
-		DEF9F0B025FA94C600D89043 /* ColorChannels.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F04425F98BA600D89043 /* ColorChannels.txt */; };
+		DEF9F0B025FA94C600D89043 /* Channels.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F04425F98BA600D89043 /* Channels.txt */; };
 		DEF9F0B125FA94C600D89043 /* Camera.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05025F9952E00D89043 /* Camera.txt */; };
 		DEF9F0B225FA94C600D89043 /* Material.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05625F9BCC100D89043 /* Material.txt */; };
 		DEF9F0B325FA94C600D89043 /* Settings.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05A25F9BD9700D89043 /* Settings.txt */; };
@@ -154,6 +155,7 @@
 		DE91B8F32631133B0096A099 /* MainDE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = MainDE.txt; sourceTree = "<group>"; };
 		DE942D2C25F968BA00CAF9CA /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		DE942D5D25F9874000CAF9CA /* Ray.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ray.txt; sourceTree = "<group>"; };
+		DE9B7254266715BF00290677 /* SkyBoxLight.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SkyBoxLight.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
@@ -190,7 +192,7 @@
 		DEEC532E2626127B001F7A76 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		DEF0B2D225A007A9002BB7A1 /* NodePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePath.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
-		DEF9F04425F98BA600D89043 /* ColorChannels.txt */ = {isa = PBXFileReference; explicitFileType = text; path = ColorChannels.txt; sourceTree = "<group>"; };
+		DEF9F04425F98BA600D89043 /* Channels.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Channels.txt; sourceTree = "<group>"; };
 		DEF9F04A25F98C9600D89043 /* Math.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Math.txt; sourceTree = "<group>"; };
 		DEF9F05025F9952E00D89043 /* Camera.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Camera.txt; sourceTree = "<group>"; };
 		DEF9F05625F9BCC100D89043 /* Material.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Material.txt; sourceTree = "<group>"; };
@@ -350,13 +352,14 @@
 			isa = PBXGroup;
 			children = (
 				DE942D5D25F9874000CAF9CA /* Ray.txt */,
-				DEF9F04425F98BA600D89043 /* ColorChannels.txt */,
+				DEF9F04425F98BA600D89043 /* Channels.txt */,
 				DEF9F05025F9952E00D89043 /* Camera.txt */,
 				DEF9F05625F9BCC100D89043 /* Material.txt */,
 				DEF9F05A25F9BD9700D89043 /* Settings.txt */,
 				DEF9F07125F9BFE000D89043 /* ResultInfo.txt */,
 				DEF9F07B25F9C14700D89043 /* Voxel.txt */,
 				DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */,
+				DE9B7254266715BF00290677 /* SkyBoxLight.txt */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -546,7 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */,
-				DEF9F0B025FA94C600D89043 /* ColorChannels.txt in Resources */,
+				DEF9F0B025FA94C600D89043 /* Channels.txt in Resources */,
 				DEF9F0B125FA94C600D89043 /* Camera.txt in Resources */,
 				DEF9F0B225FA94C600D89043 /* Material.txt in Resources */,
 				DEF9F0B325FA94C600D89043 /* Settings.txt in Resources */,
@@ -566,6 +569,7 @@
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
+				DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
