@@ -37,6 +37,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case mod
 	case exp
 	case log
+	case min
+	case max
 	
 	//vector nodes
 	case vectorAdd
@@ -52,6 +54,7 @@ enum NodeType: String, Codable, CaseIterable {
 	//Texture Nodes
 	case perlin
 	case perlin3
+	case juliaSet
 	
 	//color
 	case colorBlend
@@ -100,6 +103,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.mod: ModNode,
 	.exp: ExpNode,
 	.log: LogNode,
+	.min: MinNode,
+	.max: MaxNode,
 	.vectorAdd: VectorAddNode,
 	.vectorLength: VectorLengthNode,
 	.vectorScale: VectorScaleNode,
@@ -111,6 +116,7 @@ let allNodes: [NodeType: () -> Node] = [
 	.vectorMod: VectorModNode,
 	.perlin: PerlinNode,
 	.perlin3: Perlin3Node,
+	.juliaSet: JuliaSetNode,
 	.colorBlend: ColorBlendNode,
 	.colorRamp: ColorRampNode,
 	.iterate: IterateNode,

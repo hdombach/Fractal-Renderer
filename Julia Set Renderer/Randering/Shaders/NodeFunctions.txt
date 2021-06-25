@@ -59,6 +59,14 @@ namespace node {
 		*out = metal::log(value) / metal::log(base);
 	}
 	
+	void nMin(thread float *out, float in1, float in2) {
+		*out = min(in1, in2);
+	}
+	
+	void nMax(thread float *out, float in1, float in2) {
+		*out = max(in1, in2);
+	}
+	
 	void vectorAdd(thread float3 *out, float3 in1, float3 in2) {
 		*out = in1 + in2;
 	}
@@ -265,6 +273,29 @@ namespace node {
 		result.z = cnoise(float4(pos, 20));
 		
 		*out = result;
+	}
+	
+	void juliaSet(thread float *out, float x, float y, float c, float d, float power, float power2, float quality) {
+		float i = 0;
+		float2 x0;
+		float2 x1 = float2(x, y);
+		while (quality > i) {
+			x0 = x1;
+			float t = atan(x0.y / x0.x);
+			if (x0.x == 0) {
+				t = 0;
+			} else if (x0.x < 0) {
+				t += 3.1415926;
+			}
+			float r = sqrt(x0.x * x0.x + x0.y * x0.y);
+			x1.x = pow(r, power) * cos(power * t) + pow(r, power2) * cos(power2 * t) + c;
+			x1.y = pow(r, power) * sin(power * t) + pow(r, power2) * sin(power2 * t) + d;
+			if (x1.x * x1.x + x1.y * x1.y > 4) {
+				break;
+			}
+			i ++;
+		}
+		*out = i / quality;
 	}
 	
 	void mandelbulbDE(thread float *distance, thread float3 *orbit, thread float *orbitLife, float3 pos, float power, float iterations, float bailout) {

@@ -200,3 +200,27 @@ func LogNode() -> Node {
 	result.outputs = [NodeFloat("Value")]
 	return result
 }
+
+func MinNode() -> Node {
+	var result = Node()
+	result.type = .min
+	result.name = "Min"
+	result.functionName = "nMin"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("value"), NodeFloat("value")]
+	result.outputs = [NodeFloat("value")]
+	return result
+}
+
+func MaxNode() -> Node {
+	var result = Node()
+	result.type = .max
+	result.name = "Max"
+	result.functionName = "nMax"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("value"), NodeFloat("value")]
+	result.outputs = [NodeFloat("value")]
+	return result
+}

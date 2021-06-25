@@ -33,3 +33,16 @@ func Perlin3Node() -> Node {
 	
 	return result
 }
+
+func JuliaSetNode() -> Node {
+	var result = Node()
+	result.type = .juliaSet
+	result.name = "Julia Set"
+	result.functionName = "juliaSet"
+	result.color = .nodeTexture
+	
+	result.inputs = [NodeFloat("x"), NodeFloat("y"), NodeFloat("c"), NodeFloat("d"), NodeFloat("power"), NodeFloat("power2"), NodeFloat("Quality")]
+	result.outputs = [NodeFloat("value")]
+	
+	return result
+}

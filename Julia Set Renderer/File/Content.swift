@@ -11,7 +11,6 @@ import Cocoa
 import Combine
 
 class Content: NSObject, Codable, ObservableObject {
-	@Published var imageSize: SIMD2<Int> = .init(1920, 1080) { didSet { update() } }
 	@Published var camera: Camera = Camera() { didSet { update() } }
 	@Published var savedCamera: Camera = Camera() { didSet { update() } }
 	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] { didSet { updateChannels(); update() } }
@@ -53,7 +52,6 @@ class Content: NSObject, Codable, ObservableObject {
 	
 	//Loading/Saving
 	enum CodingKeys: String, CodingKey {
-		case imageSize
 		case camera
 		case savedCamera
 		case skyBox
@@ -77,7 +75,6 @@ class Content: NSObject, Codable, ObservableObject {
 	required init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
 		
-		imageSize = try values.decode(Int2.self, forKey: .imageSize)
 		camera = try values.decode(Camera.self, forKey: .camera)
 		savedCamera = try values.decode(Camera.self, forKey: .savedCamera)
 		skyBox = try values.decode(Array<LightInfo>.self, forKey: .skyBox)
@@ -107,7 +104,6 @@ class Content: NSObject, Codable, ObservableObject {
 	
 	func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
-		try container.encode(imageSize, forKey: .imageSize)
 		try container.encode(camera, forKey: .camera)
 		try container.encode(savedCamera, forKey: .savedCamera)
 		try container.encode(skyBox, forKey: .skyBox)

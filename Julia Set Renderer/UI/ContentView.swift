@@ -29,7 +29,6 @@ struct ContentView: View {
 	enum Menu {
 		case Render
 		case Camera
-		case Image
 		case Fractal
 		case Material
 		case DE
@@ -51,11 +50,6 @@ struct ContentView: View {
 					Button("􀌞") {
 						currentMenu = .Camera
 					}.foregroundColor(currentMenu == .Camera ? .accentColor : .primary)
-					.buttonStyle(PlainButtonStyle())
-					
-					Button("􀙮") {
-						currentMenu = .Image
-					}.foregroundColor(currentMenu == .Image ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
 					Button("􀆪") {
 						currentMenu = .Fractal
@@ -80,8 +74,6 @@ struct ContentView: View {
 					RenderBox(doc: document)
 				case .Camera:
 					CameraSettings(doc: document)
-				case .Image:
-					ImageSettings(content: content)
 				case .Fractal:
 					TabView(selection: $state.renderMode) {
 						PatternSettings(document: document)

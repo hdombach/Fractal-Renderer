@@ -133,7 +133,7 @@ class Renderer: NSObject, MTKViewDelegate {
 			let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			renderCommandEncoder?.setRenderPipelineState(pipeState)
 			
-			var imageRatio: Float = content.imageSize.x.float / content.imageSize.y.float
+			var imageRatio: Float = content.savedCamera.resolution.x / content.savedCamera.resolution.y
 			
 			renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 			renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
@@ -154,6 +154,7 @@ class Renderer: NSObject, MTKViewDelegate {
 			info.randomSeed.y = UInt32.random(in: 0...10000)
 			info.randomSeed.z = UInt32.random(in: 0...10000)
 			info.atmosphere = content.atmosphereSettings
+			
 			
 			
 			info.ambient = content.shadingSettings.x
@@ -235,7 +236,7 @@ class Texture {
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
-		self.texture = loadTextureFromBundle(depth: 8, size: doc.content.imageSize)
+		self.texture = loadTextureFromBundle(depth: 8, size: doc.content.savedCamera.resolution.int2)
 	}
 
 	private func oldLoadTextureFromBundle() -> MTLTexture {
@@ -279,8 +280,8 @@ class Texture {
 	//5...: layers
 	
 	func updateTexture() {
-		if currentChannelCount != document.content.skyBox.count || texture.width != document.content.imageSize.x || texture.height != document.content.imageSize.y {
-			texture = loadTextureFromBundle(depth: UInt32(document.content.skyBox.count * 3) + 5, size: document.content.imageSize)
+		if currentChannelCount != document.content.skyBox.count || texture.width != document.content.savedCamera.resolution.x.int || texture.height != document.content.savedCamera.resolution.y.int {
+			texture = loadTextureFromBundle(depth: UInt32(document.content.skyBox.count * 3) + 5, size: document.content.savedCamera.resolution.int2)
 			currentChannelCount = document.content.skyBox.count.uint32
 		}
 	}

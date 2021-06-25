@@ -41,6 +41,8 @@ struct CameraSettings: View {
 				//NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
 				//NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
 				NumberInput(value: $state.cameraSpeed.nsNumber, name: "Camera Speed")
+				NumberInput(value: $content.camera.resolution.x.nsNumber, name: "Width")
+				NumberInput(value: $content.camera.resolution.y.nsNumber, name: "Height")
                 Spacer()
 				Button(action: {
 					content.savedCamera = content.camera

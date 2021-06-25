@@ -101,14 +101,14 @@ class RenderPassManager: ObservableObject {
 			let threadsPerThreadgroup = MTLSize(width: groupSize, height: 1, depth: 1)
 			let threadsPerGrid = MTLSize(width: groupSize * groups, height: 1, depth: 1)
 			
-			var stop = groupSize * groups + content.imageSize.x * content.imageSize.y
+			var stop = groupSize * groups + content.savedCamera.resolution.x.int * content.savedCamera.resolution.y.int
 			if (samplesCurrent + 1 >= samplesGoal) {
-				stop = content.imageSize.x * content.imageSize.y
+				stop = content.savedCamera.resolution.x.int * content.savedCamera.resolution.y.int
 			}
 			
 			var shaderInfo = ShaderInfo()
 			shaderInfo.camera = content.camera
-			shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(computeIndex), UInt32(content.imageSize.x), UInt32(content.imageSize.y), UInt32(stop))
+			shaderInfo.realIndex = SIMD4<UInt32>.init(UInt32(computeIndex), UInt32(content.savedCamera.resolution.x), UInt32(content.savedCamera.resolution.y), UInt32(stop))
 			shaderInfo.randomSeed = SIMD3<UInt32>.random(in: 0...1000000)
 			shaderInfo.voxelsLength = UInt32(document.container.voxelCount)
 			shaderInfo.isJulia = graphics.renderMode.rawValue
@@ -127,9 +127,9 @@ class RenderPassManager: ObservableObject {
 			computeCommandEncoder?.endEncoding()
 			
 			computeIndex += groupSize * groups
-			while computeIndex > content.imageSize.x * content.imageSize.y {
+			while computeIndex > content.savedCamera.resolution.x.int * content.savedCamera.resolution.y.int {
 				samplesCurrent += 1
-				computeIndex -= content.imageSize.x * content.imageSize.y
+				computeIndex -= content.savedCamera.resolution.x.int * content.savedCamera.resolution.y.int
 			}
 			
 			//update progress ui
