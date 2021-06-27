@@ -48,7 +48,7 @@ struct NodeEditor: View {
 				}
 				
 				Text(nodeContainer.compilerMessage).foregroundColor(nodeContainer.compilerCompleted ? .green : .red).padding([.trailing, .leading])
-			}
+			}.zIndex(100)
 			HStack {
 				if isShowingList {
 					ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: true, content: {
@@ -59,6 +59,7 @@ struct NodeEditor: View {
 				}
 				NodeCanvas(nodeContainer: $nodeContainer, position: $position, selected: $selected, zoom: $zoom)
 					.padding([.bottom, .trailing])
+					.clipped()
 			}.padding(.leading)
 		}.onTapGesture {
 			selected = nil
@@ -68,11 +69,6 @@ struct NodeEditor: View {
 
 struct NodeEditor_Previews: PreviewProvider {
     static var previews: some View {
-		/*NodeEditor(nodeContainer: Binding.init(get: {
-			Engine.Settings.nodeContainer
-		}, set: { (newValue) in
-			Engine.Settings.nodeContainer = newValue
-		}))*/
-		Text("Hi")
+		NodeEditor(nodeContainer: Binding.constant(NodeContainer.init()), document: Document.init())
     }
 }

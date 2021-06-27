@@ -25,11 +25,14 @@ struct RenderBox: View {
 	func render() {
 		state.startRendering(samplesCount: self.samples)
 		
+		document.view.changeRenderMode(isManual: false)
+		
 		print("Started Rendering with camera: \(content.camera)")
 	}
 
 	func preview() {
 		state.stopRendering()
+		document.view.changeRenderMode(isManual: true)
 	}
 
     var body: some View {
