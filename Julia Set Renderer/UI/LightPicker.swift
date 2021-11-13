@@ -10,20 +10,14 @@ import SwiftUI
 
 struct LightPicker: View {
 	@Binding var light: LightInfo
+	
+	
+
 	@State var isPickingColor: Bool = false
 	
     var body: some View {
 		HStack {
-			RoundedRectangle(cornerRadius: 10)
-				.foregroundColor(isPickingColor ? Color.black : Color.init(red: Double(light.color.x), green: Double(light.color.y), blue: Double(light.color.z), opacity: 1))
-				.frame(width: 30, height: 30, alignment: .center)
-				.onTapGesture(perform: {
-					isPickingColor.toggle()
-				})
-				.popover(isPresented: $isPickingColor, content: {
-					ColorPickerPro(color: $light.color)
-						.padding()
-				})
+			ColorInput(value: $light.color)
 			
 			VStack {
 				Text("Position")

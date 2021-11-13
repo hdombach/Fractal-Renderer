@@ -146,7 +146,7 @@ struct ColorRampNodeView: View, Equatable {
 		get {
 			var stops: [Gradient.Stop] = []
 			for value in values {
-				stops.append(.init(color: value.color.color, location: value.position.cgFloat))
+				stops.append(.init(color: Color(value.color.cgColor), location: value.position.cgFloat))
 			}
 			return Gradient(stops: stops)
 		}
@@ -187,6 +187,7 @@ struct ColorRampNodeView: View, Equatable {
 							}
 						}.buttonStyle(PlainButtonStyle())
 						if let c = selectedPoint {
+							NumberInput(value: $values[c].position.nsNumber, step: 0.01, min: 0, max: 1)
 							ColorInput(value: $values[c].color)
 						}
 						Spacer()
@@ -357,7 +358,7 @@ struct NodeValueView: View {
 
 struct Node_Previews: PreviewProvider {
 	static var container = NodeContainer()
-	static var node = IterateNode()
+	static var node = ColorRampNode()
 	static var adress: NodeAddress!
 	
     static var previews: some View {

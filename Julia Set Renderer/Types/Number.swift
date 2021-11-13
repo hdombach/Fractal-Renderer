@@ -11,7 +11,7 @@ import SwiftUI
 
 
 
-protocol Number: Any, Strideable, _FormatSpecifiable, AdditiveArithmetic, SIMDScalar {
+protocol Number: Any, Strideable, AdditiveArithmetic, SIMDScalar {
 	var nsNumber: (NSNumber, NumberTypes) { get set }
 }
 

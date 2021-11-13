@@ -42,28 +42,28 @@ struct ContentView: View {
 		if state.isShowingUI {
 			VStack {
 				HStack {
-					Button("􀏅") {
+					Button("Render") {
 						currentMenu = .Render
 					}.foregroundColor(currentMenu == .Render ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
 					
-					Button("􀌞") {
+					Button("Camera") {
 						currentMenu = .Camera
 					}.foregroundColor(currentMenu == .Camera ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀆪") {
+					Button("Fractal") {
 						currentMenu = .Fractal
 					}.foregroundColor(currentMenu == .Fractal ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀎑") {
+					Button("Material") {
 						currentMenu = .Material
 					}.foregroundColor(currentMenu == .Material ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀇯") {
+					Button("DE") {
 						currentMenu = .DE
 					}.foregroundColor(currentMenu == .DE ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀆭") {
+					Button("Lighting") {
 						currentMenu = .Lightin
 					}.foregroundColor(currentMenu == .Lightin ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())

@@ -58,6 +58,13 @@ extension Float: sizeable {
 		}
 	}
 }
+extension CGFloat {
+    var float: Float {
+        get {
+            return Float(self)
+        }
+    }
+}
 extension SIMD3: sizeable { }
 extension SIMD4: sizeable { }
 
@@ -70,9 +77,17 @@ typealias Int2 = SIMD2<Int>
 typealias Int3 = SIMD3<Int>
 typealias Int4 = SIMD4<Int>
 extension Float3 {
-	var color: Color {
-		return .init(red: x.double, green: y.double, blue: z.double)
-	}
+    var cgColor: CGColor {
+        get {
+			return CGColor(red: x.cgFloat, green: y.cgFloat, blue: z.cgFloat, alpha: 1)
+        }
+        set {
+            let components = newValue.components!
+			x = components[0].float
+			y = components[1].float
+			z = components[2].float
+        }
+    }
 }
 extension Float2 {
 	var int2: Int2 {
