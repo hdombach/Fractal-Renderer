@@ -24,13 +24,13 @@ struct CameraSettings: View {
             VStack {
 				VStack(alignment: .leading) {
 					
-					Tuple3FloatInput(value: $content.camera.position.xyz, step: 0.01.nsNumber.0, name: "Position")
+					Tuple3FloatInput(value: $content.camera.position.xyz, step: 0.01, name: "Position")
                 }
                 Divider()
                 VStack(alignment: .leading) {
-					NumberInput(value: $content.camera.vfov.nsNumber, name: "Vertical FOV")
-					NumberInput(value: $content.camera.lensRadius.nsNumber, step: 0.01, name: "Lense Radius")
-					NumberInput(value: $content.camera.focusDistance.nsNumber, step: 0.01, name: "Focus Distance")
+                    NumberInput("Vertical FOV", value: $content.camera.vfov, format: .number)
+                    NumberInput("Lense Radius", value: $content.camera.lensRadius, format: .number)
+                    NumberInput("Focus Distance", value: $content.camera.focusDistance, format: .number)
 					
 					//Tuple3FloatInput(value: $settings.camera.deriction.xyz, step: 0.01.nsNumber.0, name: "Dericiton")
                 }
@@ -40,9 +40,9 @@ struct CameraSettings: View {
                 Text("Other")
 				//NumberInput(value: $settings.camera.zoom.nsNumber, step: 0.00001.nsNumber.0, name: "Zoom")
 				//NumberInput(value: $settings.camera.cameraDepth.nsNumber, step: 0.1.nsNumber.0, name: "Focal Lenghth")
-				NumberInput(value: $state.cameraSpeed.nsNumber, name: "Camera Speed")
-				NumberInput(value: $content.camera.resolution.x.nsNumber, name: "Width")
-				NumberInput(value: $content.camera.resolution.y.nsNumber, name: "Height")
+                NumberInput("Camera Speed", value: $state.cameraSpeed, format: .number)
+                NumberInput("Width", value: $content.camera.resolution.x, format: .number)
+                NumberInput("Height", value: $content.camera.resolution.y, format: .number)
                 Spacer()
 				Button(action: {
 					content.savedCamera = content.camera

@@ -213,6 +213,9 @@ float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, S
 	} else {
 		color.xyz += result.collision.surfaceMaterial.rgbEmitted * info.emissionStrength;
 	}
+    float depth = result.distance * info.depthStrength / info.exposure;
+    depth = clamp(depth, 0.0, 1.0);
+    color.xyz = color.xyz * (1 - depth) + info.depthColor * depth;
 	return color;
 	
 }

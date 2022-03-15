@@ -35,4 +35,6 @@ struct ShaderInfo {
 	float3 depthColor;
 	float depthStrength;
 	float emissionStrength;
+ 
+    float cutoff;
 };

@@ -16,15 +16,15 @@ struct ColorPickerPro: View {
 		HStack {
 			VStack {
 				HStack {
-					NumberInput(value: $tempColor.x.nsNumber, step: 0.01.nsNumber.0, name: "R")
+                    NumberInput("R", value: $tempColor.x, format: .number)
 					Slider(value: $tempColor.x)
 				}
 				HStack {
-					NumberInput(value: $tempColor.y.nsNumber, step: 0.01.nsNumber.0, name: "G")
+                    NumberInput("G", value: $tempColor.y, format: .number)
 					Slider(value: $tempColor.y)
 				}
 				HStack {
-					NumberInput(value: $tempColor.z.nsNumber, step: 0.01.nsNumber.0, name: "B")
+                    NumberInput("B", value: $tempColor.z, format: .number)
 					Slider(value: $tempColor.z)
 				}
 			}

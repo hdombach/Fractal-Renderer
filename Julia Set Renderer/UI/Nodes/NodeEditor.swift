@@ -25,20 +25,20 @@ struct NodeEditor: View {
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
-				Button("􀏚") {
+				Button("Show Nodes") {
 					isShowingList.toggle()
 				}.padding(.leading)
 				Button("Delete") {
 					nodeContainer.delete(node: selected)
 					selected = nil
 				}
-				Button("􀊬") {
+				Button("+") {
 					zoom *= 1.1
 				}
-				Button("􀊭") {
+				Button("-") {
 					zoom *= 0.9
 				}
-				Button("􀅈") {
+				Button("Compile") {
 					//nodeContainer.compile()
 					do {
 						try nodeContainer.compile(library: document.graphics.library, viewState: document.viewState)

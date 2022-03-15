@@ -231,8 +231,9 @@ struct Node: Codable, Equatable {
 		let id = lhs.id == rhs.id
 		let pos = lhs.position == rhs.position
 		let inputs = lhs.inputs == rhs.inputs
+        let outputs = lhs.outputs == rhs.outputs
 		let comp = lhs._compareValues(lhs, rhs)
-		return id && pos && inputs && comp
+		return id && pos && inputs && comp && outputs
 		//return ((lhs.id == rhs.id) && (lhs.position == rhs.position)) && ((lhs.inputs == rhs.inputs) && lhs._compareValues(lhs, rhs))
 	}
 	

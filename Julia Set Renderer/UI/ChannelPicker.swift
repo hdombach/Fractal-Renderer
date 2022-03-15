@@ -18,7 +18,7 @@ struct ChannelPicker: View {
             ColorPicker("Channele \(channel.index)", selection: $channel.color.cgColor)
 			
 			Text("Strength")
-			NumberInput(value: $channel.strength.nsNumber, step: 0.1.nsNumber.0)
+            NumberInput("Strength", value: $channel.strength, format: .number)
 		}
     }
 }

@@ -31,6 +31,8 @@ struct ShaderInfo: Codable {
 	var depthColor: Float3 = Float3(repeating: 0);
 	var depthStrength: Float = 0;
 	var emissionStrength: Float = 0
+    
+    var cutoff: Float = 0
 	
 	var atmosphere: AtmosphereSettings {
 		get {

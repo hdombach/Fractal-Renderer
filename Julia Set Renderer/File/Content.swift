@@ -35,6 +35,8 @@ class Content: NSObject, Codable, ObservableObject {
 	///x: groupsize, y: groups
 	@Published var kernelSize: Int2 = .init(200, 50)
 	@Published var atmosphereSettings = AtmosphereSettings() { didSet { update() }}
+    @Published var cutoff: Float = 0
+	//@Published var nodeSources: [NodeSource] = []
 	
 	var kernelGroupSize: Int { kernelSize.x }
 	var kernelGroups: Int { kernelSize.y }
@@ -44,6 +46,7 @@ class Content: NSObject, Codable, ObservableObject {
 	private var oldNodeContainerConstants: [Float] = []
 	private var oldMaterialNodeContainerConstants: [Float] = []
 	private var oldDeMaterialNodeContainerConstants: [Float] = []
+	
 	
 	func update() {
 		viewState?.updateView()

@@ -29,7 +29,8 @@ struct NodeCanvas: View {
 			GroupBox {
 				ZStack() {
 					ForEach(nodeContainer.paths) { path in
-						NodePathView(nodePath: path, nodeContainer: nodeContainer)
+                        NodePathView(nodePath: path, nodeContainer: nodeContainer)
+                            .border(Color.init(.sRGB, white: 1, opacity: 0.1), width: 0.1)
 					}
 					ForEach(nodeContainer.nodes, id: \.id) { node in
 						let c = nodeContainer.index(node.id)
@@ -48,6 +49,7 @@ struct NodeCanvas: View {
 					}
 					if nodeContainer.activePath != nil {
 						NodeDraggableView(nodePath: nodeContainer.activePath, nodeContainer: nodeContainer)
+                            .border(Color.init(.sRGB, white: 1, opacity: 0.1), width: 0.1)
 					}
 				}
 				.coordinateSpace(name: "Canvas")

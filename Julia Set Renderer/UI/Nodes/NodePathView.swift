@@ -32,10 +32,11 @@ struct NodeDraggableView: View {
 	var body: some View {
 		if nodePath != nil {
 			Path { path in
-				let begginingPoint = nodeContainer.getPosition(value: nodePath.beggining)
-				let endingPoint = nodePath.ending
-				
-				path.addLines([begginingPoint, endingPoint])
+				let endingPoint = nodeContainer.getPosition(value: nodePath.beggining)
+				let begginingPoint = nodePath.ending
+                
+                path.move(to: begginingPoint)
+                path.addLine(to: endingPoint)
 			}.stroke(Color.primary)
 		}
 	}
@@ -43,6 +44,12 @@ struct NodeDraggableView: View {
 
 struct NodePathView_Previews: PreviewProvider {
     static var previews: some View {
-		Text("na")
+        Path { path in
+            let endingPoint = CGPoint(x: 100, y: 200)
+            let begginingPoint = CGPoint(x: 200, y: -1000)
+            
+            path.move(to: begginingPoint)
+            path.addLine(to: endingPoint)
+        }.stroke(Color.primary)
     }
 }

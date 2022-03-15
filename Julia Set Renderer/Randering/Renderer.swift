@@ -154,8 +154,9 @@ class Renderer: NSObject, MTKViewDelegate {
 			info.randomSeed.y = UInt32.random(in: 0...10000)
 			info.randomSeed.z = UInt32.random(in: 0...10000)
 			info.atmosphere = content.atmosphereSettings
+            info.cutoff = content.cutoff
 			
-			
+			 
 			
 			info.ambient = content.shadingSettings.x
 			info.angleShading = content.shadingSettings.y

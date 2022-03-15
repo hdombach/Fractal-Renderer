@@ -116,6 +116,7 @@ class RenderPassManager: ObservableObject {
 			shaderInfo.rayMarchingSettings = content.rayMarchingSettings
 			shaderInfo.channelsLength = UInt32(content.channels.count)
 			shaderInfo.atmosphere = content.atmosphereSettings
+            shaderInfo.cutoff = content.cutoff
 			
 			computeCommandEncoder?.setBytes(&shaderInfo, length: MemoryLayout<ShaderInfo>.stride, index: 0)
 			computeCommandEncoder?.setBuffer(document.container.voxelBuffer, offset: 0, index: 1)

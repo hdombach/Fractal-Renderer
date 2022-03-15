@@ -14,18 +14,17 @@ struct MandelbulbSettings: View {
     var body: some View {
 		HStack {
 			VStack {
-				NumberInput(value: $settings.mandelbulbPower.nsNumber, step: 0.1.nsNumber.0, name: "Power")
-				NumberInput(value: $settings.bundleSize.nsNumber, step: 1.nsNumber.0, name: "Bundle Size")
-				NumberInput(value: $settings.quality.nsNumber, step: 100.nsNumber.0, name: "Quality")
-				//Input(value: $settings.colorOffset, step: 0.01, name: "Color Offset")
-				NumberInput(value: $settings.iterations.nsNumber, step: 1.nsNumber.0, name: "Iterations")
+                NumberInput("Power", value: $settings.mandelbulbPower, format: .number)
+                NumberInput("Bundle Size", value: $settings.bundleSize, format: .number)
+                NumberInput("Quality", value: $settings.quality, format: .number)
+                NumberInput("Iterations", value: $settings.iterations, format: .number)
 			}
 			VStack {
 				Text("Coloring")
-				Tuple3FloatInput(value: $settings.colorBase, step: 0.1.nsNumber.0, name: "Color base")
-				Tuple3FloatInput(value: $settings.colorOffset, step: 0.1.nsNumber.0, name: "Color offset")
-				Tuple3FloatInput(value: $settings.colorVariation, step: 0.1.nsNumber.0, name: "Color variation")
-				Tuple3FloatInput(value: $settings.colorFrequency, step: 10.nsNumber.0, name: "Color frequency")
+                Tuple3FloatInput(value: $settings.colorBase, step: 0.1, name: "Color base")
+				Tuple3FloatInput(value: $settings.colorOffset, step: 0.1, name: "Color offset")
+				Tuple3FloatInput(value: $settings.colorVariation, step: 0.1, name: "Color variation")
+                Tuple3FloatInput(value: $settings.colorFrequency, step: 0.1, name: "Color frequency")
 			}
 		}
     }

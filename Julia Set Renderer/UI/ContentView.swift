@@ -39,8 +39,8 @@ struct ContentView: View {
     //@State private var renderMode: RenderMode = .JuliaSet
 	
 	var body: some View {
-		if state.isShowingUI {
-			VStack {
+        VStack {
+            if state.isShowingUI {
 				HStack {
 					Button("Render") {
 						currentMenu = .Render
@@ -89,9 +89,14 @@ struct ContentView: View {
 					SkyBoxSettings(content: content)
 				}
 				Spacer()
-			}
-			.frame(minWidth: 400)
+            } else {
+                Spacer()
+                HStack {
+                    Spacer()
+                }
+            }
 		}
+        .frame(minWidth: 400)
 	}
 }
 

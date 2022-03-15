@@ -187,7 +187,7 @@ struct ColorRampNodeView: View, Equatable {
 							}
 						}.buttonStyle(PlainButtonStyle())
 						if let c = selectedPoint {
-							NumberInput(value: $values[c].position.nsNumber, step: 0.01, min: 0, max: 1)
+                            NumberInput("", value: $values[c].position, format: .number)
 							ColorInput(value: $values[c].color)
 						}
 						Spacer()
@@ -268,11 +268,12 @@ struct NodeOutputView: View {
 		HStack {
 			Spacer()
 			Text(nodeContainer[valueAddress]?.name ?? "")
-			
-			Circle()
-				.fill((nodeContainer[valueAddress]!.type.length == 3) ? Color.gray : Color.primary)
-				.frame(width: dotSize, height: dotSize)
-				.gesture(createPathGesture(valueIndex: valueAddress.valueIndex))
+            if let input = nodeContainer[valueAddress] {
+                Circle()
+                    .fill((nodeContainer[valueAddress]!.type.length == 3) ? Color.gray : Color.primary)
+                    .frame(width: dotSize, height: dotSize)
+                    .gesture(createPathGesture(valueIndex: valueAddress.valueIndex))
+            }
 		}.frame(height: gridSize, alignment: .center)
 	}
 }
@@ -320,20 +321,21 @@ struct NodeInputView: View {
 	var body: some View {
 		HStack(alignment: .center) {
 			Circle()
-				.fill((nodeContainer[valueAddress]!.type.length == 3) ? Color.gray : Color.primary)
+				.fill(((nodeContainer[valueAddress]?.type.length) ?? 1 == 3) ? Color.gray : Color.primary)
 				.frame(width: dotSize, height: dotSize)
 				.gesture(deletePathGesture(valueIndex: valueAddress.valueIndex))
 				
 				
-			
-			NodeValueView(value: Binding.init(get: {
-				nodeContainer[valueAddress]!
-			}, set: { (newValue) in
-				nodeContainer[valueAddress] = newValue
-			}))
+            if (nodeContainer[valueAddress] != nil) {
+                NodeValueView(value: Binding.init(get: {
+                    nodeContainer[valueAddress]!
+                }, set: { (newValue) in
+                    nodeContainer[valueAddress] = newValue
+                }))
+            }
 			
 			Spacer()
-		}.frame(height: gridSize * CGFloat((nodeContainer[valueAddress]!.type.length)), alignment: .center)
+		}.frame(height: gridSize * CGFloat((nodeContainer[valueAddress]?.type.length ?? 1)), alignment: .center)
 	}
 }
 
@@ -343,11 +345,11 @@ struct NodeValueView: View {
 	var body: some View {
 		switch value.type {
 		case .float:
-			NumberInput(value: $value.float.nsNumber, name: value.name)
+            NumberInput(value.name, value: $value.float, format: .number)
 		case .float3:
 			Tuple3FloatInput(value: $value.float3, name: value.name)
 		case .int:
-			NumberInput(value: $value.int.nsNumber, name: value.name)
+            NumberInput(value.name, value: $value.int, format: .number)
 		case .color:
 			ColorInput(value: $value.float3, name: value.name)
 		case .float4:

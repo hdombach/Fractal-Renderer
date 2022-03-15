@@ -13,7 +13,6 @@
 		DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */; };
 		DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C47256B4A52009C37D8 /* LightPicker.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
-		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
 		DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE263C6F26277DA700CA346C /* RenderPassManager.swift */; };
 		DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3922572644DEBF00D38B03 /* IterateNodeView.swift */; };
 		DE4523D22613917300125AE6 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4523D12613917300125AE6 /* Document.swift */; };
@@ -44,7 +43,6 @@
 		DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */; };
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
-		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
 		DE91B8E02630C9990096A099 /* DESettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8DF2630C9990096A099 /* DESettings.swift */; };
 		DE91B8E4263107DF0096A099 /* DENodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8E3263107DF0096A099 /* DENodes.swift */; };
 		DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */; };
@@ -53,6 +51,7 @@
 		DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE9B7254266715BF00290677 /* SkyBoxLight.txt */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
+		DE9DDE72275E421000655258 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9DDE71275E421000655258 /* NumberInput.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
@@ -77,6 +76,7 @@
 		DEC91214259E4871002158C9 /* MathNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91213259E4871002158C9 /* MathNodes.swift */; };
 		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
 		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
+		DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEA5AA927404FF0001BD052 /* NodeSource.swift */; };
 		DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEC532E2626127B001F7A76 /* ViewState.swift */; };
 		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
@@ -114,7 +114,6 @@
 		DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyBoxSettings.swift; sourceTree = "<group>"; };
 		DE167C47256B4A52009C37D8 /* LightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightPicker.swift; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
-		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		DE263C6F26277DA700CA346C /* RenderPassManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPassManager.swift; sourceTree = "<group>"; };
 		DE3922572644DEBF00D38B03 /* IterateNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IterateNodeView.swift; sourceTree = "<group>"; };
 		DE4523D12613917300125AE6 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -146,7 +145,6 @@
 		DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePathView.swift; sourceTree = "<group>"; };
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
-		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
 		DE91B8DF2630C9990096A099 /* DESettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DESettings.swift; sourceTree = "<group>"; };
 		DE91B8E3263107DF0096A099 /* DENodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DENodes.swift; sourceTree = "<group>"; };
 		DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RayMarchInfo.txt; sourceTree = "<group>"; };
@@ -156,6 +154,7 @@
 		DE9B7254266715BF00290677 /* SkyBoxLight.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SkyBoxLight.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
+		DE9DDE71275E421000655258 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NumberInput.swift; path = "Julia Set Renderer/UI/NumberInput.swift"; sourceTree = SOURCE_ROOT; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
@@ -187,6 +186,7 @@
 		DEDC34CB258CE66B009B47A0 /* Types.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Types.txt; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = MathContainer.txt; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = RayMarching.txt; sourceTree = "<group>"; };
+		DEEA5AA927404FF0001BD052 /* NodeSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSource.swift; sourceTree = "<group>"; };
 		DEEC532E2626127B001F7A76 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		DEF0B2D225A007A9002BB7A1 /* NodePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePath.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
@@ -241,7 +241,6 @@
 				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
 				DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */,
 				DE8237DE24AE8234000FA948 /* Other.swift */,
-				DE212FF4258D59580050AC95 /* Number.swift */,
 				DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */,
 				DE68A69A259D6F0900D66457 /* ColorExtensions.swift */,
 				DE942D2C25F968BA00CAF9CA /* Camera.swift */,
@@ -252,6 +251,7 @@
 		DE304FC724DB567600125844 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DE9DDE71275E421000655258 /* NumberInput.swift */,
 				DE85F09C259CDE9A00FF475F /* Nodes */,
 				DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */,
 				DE8F06E524DB65E1004D2687 /* RenderBox.swift */,
@@ -264,7 +264,6 @@
 				DE167C47256B4A52009C37D8 /* LightPicker.swift */,
 				DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */,
 				DE62BD352579C26D00E67351 /* ChannelPicker.swift */,
-				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
 				DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */,
 				DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */,
 				DE91B8DF2630C9990096A099 /* DESettings.swift */,
@@ -341,6 +340,7 @@
 				DE8178E3262F753500999A56 /* FlowNodes.swift */,
 				DE91B8E3263107DF0096A099 /* DENodes.swift */,
 				DEF0B2D225A007A9002BB7A1 /* NodePath.swift */,
+				DEEA5AA927404FF0001BD052 /* NodeSource.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -611,8 +611,10 @@
 				DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
 				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
+				DE9DDE72275E421000655258 /* NumberInput.swift in Sources */,
 				DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */,
 				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
+				DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
 				DE91B8E02630C9990096A099 /* DESettings.swift in Sources */,
@@ -630,12 +632,10 @@
 				DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */,
 				DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */,
 				DEC91214259E4871002158C9 /* MathNodes.swift in Sources */,
-				DE212FF5258D59580050AC95 /* Number.swift in Sources */,
 				DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */,
 				DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */,
 				DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
-				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */,
 				DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */,
 				DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */,
