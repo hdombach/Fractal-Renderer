@@ -74,6 +74,10 @@
 		DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91209259E2C74002158C9 /* NodeEditor.swift */; };
 		DEC91210259E47D5002158C9 /* IONodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC9120F259E47D5002158C9 /* IONodes.swift */; };
 		DEC91214259E4871002158C9 /* MathNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91213259E4871002158C9 /* MathNodes.swift */; };
+		DEC9F58428D1E6D7009D7A40 /* final.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58328D1E6D7009D7A40 /* final.png */; };
+		DEC9F58628D1E6EE009D7A40 /* final_good.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58528D1E6EE009D7A40 /* final_good.png */; };
+		DEC9F58828D1E70F009D7A40 /* final green bright.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58728D1E70F009D7A40 /* final green bright.png */; };
+		DEC9F58A28D1E72E009D7A40 /* OldPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58928D1E72E009D7A40 /* OldPaper.png */; };
 		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
 		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
 		DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEA5AA927404FF0001BD052 /* NodeSource.swift */; };
@@ -181,6 +185,10 @@
 		DEC91209259E2C74002158C9 /* NodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditor.swift; sourceTree = "<group>"; };
 		DEC9120F259E47D5002158C9 /* IONodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONodes.swift; sourceTree = "<group>"; };
 		DEC91213259E4871002158C9 /* MathNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathNodes.swift; sourceTree = "<group>"; };
+		DEC9F58328D1E6D7009D7A40 /* final.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = final.png; sourceTree = "<group>"; };
+		DEC9F58528D1E6EE009D7A40 /* final_good.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = final_good.png; sourceTree = "<group>"; };
+		DEC9F58728D1E70F009D7A40 /* final green bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "final green bright.png"; sourceTree = "<group>"; };
+		DEC9F58928D1E72E009D7A40 /* OldPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldPaper.png; sourceTree = "<group>"; };
 		DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInput.swift; sourceTree = "<group>"; };
 		DED8F76025C631C900ABFBCC /* ColorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNodes.swift; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Types.txt; sourceTree = "<group>"; };
@@ -436,6 +444,10 @@
 			isa = PBXGroup;
 			children = (
 				DEC8CDE324ADFC9E00DB5701 /* Preview Assets.xcassets */,
+				DEC9F58728D1E70F009D7A40 /* final green bright.png */,
+				DEC9F58328D1E6D7009D7A40 /* final.png */,
+				DEC9F58528D1E6EE009D7A40 /* final_good.png */,
+				DEC9F58928D1E72E009D7A40 /* OldPaper.png */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -547,6 +559,7 @@
 			files = (
 				DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */,
 				DEF9F0B025FA94C600D89043 /* Channels.txt in Resources */,
+				DEC9F58828D1E70F009D7A40 /* final green bright.png in Resources */,
 				DEF9F0B125FA94C600D89043 /* Camera.txt in Resources */,
 				DEF9F0B225FA94C600D89043 /* Material.txt in Resources */,
 				DEF9F0B325FA94C600D89043 /* Settings.txt in Resources */,
@@ -556,7 +569,9 @@
 				DEF9F0B725FA94C600D89043 /* NodeFunctions.txt in Resources */,
 				DEF9F0B825FA94C600D89043 /* DE.txt in Resources */,
 				DE91B8F42631133B0096A099 /* MainDE.txt in Resources */,
+				DEC9F58628D1E6EE009D7A40 /* final_good.png in Resources */,
 				DEF9F0B925FA94C600D89043 /* VoxelMath.txt in Resources */,
+				DEC9F58A28D1E72E009D7A40 /* OldPaper.png in Resources */,
 				DEF9F0BA25FA94C600D89043 /* RayMarcher.txt in Resources */,
 				DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */,
 				DEF9F0BB25FA94C600D89043 /* Shaders.txt in Resources */,
@@ -566,6 +581,7 @@
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
+				DEC9F58428D1E6D7009D7A40 /* final.png in Resources */,
 				DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
