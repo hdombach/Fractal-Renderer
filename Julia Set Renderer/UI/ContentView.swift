@@ -13,10 +13,11 @@ struct ContentView: View {
 	@ObservedObject var state: ViewSate
 	var document: Document
 	
-	init(doc: Document) {
+	init(doc: Document, menu: ContentView.Menu = .Render) {
 		content = doc.content
 		state = doc.viewState
 		document = doc
+		currentMenu = menu
 	}
 	
     @State var isShowingCamera = false
@@ -28,47 +29,41 @@ struct ContentView: View {
 	enum Menu {
 		case Render
 		case Camera
-		case Image
 		case Fractal
 		case Material
 		case DE
 		case Lightin
 	}
 	
-	@State private var currentMenu = Menu.Render
+	@State private var currentMenu = Menu.Lightin
     //@State private var renderMode: RenderMode = .JuliaSet
 	
 	var body: some View {
-		if state.isShowingUI {
-			VStack {
+        VStack {
+            if state.isShowingUI {
 				HStack {
-					Button("􀏅") {
+					Button("Render") {
 						currentMenu = .Render
 					}.foregroundColor(currentMenu == .Render ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
 					
-					Button("􀌞") {
+					Button("Camera") {
 						currentMenu = .Camera
 					}.foregroundColor(currentMenu == .Camera ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					
-					Button("􀙮") {
-						currentMenu = .Image
-					}.foregroundColor(currentMenu == .Image ? .accentColor : .primary)
-					.buttonStyle(PlainButtonStyle())
-					Button("􀆪") {
+					Button("Fractal") {
 						currentMenu = .Fractal
 					}.foregroundColor(currentMenu == .Fractal ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀎑") {
+					Button("Material") {
 						currentMenu = .Material
 					}.foregroundColor(currentMenu == .Material ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀇯") {
+					Button("DE") {
 						currentMenu = .DE
 					}.foregroundColor(currentMenu == .DE ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
-					Button("􀆭") {
+					Button("Lighting") {
 						currentMenu = .Lightin
 					}.foregroundColor(currentMenu == .Lightin ? .accentColor : .primary)
 					.buttonStyle(PlainButtonStyle())
@@ -79,8 +74,6 @@ struct ContentView: View {
 					RenderBox(doc: document)
 				case .Camera:
 					CameraSettings(doc: document)
-				case .Image:
-					ImageSettings(content: content)
 				case .Fractal:
 					TabView(selection: $state.renderMode) {
 						PatternSettings(document: document)
@@ -93,15 +86,17 @@ struct ContentView: View {
 				case .DE:
 					DESettings(doc: document)
 				case .Lightin:
-					ScrollView {
-						SkyBoxSettings(content: content).frame(height: 300)
-						ChannelSettings(content: content).frame(height: 300)
-					}.frame(minHeight: 500)
+					SkyBoxSettings(content: content)
 				}
 				Spacer()
-			}
-			.frame(minWidth: 400)
+            } else {
+                Spacer()
+                HStack {
+                    Spacer()
+                }
+            }
 		}
+        .frame(minWidth: 400)
 	}
 }
 
@@ -109,8 +104,7 @@ struct ContentView: View {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-		Text("hi")
-       // ContentView()
+		ContentView(doc: Document(), menu: .Lightin)
 		//	.environmentObject(Engine.Settings)
     }
 }

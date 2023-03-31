@@ -19,21 +19,12 @@ struct ColorInput: View {
 	var hasPadding = true
 	
     var body: some View {
-		HStack {
-			if name != nil {
-				Text(name! + ":")
-			}
-			Spacer()
-			Capsule()
-				.aspectRatio(1.618, contentMode: .fit)
-				.foregroundColor(Color(red: Double(value.x), green: Double(value.y), blue: Double(value.z)))
-				.onTapGesture {
-					isPickingColor.toggle()
-				}
-				.popover(isPresented: $isPickingColor, content: {
-					ColorPickerPro(color: $value).padding()
-				})
-		}
+		ColorPicker(name ?? "", selection: .init(get: {
+			value.cgColor
+		}, set: { newValue in
+			print(value)
+			value.cgColor = newValue
+		}))
     }
 }
 

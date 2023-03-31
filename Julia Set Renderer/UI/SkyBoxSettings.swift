@@ -14,6 +14,8 @@ struct SkyBoxSettings: View {
 	@State var selected: LightInfo?
 	@State var items = ["test1", "test2", "test3", "test4"]
 	var currentId: UInt32 = 0
+    
+    @State var test = 5
 	
 	func index(id: UInt32) -> Int {
 		guard let index = self.content.skyBox.firstIndex(where: { $0.id == id}) else {
@@ -24,6 +26,19 @@ struct SkyBoxSettings: View {
 	
     var body: some View {
 		VStack {
+			
+			VStack {
+				ColorInput(value: $content.atmosphereSettings.backgroundColor, name: "Background")
+				
+				HStack {
+					ColorInput(value: $content.atmosphereSettings.depthColor, name: "Mist")
+                    NumberInput("Strength", value: $content.atmosphereSettings.depthStrength, format: .number)
+				}
+                NumberInput("Emission Strength: ", value: $content.atmosphereSettings.emissionStrength, format: .number).frame(width: 500)
+                
+                NumberInput("Cutoff", value: $content.cutoff, format: .number)
+			}.frame(height: 150)
+			
 			Text("Lights")
 			List(content.skyBox, id: \.self, selection: $selected) { light in
 				LightPicker(light: $content.skyBox[index(id: light.id)])
@@ -54,8 +69,7 @@ struct SkyBoxSettings: View {
 
 struct SkyBoxSettings_Previews: PreviewProvider {
     static var previews: some View {
-		//SkyBoxSettings()
-		Text("hgi")
+		SkyBoxSettings(content: Content()).frame(height: 1000)
 			
     }
 }

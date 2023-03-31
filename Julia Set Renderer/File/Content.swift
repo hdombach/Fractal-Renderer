@@ -11,7 +11,6 @@ import Cocoa
 import Combine
 
 class Content: NSObject, Codable, ObservableObject {
-	@Published var imageSize: SIMD2<Int> = .init(1920, 1080) { didSet { update() } }
 	@Published var camera: Camera = Camera() { didSet { update() } }
 	@Published var savedCamera: Camera = Camera() { didSet { update() } }
 	@Published var skyBox: [LightInfo] = [LightInfo.init(color: .init(1, 1, 1), strength: 1, size: 0.9, position: .init(1, 0, 0), channel: 0)] { didSet { updateChannels(); update() } }
@@ -35,6 +34,9 @@ class Content: NSObject, Codable, ObservableObject {
 	@Published var shadingSettings: Float2 = .init(0.995, 1) { didSet { update() } }
 	///x: groupsize, y: groups
 	@Published var kernelSize: Int2 = .init(200, 50)
+	@Published var atmosphereSettings = AtmosphereSettings() { didSet { update() }}
+    @Published var cutoff: Float = 0
+	//@Published var nodeSources: [NodeSource] = []
 	
 	var kernelGroupSize: Int { kernelSize.x }
 	var kernelGroups: Int { kernelSize.y }
@@ -45,6 +47,7 @@ class Content: NSObject, Codable, ObservableObject {
 	private var oldMaterialNodeContainerConstants: [Float] = []
 	private var oldDeMaterialNodeContainerConstants: [Float] = []
 	
+	
 	func update() {
 		viewState?.updateView()
 	}
@@ -52,7 +55,6 @@ class Content: NSObject, Codable, ObservableObject {
 	
 	//Loading/Saving
 	enum CodingKeys: String, CodingKey {
-		case imageSize
 		case camera
 		case savedCamera
 		case skyBox
@@ -62,6 +64,7 @@ class Content: NSObject, Codable, ObservableObject {
 		case juliaSettings
 		case depthSettings
 		case kernelSize
+		case atmosphereSettings
 		
 		case materialNodeContainer
 		case deNodeContainer
@@ -75,7 +78,6 @@ class Content: NSObject, Codable, ObservableObject {
 	required init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
 		
-		imageSize = try values.decode(Int2.self, forKey: .imageSize)
 		camera = try values.decode(Camera.self, forKey: .camera)
 		savedCamera = try values.decode(Camera.self, forKey: .savedCamera)
 		skyBox = try values.decode(Array<LightInfo>.self, forKey: .skyBox)
@@ -91,6 +93,11 @@ class Content: NSObject, Codable, ObservableObject {
 		julaSettings = try values.decode(JuliaSetSettings.self, forKey: .juliaSettings)
 		depthSettings = try values.decode(Float3.self, forKey: .depthSettings)
 		kernelSize = try values.decode(Int2.self, forKey: .kernelSize)
+		do {
+			atmosphereSettings = try values.decode(AtmosphereSettings.self, forKey: .atmosphereSettings)
+		} catch {
+			
+		}
 		
 		super.init()
 		
@@ -100,7 +107,6 @@ class Content: NSObject, Codable, ObservableObject {
 	
 	func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
-		try container.encode(imageSize, forKey: .imageSize)
 		try container.encode(camera, forKey: .camera)
 		try container.encode(savedCamera, forKey: .savedCamera)
 		try container.encode(skyBox, forKey: .skyBox)
@@ -111,6 +117,7 @@ class Content: NSObject, Codable, ObservableObject {
 		try container.encode(julaSettings, forKey: .juliaSettings)
 		try container.encode(depthSettings, forKey: .depthSettings)
 		try container.encode(kernelSize, forKey: .kernelSize)
+		try container.encode(atmosphereSettings, forKey: .atmosphereSettings)
 	}
 	
 	func updateChannels() {

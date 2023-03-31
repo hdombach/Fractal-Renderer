@@ -1,60 +1,37 @@
-#include "ColorChannels.txt"
+#include "Channels.txt"
 #include "ResultInfo.txt"
 #include "Settings.txt"
 #include "MainDE.txt"
 #include "Material.txt"
 #include "Voxel.txt"
 #include "VoxelMath.txt"
+#include "SkyBoxLight.txt"
 
-
-
-struct SkyBoxLight {
-	float3 color;
-	float strength;
-	float size;
-	float3 position;
-	uint channel;
-	uint id;
-	
-	float3 getColor(Ray ray) {
-		if (size < dot(normalize(ray.direction.xyz), normalize(position))) {
-			return color * strength;
-		}
-		return float3(0);
-	}
-};
-
-
-Colors getSkyBox(Ray ray, constant SkyBoxLight *lights, int lightsLength) {
-	Colors color;
-	for (uint c = 0; 8 > c; c++) {
-		
-		color.setChannel(c, float3(0, 0, 0));
-	}
-	
-	for (int c = 0; lightsLength > c; c++) {
-		SkyBoxLight light = lights[c];
-		
-		color.setChannel(light.channel, light.getColor(ray));
-	}
-	
-	return color;
-}
 
 Ray reflectRay(thread Ray rayIn, float3 surfaceNormal, Material surfaceMaterial, uint3 seed) {
 	Ray ray = rayIn;
 	
-	for (int c = 0; ray.colors.channels() > c; c++) {
-		ray.colors.changeChannel(c, ray.colorAbsorption * surfaceMaterial.rgbEmitted);
-	}
+	float3 oldEmission = ray.channels.getEmission();
+	oldEmission += ray.colorAbsorption * surfaceMaterial.rgbEmitted;
+	ray.channels.setEmission(oldEmission);
+	
 	ray.colorAbsorption *= surfaceMaterial.rgbAbsorption;
 	
-	seed.x += abs(ray.position.x) * 128597;
+	seed.x += abs(ray.position.x) * 1285297;
 	seed.y += abs(ray.position.y) * 13258612;
 	seed.z += abs(ray.position.z) * 1325683;
 	
-	ray.direction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
-	ray.direction.w = 0;
+	if (randomFloat(seed.y, seed.x, seed.z) > surfaceMaterial.metality) {
+		ray.direction.xyz = sampleUniformHemisphere(surfaceNormal, seed);
+		ray.direction.w = 0;
+	} else {
+		float3 newDirection = surfaceNormal * -1;
+		while(dot(newDirection, surfaceNormal) < 0) {
+			newDirection = reflect(ray.direction.xyz, surfaceNormal) + surfaceMaterial.diffuse * randomInUnitSphere(seed.y, seed.x, seed.z);
+			seed += uint3(412, 231, 501);
+		}
+		ray.direction.xyz = newDirection;
+	}
 	
 	return ray;
 }
@@ -151,7 +128,7 @@ SingleResult step(Ray ray, device Voxel *voxels, bool showVoxels, ShaderInfo inf
 	}
 }
 
-Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
+Channels getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool showVoxels, constant SkyBoxLight *lights, float2 textureSize, ShaderInfo info, constant float *mConstants, constant float *dConstants) {
 	uint3 seed = info.randomSeed;
 	seed.x += pos.x * 2150;
 	seed.y += pos.y * 6350;
@@ -164,17 +141,20 @@ Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool sho
 		SingleResult result = step(ray, voxels, showVoxels, info, mConstants, dConstants);
 		
 		ray = result.ray;
+		
+		if (bounces == 0) {
+			ray.channels.setDepth(result.distance);
+		}
+		
 		if (result.distance >= 10000) {
 			if (bounces > 0) {
 				//ray.colors.change(getSkyBox(ray, lights, info.lightsLength), ray.colorAbsorption);
 				
-				Colors colors = getSkyBox(ray, lights, info.lightsLength);
-				for (uint c = 0; c < info.channelsLength; c++) {
-					float3 oldColor = colors.channel(c);
-					ray.colors.setChannel(c, oldColor * ray.colorAbsorption);
-				}
+				getSkyBox(&ray, lights, info.lightsLength);
+				
+				ray.channels.setAlpha(0);
 			} else {
-				ray.colors.setChannel(0, float3(1));
+				ray.channels.setAlpha(1);
 			}
 			break;
 		}
@@ -183,7 +163,7 @@ Colors getPointColor(float2 pos, int bounceLimit, device Voxel *voxels, bool sho
 		bounces++;
 	}
 	
-	return ray.colors;
+	return ray.channels;
 	
 }
 
@@ -222,15 +202,20 @@ float4 preview(float2 pos, device Voxel *voxels, constant SkyBoxLight *lights, S
 	float4 color = float4(1, 1, 1, 1) * float4(result.collision.surfaceMaterial.rgbAbsorption, 0);
 	//return float4(result.steps);
 	color *= pow(info.ambient, float(result.steps));
-	color -= color * abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal))) * info.angleShading;
+	color -= color * (1 - abs(dot(normalize(originalDirection), normalize(result.collision.surfaceNormal)))) * info.angleShading;
 	if (result.distance > 100) {
 		float3 tempColor = float3(0);
-		Colors colors = getSkyBox(ray, lights, info.lightsLength);
-		for (uint c = 0; c < info.channelsLength; c++) {
-			tempColor += colors.channel(c);
+		getSkyBox(&ray, lights, info.lightsLength);
+		for (uint c = 0; c < info.lightsLength; c++) {
+			tempColor += ray.channels.getLight(c) * lights[c].strength;
 		}
 		color = float4(tempColor, 1);
+	} else {
+		color.xyz += result.collision.surfaceMaterial.rgbEmitted * info.emissionStrength;
 	}
+    float depth = result.distance * info.depthStrength / info.exposure;
+    depth = clamp(depth, 0.0, 1.0);
+    color.xyz = color.xyz * (1 - depth) + info.depthColor * depth;
 	return color;
 	
 }

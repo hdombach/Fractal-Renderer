@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-enum NodeValueType: String, Codable {
+enum NodeValueType: String, Codable, CaseIterable, Identifiable {
 	case float
 	case float3
 	case float4
@@ -38,6 +38,8 @@ enum NodeValueType: String, Codable {
 			}
 		}
 	}
+	
+	var id: String { self.rawValue }
 }
 
 struct NodeValue: Codable, Equatable {

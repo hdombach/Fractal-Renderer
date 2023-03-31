@@ -6,7 +6,7 @@ namespace node {
 	}
 	
 	void subtract(thread float *out1, float in1, float in2) {
-		*out1 = in1 + in2;
+		*out1 = in1 - in2;
 	}
 	
 	void multiply(thread float *out1, float in1, float in2) {
@@ -47,6 +47,26 @@ namespace node {
 		*out = ::abs(in);
 	}
 	
+	void mod(thread float *out, float in1, float in2) {
+		*out = fmod(in1, in2);
+	}
+	
+	void exp(thread float *out, float base, float exponent) {
+		*out = metal::exp(base * log(exponent));
+	}
+	
+	void log(thread float *out, float base, float value) {
+		*out = metal::log(value) / metal::log(base);
+	}
+	
+	void nMin(thread float *out, float in1, float in2) {
+		*out = min(in1, in2);
+	}
+	
+	void nMax(thread float *out, float in1, float in2) {
+		*out = max(in1, in2);
+	}
+	
 	void vectorAdd(thread float3 *out, float3 in1, float3 in2) {
 		*out = in1 + in2;
 	}
@@ -57,6 +77,10 @@ namespace node {
 	
 	void vectorScale(thread float3 *out, float3 in, float scale) {
 		*out = in * scale;
+	}
+	
+	void vectorMod(thread float3 *out, float3 in, float3 in2) {
+		*out = fmod(in, in2);
 	}
 	
 	void color(thread float3 *out, float3 in) {
@@ -251,6 +275,29 @@ namespace node {
 		*out = result;
 	}
 	
+	void juliaSet(thread float *out, float x, float y, float c, float d, float power, float power2, float quality) {
+		float i = 0;
+		float2 x0;
+		float2 x1 = float2(x, y);
+		while (quality > i) {
+			x0 = x1;
+			float t = atan(x0.y / x0.x);
+			if (x0.x == 0) {
+				t = 0;
+			} else if (x0.x < 0) {
+				t += 3.1415926;
+			}
+			float r = sqrt(x0.x * x0.x + x0.y * x0.y);
+			x1.x = pow(r, power) * cos(power * t) + pow(r, power2) * cos(power2 * t) + c;
+			x1.y = pow(r, power) * sin(power * t) + pow(r, power2) * sin(power2 * t) + d;
+			if (x1.x * x1.x + x1.y * x1.y > 4) {
+				break;
+			}
+			i ++;
+		}
+		*out = i / quality;
+	}
+	
 	void mandelbulbDE(thread float *distance, thread float3 *orbit, thread float *orbitLife, float3 pos, float power, float iterations, float bailout) {
 		RayMarchingSettings settings;
 		settings.mandelbulbPower = power;
@@ -267,9 +314,87 @@ namespace node {
 	}
 	
 	void boxDE(thread float *distance, float3 pos, float3 c, float3 b) {
-		float3 q = metal::abs(pos) - b - c;
-		//float3 q = float3(metal::abs(pos.x), metal::abs(pos.y), metal::abs(pos.z)) - b - c;
+		float3 q = metal::abs(pos - c) - b;
+		//float3 q = float3(metal::abs(pos.x), metal::abs(pos.y), metal::abs(pos.z)) - b;
 		*distance = length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+	}
+	
+	//https://www.shadertoy.com/view/3tsyzl
+	void juliaDE(thread float *distance, thread float *orbitLive, float3 p, float iterations, float traps) {
+		float4 z = float4( p, 0.0 );
+		float dz2 = 1.0;
+		float m2  = 0.0;
+		float n   = 0.0;
+		float o   = 1e10;
+		
+		for( int i=0; i<iterations; i++ )
+		{
+			// z' = 3z² -> |z'|² = 9|z²|²
+			dz2 *= 9.0*qLength2(qSquare(z));
+			
+			// z = z³ + c
+			z = qCube( z ) + float4(-2,6,15,-6)/22.0;
+			
+			// stop under divergence
+			m2 = qLength2(z);
+
+			// orbit trapping : https://iquilezles.org/www/articles/orbittraps3d/orbittraps3d.htm
+			if (traps == 1) {
+				o = min( o, length(z.xz-float2(0.45,0.55))-0.1 );
+			}
+			
+			// exit condition
+			if( m2>256.0 ) break;
+			n += 1.0;
+		}
+	   
+		// sdf(z) = log|z|·|z|/|dz| : https://iquilezles.org/www/articles/distancefractals/distancefractals.htm
+		float d = 0.25*metal::log(m2)*sqrt(m2/dz2);
+		
+		if (traps == 1) {
+			d = min(o,d);
+		}
+		
+		*distance = d;
+		*orbitLive = n;
+	}
+	
+	void sphereFold(thread float3 *outP, thread float *outD, float3 pos, float d) {
+		float fixedRadius2 = 2.0;
+		float minRadius2 = 0.5;
+		
+		float r2 = dot(pos, pos);
+		if (r2 < minRadius2) {
+			float temp = (fixedRadius2 / minRadius2);
+			*outP = pos * temp;
+			*outD = d * temp;
+		} else if (r2 < fixedRadius2) {
+			float temp = fixedRadius2 / r2;
+			*outP = pos * temp;
+			*outD = d * temp;
+		}
+	}
+	
+	void boxFold(thread float3 *outP, float3 pos) {
+		float limit = 1;
+		*outP = clamp(pos, -limit, limit) * 2 - pos;
+	}
+	
+	//http://blog.hvidtfeldts.net/index.php/2011/11/distance-estimated-3d-fractals-vi-the-mandelbox/
+	void mandelboxDE(thread float *distance, thread float3 *orbit, float3 pos, float iterations) {
+		float3 offset = pos;
+		float dr = 1.0;
+		float scale = 2.0;
+		for (int n = 0; n < iterations; n++) {
+			boxFold(&pos, pos);
+			sphereFold(&pos, &dr, pos, dr);
+			
+			pos = scale * pos + offset;
+			dr = dr * metal::abs(scale) + 1.0;
+		}
+		float r = length(pos);
+		*distance = r / metal::abs(dr);
+		*orbit = pos;
 	}
 	
 	void unionNode(thread float *out, float a, float b) {

@@ -28,7 +28,7 @@ func SphereDENode() -> Node {
 	result.functionName = "sphereDE"
 	result.color = .nodeDE
 	
-	result.inputs = [NodeFloat3(0, 0, 0, name: "Position"), NodeFloat3(0, 0, 0, name: "Center"), NodeFloat(0, name: "Radius")]
+	result.inputs = [NodeFloat3(0, 0, 0, name: "Position"), NodeFloat3(0, 0, 0, name: "Center"), NodeFloat(1, name: "Radius")]
 	result.outputs = [NodeFloat(0, name: "Distance")]
 	
 	return result
@@ -41,8 +41,37 @@ func BoxDENode() -> Node {
 	result.functionName = "boxDE"
 	result.color = .nodeDE
 	
-	result.inputs = [NodeFloat3("position"), NodeFloat3("Center"), NodeFloat3("Size")]
+	result.inputs = [NodeFloat3("position"), NodeFloat3("Center"), NodeFloat3(Float3(1), name: "Size")]
 	result.outputs = [NodeFloat("Distance")]
+	
+	return result
+}
+
+func juliaDENode() -> Node {
+	var result = Node()
+	result.type = .juliaDE
+	
+	result.name = "Julia DE"
+	result.functionName = "juliaDE"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeFloat("Iterations"), NodeFloat("Traps")]
+	result.outputs = [NodeFloat("Distance"), NodeFloat("Orbit Life")]
+	
+	return result
+}
+
+func mandelboxDENode() -> Node {
+	var result = Node()
+	result.type = .mandelboxDE
+	
+	result.name = "Mandelbox DE"
+	result.functionName = "mandelboxDE"
+	result.color = .nodeDE
+	
+	result.inputs = [NodeFloat3("Position"), NodeFloat(20, name: "Iterations")]
+	result.outputs = [NodeFloat("Distance"), NodeFloat3("Orbit")]
+	
 	
 	return result
 }

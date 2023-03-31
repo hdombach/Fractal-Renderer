@@ -1,0 +1,46 @@
+static constant int channelsLength = 8;
+
+struct Channels {
+	float channels[channelsLength];
+	Channels() {
+		for (int i = 0; i < channelsLength; i++) {
+			channels[i] = 0;
+		}
+	}
+	
+	float getAlpha() {
+		return channels[0];
+	}
+	void setAlpha(float newValue) {
+		channels[0] = newValue;
+	}
+	
+	float getDepth() {
+		return channels[1];
+	}
+	void setDepth(float newValue) {
+		channels[1] = newValue;
+	}
+	
+	float3 getEmission() {
+		return float3(channels[2], channels[3], channels[4]);
+	}
+	void setEmission(float3 newValue) {
+		channels[2] = newValue.x;
+		channels[3] = newValue.y;
+		channels[4] = newValue.z;
+	}
+	
+	float3 getLight(int index) {
+		return float3(channels[5 + index * 3], channels[6 + index * 3], channels[7 + index * 3]);
+	}
+	void setLight(int index, float3 newValue) {
+		channels[5 + index * 3] = newValue.x;
+		channels[6 + index * 3] = newValue.y;
+		channels[7 + index * 3] = newValue.z;
+	}
+	
+	int getLightsLength() {
+		return (channelsLength - 5) / 3;
+	}
+};

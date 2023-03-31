@@ -25,20 +25,20 @@ struct NodeEditor: View {
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
-				Button("􀏚") {
+				Button("Show Nodes") {
 					isShowingList.toggle()
 				}.padding(.leading)
 				Button("Delete") {
 					nodeContainer.delete(node: selected)
 					selected = nil
 				}
-				Button("􀊬") {
+				Button("+") {
 					zoom *= 1.1
 				}
-				Button("􀊭") {
+				Button("-") {
 					zoom *= 0.9
 				}
-				Button("􀅈") {
+				Button("Compile") {
 					//nodeContainer.compile()
 					do {
 						try nodeContainer.compile(library: document.graphics.library, viewState: document.viewState)
@@ -48,19 +48,18 @@ struct NodeEditor: View {
 				}
 				
 				Text(nodeContainer.compilerMessage).foregroundColor(nodeContainer.compilerCompleted ? .green : .red).padding([.trailing, .leading])
-			}
+			}.zIndex(100)
 			HStack {
 				if isShowingList {
 					ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: true, content: {
-						ForEach(Array(NodeType.allCases), id: \.self) { type in
-							NodeMenuItem(nodes: $nodeContainer.nodes, position: position, node: Node(type))
-						}
+						SideBarView(nodeContainer: $nodeContainer, position: $position, selected: selected)
 					}).frame(width: 150)
 					.padding(.bottom)
 					.zIndex(100)
 				}
 				NodeCanvas(nodeContainer: $nodeContainer, position: $position, selected: $selected, zoom: $zoom)
 					.padding([.bottom, .trailing])
+					.clipped()
 			}.padding(.leading)
 		}.onTapGesture {
 			selected = nil
@@ -70,11 +69,6 @@ struct NodeEditor: View {
 
 struct NodeEditor_Previews: PreviewProvider {
     static var previews: some View {
-		/*NodeEditor(nodeContainer: Binding.init(get: {
-			Engine.Settings.nodeContainer
-		}, set: { (newValue) in
-			Engine.Settings.nodeContainer = newValue
-		}))*/
-		Text("Hi")
+		NodeEditor(nodeContainer: Binding.constant(NodeContainer.init()), document: Document.init())
     }
 }

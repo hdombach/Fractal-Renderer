@@ -165,3 +165,62 @@ func MapNode() -> Node {
 	
 	return result
 }
+
+func ModNode() -> Node {
+	var result = Node()
+	result.type = .mod
+	result.name = "Modulo"
+	result.functionName = "mod"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Value"), NodeFloat(1, name: "Value")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}
+func ExpNode() -> Node {
+	var result = Node()
+	result.type = .exp
+	result.name = "Exponent"
+	result.functionName = "exp"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Base"), NodeFloat("Exponent")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}
+
+func LogNode() -> Node {
+	var result = Node()
+	result.type = .log
+	result.name = "Log"
+	result.functionName = "log"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("Base"), NodeFloat("Value")]
+	result.outputs = [NodeFloat("Value")]
+	return result
+}
+
+func MinNode() -> Node {
+	var result = Node()
+	result.type = .min
+	result.name = "Min"
+	result.functionName = "nMin"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("value"), NodeFloat("value")]
+	result.outputs = [NodeFloat("value")]
+	return result
+}
+
+func MaxNode() -> Node {
+	var result = Node()
+	result.type = .max
+	result.name = "Max"
+	result.functionName = "nMax"
+	result.color = .nodeMath
+	
+	result.inputs = [NodeFloat("value"), NodeFloat("value")]
+	result.outputs = [NodeFloat("value")]
+	return result
+}

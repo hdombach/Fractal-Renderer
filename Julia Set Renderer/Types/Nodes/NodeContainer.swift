@@ -113,10 +113,13 @@ struct NodeContainer: Codable {
 	//returns the height of a node
 	func getHeight(nodeAddress: NodeAddress) -> Int {
 		if let node = self[nodeAddress] {
-			var height = node.outputs.count + 2
+			if node.type == .colorRamp {
+				return 4
+			}
+			var height = node.outputRange.count + 2
 			
-			for value in node.inputs {
-				height += value.type.length
+			for index in node.inputRange {
+				height += node[index]!.type.length
 			}
 			
 			return height
@@ -126,22 +129,38 @@ struct NodeContainer: Codable {
 		}
 	}
 	
+	func getFrame(nodeAddress: NodeAddress) -> CGRect {
+		let node = self[nodeAddress]
+		let size = CGSize(width: nodeWidth, height: getHeight(nodeAddress: nodeAddress).cgfloat * gridSize)
+		return CGRect(origin: (node?.position ?? CGPoint()) - CGPoint(x: size.width / 2, y: size.height / 2), size: size)
+	}
+	
+	func getIntersectedNode(point: CGPoint) -> NodeAddress? {
+		for node in nodes {
+			let address = createNodeAddress(node: node)
+			if getFrame(nodeAddress: address).contains(point) {
+				return address
+			}
+		}
+		return nil
+	}
+	
 	func getPosition(value: NodeValueAddress) -> CGPoint {
 		if let node = self[value.nodeAddress()] {
 			//should anchor view at top left
 			var point = node.position - CGPoint(x: nodeWidth / 2, y: CGFloat(getHeight(nodeAddress: value.nodeAddress())) * gridSize / 2)
 			//starts at 1 to include the banner at top
 			var viewIndex: Float = 1
-			if value.valueIndex < node.outputs.count {
+			if node.outputRange.contains(value.valueIndex) {
 				viewIndex += value.valueIndex.float + 0.5
 				point.x += nodeWidth
 			} else {
-				viewIndex += node.outputs.count.float
-				if value.valueIndex >= node.outputs.count {
-					for c in 0...(value.valueIndex - node.outputs.count) {
-						viewIndex += node.inputs[c].type.length.float
+				viewIndex += node.outputRange.count.float
+				if node.inputRange.contains(value.valueIndex) {
+					for c in node.inputRange.first!...value.valueIndex {
+						viewIndex += node[c]!.type.length.float
 					}
-					viewIndex -= node.inputs[value.valueIndex - node.outputs.count].type.length.float / 2
+					viewIndex -= node[value.valueIndex]!.type.length.float / 2
 				}
 			}
 			
@@ -163,8 +182,8 @@ struct NodeContainer: Codable {
 		for nodeIndex in 0...nodes.count - 1 {
 			let node = nodes[nodeIndex]
 			if activePath?.beggining.id != node.id {
-				if node.inputs.count > 0 {
-					for valueIndex in node.outputs.count...node.outputs.count + node.inputs.count - 1 {
+				if !node.inputRange.isEmpty {
+					for valueIndex in node.inputRange {
 						//let value = node.inputs[valueIndex]
 						if testValue(valueAddress: createValueAddress(node: node, valueIndex: valueIndex)) {
 							let begging = activePath!.beggining

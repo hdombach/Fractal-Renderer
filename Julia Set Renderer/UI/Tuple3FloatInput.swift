@@ -21,9 +21,9 @@ struct Tuple3FloatInput: View {
 				Text(name!)
 			}
 			VStack(spacing: -1) {
-				NumberInput(value: $value.x.nsNumber, step: step, min: min, max: max, hasPadding: false)
-				NumberInput(value: $value.y.nsNumber, step: step, min: min, max: max, hasPadding: false)
-				NumberInput(value: $value.z.nsNumber, step: step, min: min, max: max, hasPadding: false)
+                NumberInput("", value: $value.x, format: .number)
+                NumberInput("", value: $value.y, format: .number)
+                NumberInput("", value: $value.z, format: .number)
 			}.cornerRadius(5.0)
 			.overlay(RoundedRectangle(cornerRadius: 5)
 						.stroke(Color.controlHighlightColor))
@@ -44,10 +44,10 @@ struct Tuple4FloatInput: View {
 				Text(name!)
 			}
 			VStack(spacing: -1) {
-				NumberInput(value: $value.x.nsNumber, step: step, min: min, max: max, hasPadding: false)
-				NumberInput(value: $value.y.nsNumber, step: step, min: min, max: max, hasPadding: false)
-				NumberInput(value: $value.z.nsNumber, step: step, min: min, max: max, hasPadding: false)
-				NumberInput(value: $value.w.nsNumber, step: step, min: min, max: max, hasPadding: false)
+                NumberInput("", value: $value.x, format: .number)
+                NumberInput("", value: $value.y, format: .number)
+                NumberInput("", value: $value.z, format: .number)
+                NumberInput("", value: $value.w, format: .number)
 			}.cornerRadius(5.0)
 			.overlay(RoundedRectangle(cornerRadius: 5)
 						.stroke(Color.controlHighlightColor))

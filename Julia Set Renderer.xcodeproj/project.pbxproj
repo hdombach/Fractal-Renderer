@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,9 +13,8 @@
 		DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */; };
 		DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE167C47256B4A52009C37D8 /* LightPicker.swift */; };
 		DE1E40A724CB7FC5003B198F /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E40A624CB7FC5003B198F /* Keys.swift */; };
-		DE212FF5258D59580050AC95 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE212FF4258D59580050AC95 /* Number.swift */; };
 		DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE263C6F26277DA700CA346C /* RenderPassManager.swift */; };
-		DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE304FC924DB574700125844 /* ImageSettings.swift */; };
+		DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3922572644DEBF00D38B03 /* IterateNodeView.swift */; };
 		DE4523D22613917300125AE6 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4523D12613917300125AE6 /* Document.swift */; };
 		DE45D770256CB1AB0040FFA5 /* ColorPickerPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */; };
 		DE528A582626761600F88EC3 /* Graphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE528A572626761600F88EC3 /* Graphics.swift */; };
@@ -44,14 +43,15 @@
 		DE8B5C4F25A022F40092BAC5 /* NodePathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */; };
 		DE8F06E624DB65E1004D2687 /* RenderBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E524DB65E1004D2687 /* RenderBox.swift */; };
 		DE8F06E824DB6E6E004D2687 /* CameraSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */; };
-		DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8F06E924DC2348004D2687 /* NumberInput.swift */; };
 		DE91B8E02630C9990096A099 /* DESettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8DF2630C9990096A099 /* DESettings.swift */; };
 		DE91B8E4263107DF0096A099 /* DENodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE91B8E3263107DF0096A099 /* DENodes.swift */; };
 		DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */; };
 		DE91B8F42631133B0096A099 /* MainDE.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE91B8F32631133B0096A099 /* MainDE.txt */; };
 		DE942D2D25F968BA00CAF9CA /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE942D2C25F968BA00CAF9CA /* Camera.swift */; };
+		DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE9B7254266715BF00290677 /* SkyBoxLight.txt */; };
 		DE9C2A5C25C3B22E00D932A6 /* VectorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */; };
 		DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */; };
+		DE9DDE72275E421000655258 /* NumberInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9DDE71275E421000655258 /* NumberInput.swift */; };
 		DE9EF7FF259555BF007F2BA3 /* Voxel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF7FE259555BF007F2BA3 /* Voxel.swift */; };
 		DE9EF80725955614007F2BA3 /* VoxelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80625955614007F2BA3 /* VoxelContainer.swift */; };
 		DE9EF80D25955D93007F2BA3 /* ThreadInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */; };
@@ -62,6 +62,7 @@
 		DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB9703625B4EC2E00386EEA /* NodeContainer.swift */; };
 		DEBE4E0F254235CE0060FED0 /* BufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBE4E0E254235CE0060FED0 /* BufferTests.swift */; };
 		DEC2BD5024B2733200BFE671 /* matrixTransformations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */; };
+		DEC450412659D46200F76B80 /* SideBarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC450402659D46200F76B80 /* SideBarViews.swift */; };
 		DEC8CDDA24ADFC9A00DB5701 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */; };
 		DEC8CDDC24ADFC9A00DB5701 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */; };
 		DEC8CDDF24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC8CDDD24ADFC9A00DB5701 /* Julia_Set_Renderer.xcdatamodeld */; };
@@ -73,13 +74,18 @@
 		DEC9120A259E2C74002158C9 /* NodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91209259E2C74002158C9 /* NodeEditor.swift */; };
 		DEC91210259E47D5002158C9 /* IONodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC9120F259E47D5002158C9 /* IONodes.swift */; };
 		DEC91214259E4871002158C9 /* MathNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC91213259E4871002158C9 /* MathNodes.swift */; };
+		DEC9F58428D1E6D7009D7A40 /* final.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58328D1E6D7009D7A40 /* final.png */; };
+		DEC9F58628D1E6EE009D7A40 /* final_good.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58528D1E6EE009D7A40 /* final_good.png */; };
+		DEC9F58828D1E70F009D7A40 /* final green bright.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58728D1E70F009D7A40 /* final green bright.png */; };
+		DEC9F58A28D1E72E009D7A40 /* OldPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = DEC9F58928D1E72E009D7A40 /* OldPaper.png */; };
 		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
 		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
+		DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEA5AA927404FF0001BD052 /* NodeSource.swift */; };
 		DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEC532E2626127B001F7A76 /* ViewState.swift */; };
 		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
 		DEF9C68724EF1CFC00189F36 /* PatternSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */; };
 		DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */ = {isa = PBXBuildFile; fileRef = DE942D5D25F9874000CAF9CA /* Ray.txt */; };
-		DEF9F0B025FA94C600D89043 /* ColorChannels.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F04425F98BA600D89043 /* ColorChannels.txt */; };
+		DEF9F0B025FA94C600D89043 /* Channels.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F04425F98BA600D89043 /* Channels.txt */; };
 		DEF9F0B125FA94C600D89043 /* Camera.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05025F9952E00D89043 /* Camera.txt */; };
 		DEF9F0B225FA94C600D89043 /* Material.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05625F9BCC100D89043 /* Material.txt */; };
 		DEF9F0B325FA94C600D89043 /* Settings.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEF9F05A25F9BD9700D89043 /* Settings.txt */; };
@@ -112,9 +118,8 @@
 		DE167C43256B49CC009C37D8 /* SkyBoxSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyBoxSettings.swift; sourceTree = "<group>"; };
 		DE167C47256B4A52009C37D8 /* LightPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightPicker.swift; sourceTree = "<group>"; };
 		DE1E40A624CB7FC5003B198F /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
-		DE212FF4258D59580050AC95 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		DE263C6F26277DA700CA346C /* RenderPassManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPassManager.swift; sourceTree = "<group>"; };
-		DE304FC924DB574700125844 /* ImageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSettings.swift; sourceTree = "<group>"; };
+		DE3922572644DEBF00D38B03 /* IterateNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IterateNodeView.swift; sourceTree = "<group>"; };
 		DE4523D12613917300125AE6 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPro.swift; sourceTree = "<group>"; };
 		DE528A572626761600F88EC3 /* Graphics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphics.swift; sourceTree = "<group>"; };
@@ -144,15 +149,16 @@
 		DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePathView.swift; sourceTree = "<group>"; };
 		DE8F06E524DB65E1004D2687 /* RenderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderBox.swift; sourceTree = "<group>"; };
 		DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettings.swift; sourceTree = "<group>"; };
-		DE8F06E924DC2348004D2687 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberInput.swift; sourceTree = "<group>"; };
 		DE91B8DF2630C9990096A099 /* DESettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DESettings.swift; sourceTree = "<group>"; };
 		DE91B8E3263107DF0096A099 /* DENodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DENodes.swift; sourceTree = "<group>"; };
 		DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RayMarchInfo.txt; sourceTree = "<group>"; };
 		DE91B8F32631133B0096A099 /* MainDE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = MainDE.txt; sourceTree = "<group>"; };
 		DE942D2C25F968BA00CAF9CA /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		DE942D5D25F9874000CAF9CA /* Ray.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ray.txt; sourceTree = "<group>"; };
+		DE9B7254266715BF00290677 /* SkyBoxLight.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SkyBoxLight.txt; sourceTree = "<group>"; };
 		DE9C2A5B25C3B22E00D932A6 /* VectorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorNodes.swift; sourceTree = "<group>"; };
 		DE9C2A6325C4B39300D932A6 /* TextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureNodes.swift; sourceTree = "<group>"; };
+		DE9DDE71275E421000655258 /* NumberInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NumberInput.swift; path = "Julia Set Renderer/UI/NumberInput.swift"; sourceTree = SOURCE_ROOT; };
 		DE9EF7FE259555BF007F2BA3 /* Voxel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Voxel.swift; sourceTree = "<group>"; };
 		DE9EF80625955614007F2BA3 /* VoxelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxelContainer.swift; sourceTree = "<group>"; };
 		DE9EF80C25955D93007F2BA3 /* ThreadInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadInternal.swift; sourceTree = "<group>"; };
@@ -164,6 +170,7 @@
 		DEB9703625B4EC2E00386EEA /* NodeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeContainer.swift; sourceTree = "<group>"; };
 		DEBE4E0E254235CE0060FED0 /* BufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferTests.swift; sourceTree = "<group>"; };
 		DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTransformations.swift; sourceTree = "<group>"; };
+		DEC450402659D46200F76B80 /* SideBarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViews.swift; sourceTree = "<group>"; };
 		DEC8CDD624ADFC9A00DB5701 /* Julia Set Renderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Julia Set Renderer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEC8CDD924ADFC9A00DB5701 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -178,15 +185,20 @@
 		DEC91209259E2C74002158C9 /* NodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeEditor.swift; sourceTree = "<group>"; };
 		DEC9120F259E47D5002158C9 /* IONodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IONodes.swift; sourceTree = "<group>"; };
 		DEC91213259E4871002158C9 /* MathNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathNodes.swift; sourceTree = "<group>"; };
+		DEC9F58328D1E6D7009D7A40 /* final.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = final.png; sourceTree = "<group>"; };
+		DEC9F58528D1E6EE009D7A40 /* final_good.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = final_good.png; sourceTree = "<group>"; };
+		DEC9F58728D1E70F009D7A40 /* final green bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "final green bright.png"; sourceTree = "<group>"; };
+		DEC9F58928D1E72E009D7A40 /* OldPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OldPaper.png; sourceTree = "<group>"; };
 		DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInput.swift; sourceTree = "<group>"; };
 		DED8F76025C631C900ABFBCC /* ColorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNodes.swift; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Types.txt; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = MathContainer.txt; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = RayMarching.txt; sourceTree = "<group>"; };
+		DEEA5AA927404FF0001BD052 /* NodeSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSource.swift; sourceTree = "<group>"; };
 		DEEC532E2626127B001F7A76 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		DEF0B2D225A007A9002BB7A1 /* NodePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePath.swift; sourceTree = "<group>"; };
 		DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternSettings.swift; sourceTree = "<group>"; };
-		DEF9F04425F98BA600D89043 /* ColorChannels.txt */ = {isa = PBXFileReference; explicitFileType = text; path = ColorChannels.txt; sourceTree = "<group>"; };
+		DEF9F04425F98BA600D89043 /* Channels.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Channels.txt; sourceTree = "<group>"; };
 		DEF9F04A25F98C9600D89043 /* Math.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Math.txt; sourceTree = "<group>"; };
 		DEF9F05025F9952E00D89043 /* Camera.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Camera.txt; sourceTree = "<group>"; };
 		DEF9F05625F9BCC100D89043 /* Material.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Material.txt; sourceTree = "<group>"; };
@@ -237,7 +249,6 @@
 				DE05617724EDD2BB0058925E /* ComplexNumbers.swift */,
 				DEC2BD4F24B2733200BFE671 /* matrixTransformations.swift */,
 				DE8237DE24AE8234000FA948 /* Other.swift */,
-				DE212FF4258D59580050AC95 /* Number.swift */,
 				DE5C04BC257877E100F5DDCD /* SwiftRayMarcher.swift */,
 				DE68A69A259D6F0900D66457 /* ColorExtensions.swift */,
 				DE942D2C25F968BA00CAF9CA /* Camera.swift */,
@@ -248,10 +259,10 @@
 		DE304FC724DB567600125844 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				DE9DDE71275E421000655258 /* NumberInput.swift */,
 				DE85F09C259CDE9A00FF475F /* Nodes */,
 				DEC8CDDB24ADFC9A00DB5701 /* ContentView.swift */,
 				DE8F06E524DB65E1004D2687 /* RenderBox.swift */,
-				DE304FC924DB574700125844 /* ImageSettings.swift */,
 				DE8F06E724DB6E6E004D2687 /* CameraSettings.swift */,
 				DEF9C68624EF1CFC00189F36 /* PatternSettings.swift */,
 				DE85F096259CDDE300FF475F /* MaterialSettings.swift */,
@@ -261,7 +272,6 @@
 				DE167C47256B4A52009C37D8 /* LightPicker.swift */,
 				DE45D76F256CB1AB0040FFA5 /* ColorPickerPro.swift */,
 				DE62BD352579C26D00E67351 /* ChannelPicker.swift */,
-				DE8F06E924DC2348004D2687 /* NumberInput.swift */,
 				DE56BE52258EE46B00F4007D /* Tuple3FloatInput.swift */,
 				DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */,
 				DE91B8DF2630C9990096A099 /* DESettings.swift */,
@@ -313,10 +323,12 @@
 			isa = PBXGroup;
 			children = (
 				DE85F09D259CDEB600FF475F /* NodeView.swift */,
+				DE3922572644DEBF00D38B03 /* IterateNodeView.swift */,
 				DE68A6A2259D843A00D66457 /* NodeMenuItem.swift */,
 				DEC91209259E2C74002158C9 /* NodeEditor.swift */,
 				DE68A69E259D7D2800D66457 /* NodeCanvas.swift */,
 				DE8B5C4E25A022F40092BAC5 /* NodePathView.swift */,
+				DEC450402659D46200F76B80 /* SideBarViews.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -336,6 +348,7 @@
 				DE8178E3262F753500999A56 /* FlowNodes.swift */,
 				DE91B8E3263107DF0096A099 /* DENodes.swift */,
 				DEF0B2D225A007A9002BB7A1 /* NodePath.swift */,
+				DEEA5AA927404FF0001BD052 /* NodeSource.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -344,13 +357,14 @@
 			isa = PBXGroup;
 			children = (
 				DE942D5D25F9874000CAF9CA /* Ray.txt */,
-				DEF9F04425F98BA600D89043 /* ColorChannels.txt */,
+				DEF9F04425F98BA600D89043 /* Channels.txt */,
 				DEF9F05025F9952E00D89043 /* Camera.txt */,
 				DEF9F05625F9BCC100D89043 /* Material.txt */,
 				DEF9F05A25F9BD9700D89043 /* Settings.txt */,
 				DEF9F07125F9BFE000D89043 /* ResultInfo.txt */,
 				DEF9F07B25F9C14700D89043 /* Voxel.txt */,
 				DE91B8EF26310F7B0096A099 /* RayMarchInfo.txt */,
+				DE9B7254266715BF00290677 /* SkyBoxLight.txt */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -430,6 +444,10 @@
 			isa = PBXGroup;
 			children = (
 				DEC8CDE324ADFC9E00DB5701 /* Preview Assets.xcassets */,
+				DEC9F58728D1E70F009D7A40 /* final green bright.png */,
+				DEC9F58328D1E6D7009D7A40 /* final.png */,
+				DEC9F58528D1E6EE009D7A40 /* final_good.png */,
+				DEC9F58928D1E72E009D7A40 /* OldPaper.png */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -493,7 +511,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1160;
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "Hezekiah Dombach";
 				TargetAttributes = {
 					DE05617E24EDDB610058925E = {
@@ -507,7 +525,7 @@
 				};
 			};
 			buildConfigurationList = DEC8CDD124ADFC9900DB5701 /* Build configuration list for PBXProject "Julia Set Renderer" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -540,7 +558,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEF9F0AF25FA94C600D89043 /* Ray.txt in Resources */,
-				DEF9F0B025FA94C600D89043 /* ColorChannels.txt in Resources */,
+				DEF9F0B025FA94C600D89043 /* Channels.txt in Resources */,
+				DEC9F58828D1E70F009D7A40 /* final green bright.png in Resources */,
 				DEF9F0B125FA94C600D89043 /* Camera.txt in Resources */,
 				DEF9F0B225FA94C600D89043 /* Material.txt in Resources */,
 				DEF9F0B325FA94C600D89043 /* Settings.txt in Resources */,
@@ -550,7 +569,9 @@
 				DEF9F0B725FA94C600D89043 /* NodeFunctions.txt in Resources */,
 				DEF9F0B825FA94C600D89043 /* DE.txt in Resources */,
 				DE91B8F42631133B0096A099 /* MainDE.txt in Resources */,
+				DEC9F58628D1E6EE009D7A40 /* final_good.png in Resources */,
 				DEF9F0B925FA94C600D89043 /* VoxelMath.txt in Resources */,
+				DEC9F58A28D1E72E009D7A40 /* OldPaper.png in Resources */,
 				DEF9F0BA25FA94C600D89043 /* RayMarcher.txt in Resources */,
 				DE91B8F026310F7B0096A099 /* RayMarchInfo.txt in Resources */,
 				DEF9F0BB25FA94C600D89043 /* Shaders.txt in Resources */,
@@ -560,6 +581,8 @@
 				DEA8931924AFBDE9008F5D78 /* sun.png in Resources */,
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
+				DEC9F58428D1E6D7009D7A40 /* final.png in Resources */,
+				DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,7 +627,10 @@
 				DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */,
 				DE62BD362579C26D00E67351 /* ChannelPicker.swift in Sources */,
 				DE85F0A7259CEA5600FF475F /* NodeValue.swift in Sources */,
+				DE9DDE72275E421000655258 /* NumberInput.swift in Sources */,
+				DE3922582644DEBF00D38B03 /* IterateNodeView.swift in Sources */,
 				DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */,
+				DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */,
 				DE8237D924AE20BF000FA948 /* Renderer.swift in Sources */,
 				DE62BD2E2579B68F00E67351 /* LightInfo.swift in Sources */,
 				DE91B8E02630C9990096A099 /* DESettings.swift in Sources */,
@@ -622,16 +648,14 @@
 				DE85F097259CDDE300FF475F /* MaterialSettings.swift in Sources */,
 				DE167C44256B49CC009C37D8 /* SkyBoxSettings.swift in Sources */,
 				DEC91214259E4871002158C9 /* MathNodes.swift in Sources */,
-				DE212FF5258D59580050AC95 /* Number.swift in Sources */,
 				DE85F09E259CDEB600FF475F /* NodeView.swift in Sources */,
 				DE62BD3A2579C3F300E67351 /* ChannelSettings.swift in Sources */,
 				DE9C2A6425C4B39300D932A6 /* TextureNodes.swift in Sources */,
 				DE167C48256B4A52009C37D8 /* LightPicker.swift in Sources */,
-				DE8F06EA24DC2348004D2687 /* NumberInput.swift in Sources */,
 				DEABF34725717E440036EB73 /* MandelbulbSettings.swift in Sources */,
 				DE263C7026277DA700CA346C /* RenderPassManager.swift in Sources */,
-				DE304FCA24DB574700125844 /* ImageSettings.swift in Sources */,
 				DEB9703725B4EC2E00386EEA /* NodeContainer.swift in Sources */,
+				DEC450412659D46200F76B80 /* SideBarViews.swift in Sources */,
 				DE62BD322579B6A900E67351 /* ChannelInfo.swift in Sources */,
 				DEC91210259E47D5002158C9 /* IONodes.swift in Sources */,
 				DE5C04BD257877E100F5DDCD /* SwiftRayMarcher.swift in Sources */,
@@ -671,6 +695,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				INFOPLIST_FILE = "Julia Set RendererTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -691,6 +716,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3RP2D92J6D;
 				INFOPLIST_FILE = "Julia Set RendererTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -739,6 +765,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -756,7 +783,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -800,6 +827,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -811,7 +839,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -827,10 +855,12 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Julia Set Renderer/Julia_Set_Renderer.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
-				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Julia Set Renderer/Info.plist";
@@ -838,10 +868,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MTLLINKER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -855,10 +886,12 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Julia Set Renderer/Julia_Set_Renderer.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "Julia\\ Set\\ Renderer/Preview\\ Content";
-				DEVELOPMENT_TEAM = 3RP2D92J6D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Julia Set Renderer/Info.plist";
@@ -866,10 +899,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MTLLINKER_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "hezekiahdombach.Julia-Set-Renderer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 			};

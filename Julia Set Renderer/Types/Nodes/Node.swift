@@ -18,6 +18,8 @@ enum NodeType: String, Codable, CaseIterable {
 	case color
 	case material
 	case de
+	case float3
+	case float
 	
 	//math nodes
 	case add
@@ -32,6 +34,11 @@ enum NodeType: String, Codable, CaseIterable {
 	case cos
 	case abs
 	case map
+	case mod
+	case exp
+	case log
+	case min
+	case max
 	
 	//vector nodes
 	case vectorAdd
@@ -42,10 +49,12 @@ enum NodeType: String, Codable, CaseIterable {
 	case crossProduct
 	case vectorMultiply
 	case vectorClamp
+	case vectorMod
 	
 	//Texture Nodes
 	case perlin
 	case perlin3
+	case juliaSet
 	
 	//color
 	case colorBlend
@@ -53,11 +62,14 @@ enum NodeType: String, Codable, CaseIterable {
 	
 	//flow
 	case iterate
+	case iterateEnd
 	
 	//DE
 	case mandelbulbDE
 	case sphereDE
 	case boxDE
+	case juliaDE
+	case mandelboxDE
 	case intersect
 	case union
 	case difference
@@ -74,6 +86,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.material: MaterialNode,
 	.color: ColorNode,
 	.de: DENode,
+	.float3: Float3Node,
+	.float: FloatNode,
 	.add: AddNode,
 	.subtract: SubtractNode,
 	.multiply: MultiplyNode,
@@ -86,6 +100,11 @@ let allNodes: [NodeType: () -> Node] = [
 	.cos: CosNode,
 	.abs: AbsNode,
 	.map: MapNode,
+	.mod: ModNode,
+	.exp: ExpNode,
+	.log: LogNode,
+	.min: MinNode,
+	.max: MaxNode,
 	.vectorAdd: VectorAddNode,
 	.vectorLength: VectorLengthNode,
 	.vectorScale: VectorScaleNode,
@@ -94,14 +113,18 @@ let allNodes: [NodeType: () -> Node] = [
 	.crossProduct: CrossProductNode,
 	.vectorMultiply: VectorMultiplyNode,
 	.vectorClamp: VectorClampNode,
+	.vectorMod: VectorModNode,
 	.perlin: PerlinNode,
 	.perlin3: Perlin3Node,
+	.juliaSet: JuliaSetNode,
 	.colorBlend: ColorBlendNode,
 	.colorRamp: ColorRampNode,
 	.iterate: IterateNode,
 	.mandelbulbDE: MandelbulbDENode,
 	.sphereDE: SphereDENode,
 	.boxDE: BoxDENode,
+	.juliaDE: juliaDENode,
+	.mandelboxDE: mandelboxDENode,
 	.intersect: IntersectNode,
 	.union: UnionNode,
 	.difference: DifferenceNode,
@@ -109,7 +132,8 @@ let allNodes: [NodeType: () -> Node] = [
 	.smoothUnion: SmoothUnionNode,
 	.smoothDifference: SmoothDifferenceNode,
 	.mirror: MirrorNode,
-	.rotate: RotateNode
+	.rotate: RotateNode,
+	.iterateEnd: IterateEndNode
 ]
 
 
@@ -207,8 +231,9 @@ struct Node: Codable, Equatable {
 		let id = lhs.id == rhs.id
 		let pos = lhs.position == rhs.position
 		let inputs = lhs.inputs == rhs.inputs
+        let outputs = lhs.outputs == rhs.outputs
 		let comp = lhs._compareValues(lhs, rhs)
-		return id && pos && inputs && comp
+		return id && pos && inputs && comp && outputs
 		//return ((lhs.id == rhs.id) && (lhs.position == rhs.position)) && ((lhs.inputs == rhs.inputs) && lhs._compareValues(lhs, rhs))
 	}
 	

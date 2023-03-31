@@ -25,11 +25,14 @@ struct RenderBox: View {
 	func render() {
 		state.startRendering(samplesCount: self.samples)
 		
+		document.view.changeRenderMode(isManual: false)
+		
 		print("Started Rendering with camera: \(content.camera)")
 	}
 
 	func preview() {
 		state.stopRendering()
+		document.view.changeRenderMode(isManual: true)
 	}
 
     var body: some View {
@@ -50,15 +53,15 @@ struct RenderBox: View {
 			}
 			Spacer()
 			VStack {
-				NumberInput(value: $samples.nsNumber, step: 1.nsNumber.0, name: "Samples")
-				NumberInput(value: $content.kernelSize.y.nsNumber, step: 1.nsNumber.0, name: "Kernel groups", min: 0)
-				NumberInput(value: $content.kernelSize.x.nsNumber, step: 1.nsNumber.0, name: "Kernel group size", min: 0)
+                NumberInput("Samples", value: $samples, format: .number)
+                NumberInput("Kernel groups", value: $content.kernelSize.y, format: .number)
+                NumberInput("Kernel group size", value: $content.kernelSize.x, format: .number)
 				//max: Engine.MaxThreadsPerGroup
 				if (state.viewportMode == .depth) {
 					Tuple3FloatInput(value: $content.depthSettings)
 				}
-				NumberInput(value: $content.shadingSettings.x.nsNumber, step: 0.01.nsNumber.0, name: "Ambient Shading")
-				NumberInput(value: $content.shadingSettings.y.nsNumber, step: 0.1.nsNumber.0, name: "Angle Shading")
+                NumberInput("Ambient Shading", value: $content.shadingSettings.x, format: .number)
+                NumberInput("Angle Shading", value: $content.shadingSettings.y, format: .number)
 			}
 		}
 		.padding()

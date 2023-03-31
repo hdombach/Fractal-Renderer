@@ -146,7 +146,7 @@ struct ColorRampNodeView: View, Equatable {
 		get {
 			var stops: [Gradient.Stop] = []
 			for value in values {
-				stops.append(.init(color: value.color.color, location: value.position.cgFloat))
+				stops.append(.init(color: Color(value.color.cgColor), location: value.position.cgFloat))
 			}
 			return Gradient(stops: stops)
 		}
@@ -187,6 +187,7 @@ struct ColorRampNodeView: View, Equatable {
 							}
 						}.buttonStyle(PlainButtonStyle())
 						if let c = selectedPoint {
+                            NumberInput("", value: $values[c].position, format: .number)
 							ColorInput(value: $values[c].color)
 						}
 						Spacer()
@@ -230,107 +231,6 @@ struct ColorRampNodeView: View, Equatable {
 	}
 }
 
-struct NodeIterateView: View {
-	var nodeAddress: NodeAddress
-	
-	@Binding var nodeContainer: NodeContainer
-	
-	@Binding var selected: Node?
-	
-	@State var draggedPosition: CGPoint = .init()
-	
-	var gridSize: CGFloat {
-		get {
-			nodeContainer.gridSize
-		}
-	}
-	
-	var node: Node? {
-		get {
-			nodeContainer[nodeAddress]
-		}
-		
-		set {
-			nodeContainer[nodeAddress] = newValue
-		}
-	}
-	
-	var iterateEnd: Node? {
-		get {
-			if let address = node?.values as? NodeAddress {
-				let endNode = nodeContainer[address]
-				if (endNode?.values as? NodeAddress)?.id == node?.id {
-					return endNode
-				}
-			}
-			return nil
-		}
-	}
-	var endPoint: CGPoint? {
-		draggedPosition ?? iterateEnd?.position
-	}
-	
-	/*func createPathGesture() -> some Gesture {
-		DragGesture().onChanged({ (data) in
-			draggedPosition = node.position + CGPoint(x: data.translation.width, y: data.translation.height)
-		}).onEnded({ (data) in
-			draggedPosition = nil
-		})
-	}*/
-	
-	var body: some View {
-		if let node = node {
-			if let endPoint = endPoint {
-				Path { path in
-					let startPoint = node.position
-					
-					path.addLines([startPoint, endPoint])
-				}.stroke(Color.primary)
-			}
-			ZStack {
-				Color.controlBackgroundColor.opacity(0.6)
-				VStack(spacing: 0) {
-					
-					ZStack {
-						node.color.opacity(0.4)
-						Text(node.name)
-						HStack {
-							Spacer()
-							Circle().frame(width: nodeContainer.dotSize, height: nodeContainer.dotSize)
-						}
-					}.frame(height: gridSize)
-					if node.outputs.count > 0 {
-						ForEach(0..<node.outputs.count) { c in
-							
-							NodeOutputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c), nodeContainer: $nodeContainer)
-							
-						}.frame(alignment: Alignment.leading)
-					}
-					
-					if node.inputs.count > 0 {
-						ForEach(0..<node.inputs.count) { c in
-							NodeInputView(valueAddress: nodeContainer.createValueAddress(node: node, valueIndex: c + node.outputs.count), nodeContainer: $nodeContainer)
-							
-						}
-					}
-					Spacer()
-				}
-			}
-			.frame(width: nodeContainer.nodeWidth, height: gridSize * CGFloat(node.getHeight()), alignment: .center)
-			.overlay(
-				RoundedRectangle(cornerRadius: 10)
-					.stroke((selected != nil && selected!.id == node.id) ? Color.accentColor : Color.clear, lineWidth: 2)
-			)
-			.cornerRadius(10)
-			.shadow(radius: 5)
-			.position(node.position)
-			.onTapGesture {
-				selected = node
-			}
-		}
-	}
-}
-
 struct NodeOutputView: View {
 	var valueAddress: NodeValueAddress
 	@Binding var nodeContainer: NodeContainer
@@ -367,11 +267,13 @@ struct NodeOutputView: View {
 	var body: some View {
 		HStack {
 			Spacer()
-			Text(node.outputs[valueAddress.valueIndex].name)
-			
-			Circle()
-				.frame(width: dotSize, height: dotSize)
-				.gesture(createPathGesture(valueIndex: valueAddress.valueIndex))
+			Text(nodeContainer[valueAddress]?.name ?? "")
+            if let input = nodeContainer[valueAddress] {
+                Circle()
+                    .fill((nodeContainer[valueAddress]!.type.length == 3) ? Color.gray : Color.primary)
+                    .frame(width: dotSize, height: dotSize)
+                    .gesture(createPathGesture(valueIndex: valueAddress.valueIndex))
+            }
 		}.frame(height: gridSize, alignment: .center)
 	}
 }
@@ -419,19 +321,21 @@ struct NodeInputView: View {
 	var body: some View {
 		HStack(alignment: .center) {
 			Circle()
+				.fill(((nodeContainer[valueAddress]?.type.length) ?? 1 == 3) ? Color.gray : Color.primary)
 				.frame(width: dotSize, height: dotSize)
 				.gesture(deletePathGesture(valueIndex: valueAddress.valueIndex))
 				
 				
-			
-			NodeValueView(value: Binding.init(get: {
-				nodeContainer[valueAddress]!
-			}, set: { (newValue) in
-				nodeContainer[valueAddress] = newValue
-			}))
+            if (nodeContainer[valueAddress] != nil) {
+                NodeValueView(value: Binding.init(get: {
+                    nodeContainer[valueAddress]!
+                }, set: { (newValue) in
+                    nodeContainer[valueAddress] = newValue
+                }))
+            }
 			
 			Spacer()
-		}.frame(height: gridSize * CGFloat((nodeContainer[valueAddress]!.type.length)), alignment: .center)
+		}.frame(height: gridSize * CGFloat((nodeContainer[valueAddress]?.type.length ?? 1)), alignment: .center)
 	}
 }
 
@@ -441,11 +345,11 @@ struct NodeValueView: View {
 	var body: some View {
 		switch value.type {
 		case .float:
-			NumberInput(value: $value.float.nsNumber, name: value.name)
+            NumberInput(value.name, value: $value.float, format: .number)
 		case .float3:
 			Tuple3FloatInput(value: $value.float3, name: value.name)
 		case .int:
-			NumberInput(value: $value.int.nsNumber, name: value.name)
+            NumberInput(value.name, value: $value.int, format: .number)
 		case .color:
 			ColorInput(value: $value.float3, name: value.name)
 		case .float4:
@@ -456,7 +360,7 @@ struct NodeValueView: View {
 
 struct Node_Previews: PreviewProvider {
 	static var container = NodeContainer()
-	static var node = IterateNode()
+	static var node = ColorRampNode()
 	static var adress: NodeAddress!
 	
     static var previews: some View {

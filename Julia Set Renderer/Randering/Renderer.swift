@@ -11,8 +11,6 @@ import MetalKit
 //Updates the render window.
 class Renderer: NSObject, MTKViewDelegate {
 
-	var imageRatio: Float = 16 / 9
-
 	var squareMesh: Mesh!
 	
 	var exp: Float = 0
@@ -135,6 +133,8 @@ class Renderer: NSObject, MTKViewDelegate {
 			let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 			renderCommandEncoder?.setRenderPipelineState(pipeState)
 			
+			var imageRatio: Float = content.savedCamera.resolution.x / content.savedCamera.resolution.y
+			
 			renderCommandEncoder?.setVertexBuffer(squareMesh.vertexBuffer, offset: 0, index: 0)
 			renderCommandEncoder?.setVertexBytes(&screenRatio, length: Float.stride, index: 1)
 			renderCommandEncoder?.setVertexBytes(&imageRatio, length: Float.stride, index: 2)
@@ -153,6 +153,10 @@ class Renderer: NSObject, MTKViewDelegate {
 			info.randomSeed.x = UInt32.random(in: 0...10000)
 			info.randomSeed.y = UInt32.random(in: 0...10000)
 			info.randomSeed.z = UInt32.random(in: 0...10000)
+			info.atmosphere = content.atmosphereSettings
+            info.cutoff = content.cutoff
+			
+			 
 			
 			info.ambient = content.shadingSettings.x
 			info.angleShading = content.shadingSettings.y
@@ -233,7 +237,7 @@ class Texture {
 		self._textureName = textureName
 		self._textureExtension = ext
 		self._origin = origin
-		self.texture = loadTextureFromBundle(size: 1)
+		self.texture = loadTextureFromBundle(depth: 8, size: doc.content.savedCamera.resolution.int2)
 	}
 
 	private func oldLoadTextureFromBundle() -> MTLTexture {
@@ -255,25 +259,31 @@ class Texture {
 		return result
 	}
 
-	private func loadTextureFromBundle(size: UInt32) -> MTLTexture? {
+	private func loadTextureFromBundle(depth: UInt32, size: Int2) -> MTLTexture? {
 
-		self.currentChannelCount = size
+		self.currentChannelCount = depth
 		
-		//print(size)
+		print(depth)
 		
 		let textureDescriptor = MTLTextureDescriptor()
 		textureDescriptor.textureType = .type2DArray
-		textureDescriptor.arrayLength = Int(size) * 3
+		textureDescriptor.arrayLength = Int(depth)
 		textureDescriptor.pixelFormat = document.graphics.pixelFormat.1
-		textureDescriptor.width = 1920
-		textureDescriptor.height = 1080
+		textureDescriptor.width = size.x
+		textureDescriptor.height = size.y
 		textureDescriptor.usage = .init([MTLTextureUsage.shaderRead, MTLTextureUsage.shaderWrite])
 		return document.graphics.device.makeTexture(descriptor: textureDescriptor)
 	}
 	
+	//0: alpha
+	//1: depth
+	//2-4: emmision
+	//5...: layers
+	
 	func updateTexture() {
-		if currentChannelCount != document.content.channels.count {
-			texture = loadTextureFromBundle(size: UInt32(document.content.channels.count))
+		if currentChannelCount != document.content.skyBox.count || texture.width != document.content.savedCamera.resolution.x.int || texture.height != document.content.savedCamera.resolution.y.int {
+			texture = loadTextureFromBundle(depth: UInt32(document.content.skyBox.count * 3) + 5, size: document.content.savedCamera.resolution.int2)
+			currentChannelCount = document.content.skyBox.count.uint32
 		}
 	}
 }

@@ -15,20 +15,10 @@ struct ChannelPicker: View {
 	
     var body: some View {
 		HStack {
-			Text("Channel \(channel.index): ")
-			RoundedRectangle(cornerRadius: 10)
-				.foregroundColor(isPickingColor ? Color.black : Color.init(red: Double(channel.color.x), green: Double(channel.color.y), blue: Double(channel.color.z), opacity: 1))
-				.frame(width: 30, height: 30, alignment: .center)
-				.onTapGesture(perform: {
-					isPickingColor.toggle()
-				})
-				.popover(isPresented: $isPickingColor, content: {
-					ColorPickerPro(color: $channel.color)
-						.padding()
-				})
+            ColorPicker("Channele \(channel.index)", selection: $channel.color.cgColor)
 			
 			Text("Strength")
-			NumberInput(value: $channel.strength.nsNumber, step: 0.1.nsNumber.0)
+            NumberInput("Strength", value: $channel.strength, format: .number)
 		}
     }
 }
