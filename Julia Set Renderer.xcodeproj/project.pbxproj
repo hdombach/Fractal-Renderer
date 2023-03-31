@@ -80,6 +80,7 @@
 		DED8F75D25C5F8B400ABFBCC /* ColorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */; };
 		DED8F76125C631C900ABFBCC /* ColorNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED8F76025C631C900ABFBCC /* ColorNodes.swift */; };
 		DED9952B29D66DDC008A13C3 /* tree.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DED9952A29D66DDC008A13C3 /* tree.jpg */; };
+		DED9952D29D67047008A13C3 /* tree_ui.png in Resources */ = {isa = PBXBuildFile; fileRef = DED9952C29D67047008A13C3 /* tree_ui.png */; };
 		DEEA5AAA27404FF0001BD052 /* NodeSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEA5AA927404FF0001BD052 /* NodeSource.swift */; };
 		DEEC532F2626127B001F7A76 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEC532E2626127B001F7A76 /* ViewState.swift */; };
 		DEF0B2D325A007A9002BB7A1 /* NodePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF0B2D225A007A9002BB7A1 /* NodePath.swift */; };
@@ -191,6 +192,7 @@
 		DED8F75C25C5F8B400ABFBCC /* ColorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInput.swift; sourceTree = "<group>"; };
 		DED8F76025C631C900ABFBCC /* ColorNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNodes.swift; sourceTree = "<group>"; };
 		DED9952A29D66DDC008A13C3 /* tree.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tree.jpg; sourceTree = "<group>"; };
+		DED9952C29D67047008A13C3 /* tree_ui.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tree_ui.png; sourceTree = "<group>"; };
 		DEDC34CB258CE66B009B47A0 /* Types.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = Types.txt; sourceTree = "<group>"; };
 		DEDC34CF258CE6A2009B47A0 /* MathContainer.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = MathContainer.txt; sourceTree = "<group>"; };
 		DEDC34D5258CE77B009B47A0 /* RayMarching.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = RayMarching.txt; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 				DEC9F58728D1E70F009D7A40 /* underwater.png */,
 				DEC9F58328D1E6D7009D7A40 /* city.png */,
 				DEC9F58528D1E6EE009D7A40 /* starship.png */,
+				DED9952C29D67047008A13C3 /* tree_ui.png */,
 				DED9952A29D66DDC008A13C3 /* tree.jpg */,
 			);
 			path = "Preview Content";
@@ -581,6 +584,7 @@
 				DEC8CDE124ADFC9E00DB5701 /* Assets.xcassets in Resources */,
 				DEC8CDFE24AE1B8600DB5701 /* RenderWindowController.xib in Resources */,
 				DEC9F58428D1E6D7009D7A40 /* city.png in Resources */,
+				DED9952D29D67047008A13C3 /* tree_ui.png in Resources */,
 				DED9952B29D66DDC008A13C3 /* tree.jpg in Resources */,
 				DE9B7255266715BF00290677 /* SkyBoxLight.txt in Resources */,
 			);
